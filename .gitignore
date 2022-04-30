@@ -18,6 +18,7 @@ Backend/app/public/assets/**/*
 
 antd-pro-test
 antd-test
+antd-vite-test
 
 Frontend/logs
 Frontend/*.log

@@ -12,7 +12,7 @@ export default defineConfig({
       libList: [
         {
           libName: 'antd',
-          style: name => `antd/es/${ name }/style`
+          style: name => `antd/es/${name}/style`
         }
       ]
     })
@@ -20,13 +20,14 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       less: {
-        modifyVars: {
-          'primary-color': '#1DA57A',
-          'link-color': '#1DA57A',
-          'border-radius-base': '2px'
-        },
+        modifyVars: {},
         javascriptEnabled: true
       }
     }
+  },
+  resolve: {
+    alias: [
+      { find: /^~/, replacement: '' }
+    ]
   }
 })

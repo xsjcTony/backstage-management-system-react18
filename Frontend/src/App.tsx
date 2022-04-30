@@ -1,40 +1,33 @@
-import { DownloadOutlined } from '@ant-design/icons'
-import { Button, Switch } from 'antd'
-import { useState } from 'react'
-import type { SizeType } from 'antd/es/config-provider/SizeContext'
+/* eslint '@typescript-eslint/promise-function-async': 'off' */
+
+import { lazy, Suspense } from 'react'
+import { Route, Routes } from 'react-router-dom'
+import Loading from './components/Loading'
+import Page404 from './pages/Page404'
 
 
+/**
+ * Lazy Loading Components
+ */
+const Admin = lazy(() => import('./pages/Admin'))
+
+
+/**
+ * App Component
+ */
 const App = (): JSX.Element => {
-  const [size, setSize] = useState<SizeType>('large')
+  const a = 0
 
   return (
-    <>
-      <Button type="primary" icon={<DownloadOutlined />} size={size} />
-      <Button
-        type="primary"
-        shape="circle"
-        icon={<DownloadOutlined />}
-        size={size}
-      />
-      <Button
-        type="primary"
-        shape="round"
-        icon={<DownloadOutlined />}
-        size={size}
-      />
-      <Button
-        type="primary"
-        shape="round"
-        icon={<DownloadOutlined />}
-        size={size}
-      >
-        Download
-      </Button>
-      <Button type="primary" icon={<DownloadOutlined />} size={size}>
-        Download
-      </Button>
-      <Switch defaultChecked />
-    </>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route
+          path="/admin"
+          element={<Admin />}
+        />
+        <Route path="*" element={<Page404 lang />} />
+      </Routes>
+    </Suspense>
   )
 }
 
