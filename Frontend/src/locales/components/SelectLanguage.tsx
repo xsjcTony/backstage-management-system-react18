@@ -18,6 +18,7 @@ import type { MenuClickEventHandler, MenuInfo } from 'rc-menu/es/interface'
 interface SelectLanguageProps {
   className?: string
   color?: string
+  size?: number | string
 }
 
 
@@ -36,14 +37,14 @@ const getAllLocales = (): I18nLocales[] => (
 /**
  * Style
  */
-const IconContainer = styled.span`
+const IconContainer = styled.span<{ size: number | string }>`
     cursor: pointer;
     padding: 12px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     vertical-align: middle;
-    font-size: 18px;
+    font-size: ${props => props.size}px;
     color: ${props => props.color}
 `
 
@@ -51,7 +52,7 @@ const IconContainer = styled.span`
 /**
  * Component
  */
-const SelectLanguage = ({ className, color = 'rgba(0, 0, 0, .85)' }: SelectLanguageProps): JSX.Element => {
+const SelectLanguage = ({ className, color = 'rgba(0, 0, 0, .85)', size = 18 }: SelectLanguageProps): JSX.Element => {
   const locale = useSelector((state: RootState) => state.layout.locale)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -86,7 +87,7 @@ const SelectLanguage = ({ className, color = 'rgba(0, 0, 0, .85)' }: SelectLangu
 
   return (
     <Dropdown overlay={menu} placement="bottomRight" className={className}>
-      <IconContainer color={color}>
+      <IconContainer color={color} size={size}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="1em"

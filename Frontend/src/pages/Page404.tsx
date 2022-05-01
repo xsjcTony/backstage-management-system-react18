@@ -62,7 +62,7 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
           </Button>
         )}
       />
-      {lang && <FixedSelectLanguage />}
+      {lang && <FixedSelectLanguage size="24" />}
     </CenteredContainer>
   )
 }

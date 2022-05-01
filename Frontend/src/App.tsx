@@ -10,6 +10,7 @@ import Page404 from './pages/Page404'
  * Lazy Loading Components
  */
 const Admin = lazy(() => import('./pages/Admin'))
+const Welcome = lazy(() => import('./pages/Admin/Welcome'))
 
 
 /**
@@ -19,15 +20,35 @@ const App = (): JSX.Element => {
   const a = 0
 
   return (
-    <Suspense fallback={<Loading />}>
-      <Routes>
+    <Routes>
+      <Route
+        path="/admin"
+        element={(
+          <Suspense fallback={<Loading />}>
+            <Admin />
+          </Suspense>
+        )}
+      >
         <Route
-          path="/admin"
-          element={<Admin />}
+          index
+          element={(
+            <Suspense fallback={<Loading />}>
+              <Welcome />
+            </Suspense>
+          )}
         />
-        <Route path="*" element={<Page404 lang />} />
-      </Routes>
-    </Suspense>
+        <Route
+          path="users"
+          element={(
+            <Suspense fallback={<Loading />}>
+              <Welcome />
+            </Suspense>
+          )}
+        />
+        <Route path="*" element={<Page404 />} />
+      </Route>
+      <Route path="*" element={<Page404 lang />} />
+    </Routes>
   )
 }
 
