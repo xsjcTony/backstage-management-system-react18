@@ -219,8 +219,8 @@ module.exports = {
         shorthandFirst: true,
         multiline: 'ignore',
         ignoreCase: true,
-        noSortAlphabetically: true,
-        reservedFirst: false,
+        noSortAlphabetically: false,
+        reservedFirst: true,
         locale: 'auto'
       }
     ],

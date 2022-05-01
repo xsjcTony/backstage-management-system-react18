@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 
-const Welcome = (): JSX.Element => {
+const Users = (): JSX.Element => {
   const intl = useIntl()
 
   useEffect(() => {
     document.title = `${intl.formatMessage({
-      id: 'pages.admin.welcome.title',
-      defaultMessage: 'Welcome'
+      id: 'pages.admin.user-list.title',
+      defaultMessage: 'User List'
     })} - ${intl.formatMessage({
       id: 'title',
       defaultMessage: `Aelita's BMS`
@@ -16,8 +16,8 @@ const Welcome = (): JSX.Element => {
   })
 
   return (
-    <div>Welcome</div>
+    <div>User List</div>
   )
 }
 
-export default Welcome
+export default Users

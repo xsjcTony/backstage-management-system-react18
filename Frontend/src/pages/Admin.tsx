@@ -1,18 +1,20 @@
 import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
   UserOutlined,
   MenuUnfoldOutlined,
-  MenuFoldOutlined
+  MenuFoldOutlined,
+  SmileOutlined,
+  SettingOutlined,
+  UnlockOutlined,
+  EyeOutlined,
+  VerifiedOutlined,
+  LogoutOutlined
 } from '@ant-design/icons'
-import { Layout, Menu, Avatar } from 'antd'
+import { Layout, Menu, Avatar, Dropdown } from 'antd'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import SelectLanguage from '../../locales/components/SelectLanguage'
+import SelectLanguage from '../locales/components/SelectLanguage'
 import type { ItemType } from 'antd/es/menu/hooks/useItems'
 import type React from 'react'
 
@@ -31,38 +33,7 @@ const createItem = (
   key: React.Key,
   icon?: React.ReactNode,
   children?: ItemType[]
-): ItemType => {
-  return {
-    key,
-    icon,
-    children,
-    label
-  }
-}
-
-/**
- * Data
- */
-const items: ItemType[] = [
-  createItem('Option 1', '1', <PieChartOutlined />),
-  createItem('Option 2', '2', <DesktopOutlined />),
-  createItem('User', 'sub1', <UserOutlined />, [
-    createItem('Tom', '3', <UserOutlined />),
-    createItem('Bill', '4'),
-    createItem('Alex', '5'),
-    createItem('Bill', '10'),
-    createItem('Alex', '11'),
-    createItem('Bill', '12'),
-    createItem('Alex', '13'),
-    createItem('Bill', '14'),
-    createItem('Alex', '15'),
-    createItem('Bill', '16'),
-    createItem('Alex', '17'),
-    createItem('Bill', '18')
-  ]),
-  createItem('Team', 'sub2', <TeamOutlined />, [createItem('Team 1', '6'), createItem('Team 2', '8')]),
-  createItem('Files', '9', <FileOutlined />)
-]
+): ItemType => { return { key, icon, children, label } }
 
 
 /**
@@ -71,6 +42,7 @@ const items: ItemType[] = [
 const StyledLayout = styled(Layout)`
     width: 100%;
     height: 100%;
+    min-width: 700px;
 
     .header {
         display: flex;
@@ -84,11 +56,23 @@ const StyledLayout = styled(Layout)`
         height: 48px;
         padding: 0 20px;
         color: #fff;
+        min-width: 700px;
+        
+        .ant-dropdown-trigger {
+            height: 48px;
+            line-height: 48px;
+            cursor: pointer;
+            
+            &.ant-dropdown-open {
+                background: #252a3d;
+            }
+        }
 
         .header-left {
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            cursor: pointer;
 
             img {
                 height: 30px;
@@ -106,7 +90,15 @@ const StyledLayout = styled(Layout)`
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+
+            .user-container {
+                padding: 0 10px;
+                
+                .ant-avatar {
+                    margin-right: 10px;
+                }
+            }
         }
     }
 
@@ -155,12 +147,96 @@ const StyledLayout = styled(Layout)`
 const Admin = (): JSX.Element => {
   const [collapsed, setCollapsed] = useState<boolean>(false)
   const intl = useIntl()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+
+  const items: ItemType[] = [
+    createItem(
+      intl.formatMessage({
+        id: 'menu.welcome',
+        defaultMessage: 'Welcome'
+      }),
+      '/admin',
+      <SmileOutlined />
+    ),
+    createItem(
+      intl.formatMessage({
+        id: 'menu.user-management',
+        defaultMessage: 'User Management'
+      }),
+      'user-management',
+      <SettingOutlined />,
+      [
+        createItem(
+          intl.formatMessage({
+            id: 'menu.user-management.user-list',
+            defaultMessage: 'User List'
+          }),
+          '/admin/users',
+          <UserOutlined />
+        )
+      ]
+    ),
+    createItem(
+      intl.formatMessage({
+        id: 'menu.privilege-management',
+        defaultMessage: 'Privilege Management'
+      }),
+      'privilege-management',
+      <UnlockOutlined />,
+      [
+        createItem(
+          intl.formatMessage({
+            id: 'menu.privilege-management.role-list',
+            defaultMessage: 'Role List'
+          }),
+          '/admin/roles',
+          <EyeOutlined />
+        ),
+        createItem(
+          intl.formatMessage({
+            id: 'menu.privilege-management.privilege-list',
+            defaultMessage: 'Privilege List'
+          }),
+          '/admin/privileges',
+          <VerifiedOutlined />
+        )
+      ]
+    )
+  ]
+
+
+  // TODO: logout user
+  const logout = (): void => {
+    // Logout user
+  }
+
+  const userDropdownMenu = (
+    <Menu
+      items={[
+        createItem(
+          intl.formatMessage({
+            id: 'header.user-dropdown.logout',
+            defaultMessage: 'Log out'
+          }),
+          'logout',
+          <LogoutOutlined />
+        )
+      ]}
+      onClick={() => void logout()}
+    />
+  )
+
 
   return (
     <StyledLayout>
       <Header className="header">
-        <div className="header-left">
-          <img src="/src/assets/images/logo.png" alt="logo" />
+        <div
+          className="header-left"
+          onClick={() => void navigate('/admin', { replace: false })}
+        >
+          <img alt="logo" src="/src/assets/images/logo.png" />
           <h1>
             {intl.formatMessage({
               id: 'header.title',
@@ -169,14 +245,18 @@ const Admin = (): JSX.Element => {
           </h1>
         </div>
         <div className="header-right">
-          <Avatar
-            size="default"
-            src="/src/assets/images/avatar.jpg"
-            icon={<UserOutlined />}
-            alt="avatar"
-            shape="circle"
-          />
-          Place Holder
+          <Dropdown overlay={userDropdownMenu} placement="bottom">
+            <div className="user-container">
+              <Avatar
+                alt="avatar"
+                icon={<UserOutlined />}
+                shape="circle"
+                size="default"
+                src="/src/assets/images/avatar.jpg"
+              />
+              Aelita Schaeffer
+            </div>
+          </Dropdown>
           <SelectLanguage color="#fff" size="20" />
         </div>
       </Header>
@@ -186,18 +266,20 @@ const Admin = (): JSX.Element => {
           breakpoint="lg"
           className="menu-container"
           collapsed={collapsed}
+          collapsedWidth={58}
           theme="light"
           trigger={null}
-          width={220}
-          collapsedWidth={58}
+          width={230}
           onCollapse={() => void setCollapsed(!collapsed)}
         >
           <Menu
             className="menu"
-            theme="light"
-            defaultSelectedKeys={['1']}
-            mode="inline"
+            defaultOpenKeys={['user-management', 'privilege-management']}
             items={items}
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            theme="light"
+            onClick={({ key }) => void navigate(key, { replace: false })}
           />
           <ul className="menu-footer">
             <li className="menu-collapse-trigger" onClick={() => void setCollapsed(!collapsed)}>

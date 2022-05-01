@@ -42,13 +42,6 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
   return (
     <CenteredContainer>
       <Result
-        status="404"
-        title="404"
-        subTitle={intl.formatMessage({
-          id: 'pages.404.description',
-          defaultMessage: 'Sorry, the page you visited does not exist',
-          description: 'Description of 404 error page'
-        })}
         extra={(
           <Button
             type="primary"
@@ -61,6 +54,13 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
             })}
           </Button>
         )}
+        status="404"
+        subTitle={intl.formatMessage({
+          id: 'pages.404.description',
+          defaultMessage: 'Sorry, the page you visited does not exist',
+          description: 'Description of 404 error page'
+        })}
+        title="404"
       />
       {lang && <FixedSelectLanguage size="24" />}
     </CenteredContainer>
