@@ -98,8 +98,7 @@ const StyledLayout = styled(Layout)`
             h1 {
                 color: #fff;
                 line-height: 48px;
-                font-size: 20px;
-                font-weight: 700;
+                font-size: 18px;
             }
         }
         
