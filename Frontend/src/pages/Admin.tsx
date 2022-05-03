@@ -33,7 +33,9 @@ const createItem = (
   key: React.Key,
   icon?: React.ReactNode,
   children?: ItemType[]
-): ItemType => { return { key, icon, children, label } }
+): ItemType => {
+  return { key, icon, children, label }
+}
 
 
 /**
@@ -57,12 +59,12 @@ const StyledLayout = styled(Layout)`
         padding: 0 20px;
         color: #fff;
         min-width: 700px;
-        
+
         .ant-dropdown-trigger {
             height: 48px;
             line-height: 48px;
             cursor: pointer;
-            
+
             &.ant-dropdown-open {
                 background: #252a3d;
             }
@@ -85,7 +87,7 @@ const StyledLayout = styled(Layout)`
                 font-size: 18px;
             }
         }
-        
+
         .header-right {
             display: flex;
             justify-content: flex-end;
@@ -94,7 +96,7 @@ const StyledLayout = styled(Layout)`
 
             .user-container {
                 padding: 0 10px;
-                
+
                 .ant-avatar {
                     margin-right: 10px;
                 }
@@ -116,6 +118,10 @@ const StyledLayout = styled(Layout)`
                 .menu {
                     li {
                         cursor: pointer;
+                    }
+
+                    .ant-menu-sub.ant-menu-inline {
+                        background: #fff;
                     }
                 }
 

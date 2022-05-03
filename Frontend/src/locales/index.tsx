@@ -1,8 +1,9 @@
-import { PropsWithChildren, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IntlProvider as ReactIntlProvider } from 'react-intl'
 import { useSelector } from 'react-redux'
 import enUS from './en-US'
 import type { RootState } from '../store'
+import type { PropsWithChildren } from 'react'
 
 
 /**
@@ -15,11 +16,14 @@ const IntlProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
   useEffect(() => {
     import(`../locales/${locale}.ts`)
       .then(module => void setMessage(module.default))
-      .catch(err => void console.error(err))
+      .catch((err) => {
+        console.error(`Locale "${locale}" does not exist, using default "en-US" instead`)
+        setMessage(enUS)
+      })
   }, [locale])
 
   return (
-    <ReactIntlProvider locale={locale} defaultLocale="en-US" messages={message}>
+    <ReactIntlProvider defaultLocale="en-US" locale={locale} messages={message}>
       {children}
     </ReactIntlProvider>
   )

@@ -51,7 +51,7 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
         extra={(
           <Button
             type="primary"
-            onClick={() => void navigate('/', { replace: true })}
+            onClick={() => void navigate('/admin', { replace: true })}
           >
             {intl.formatMessage({
               id: 'pages.404.back',

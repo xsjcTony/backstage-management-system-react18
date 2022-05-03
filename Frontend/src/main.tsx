@@ -6,6 +6,7 @@ import App from './App'
 import 'normalize.css'
 import './index.css'
 import IntlProvider from './locales'
+import AntdConfigProvider from './locales/AntdConfigProvider'
 import store from './store'
 
 
@@ -19,9 +20,11 @@ createRoot(root).render(
   <StrictMode>
     <ReduxProvider store={store}>
       <IntlProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <AntdConfigProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AntdConfigProvider>
       </IntlProvider>
     </ReduxProvider>
   </StrictMode>

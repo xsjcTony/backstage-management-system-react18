@@ -16,7 +16,7 @@ const Users = (): JSX.Element => {
   })
 
   return (
-    <div>User List</div>
+    <div>Users</div>
   )
 }
 

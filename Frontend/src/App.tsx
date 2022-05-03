@@ -1,5 +1,7 @@
 /* eslint '@typescript-eslint/promise-function-async': 'off' */
 /* eslint 'react/jsx-sort-props': 'off' */
+/* eslint 'react/no-multi-comp': 'off' */
+/* eslint 'react/display-name': 'off' */
 
 import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
@@ -12,7 +14,12 @@ import type { LazyExoticComponent } from 'react'
  * Lazy Loading Components
  */
 const Admin = lazyLoading(lazy(() => import('./pages/Admin')))
-const Welcome = lazyLoading(lazy(() => import('./pages/Admin/Welcome')))
+// Intentionally wait for 2s for testing lazy loading
+const Welcome = lazyLoading(lazy(() => new Promise((resolve) => {
+  setTimeout(() => {
+    resolve(import('./pages/Admin/Welcome'))
+  }, 2000)
+})))
 const Users = lazyLoading(lazy(() => import('./pages/Admin/Users')))
 const Roles = lazyLoading(lazy(() => import('./pages/Admin/Roles')))
 const Privileges = lazyLoading(lazy(() => import('./pages/Admin/Privileges')))
@@ -21,10 +28,10 @@ const Privileges = lazyLoading(lazy(() => import('./pages/Admin/Privileges')))
 /**
  * HOC
  */
-function lazyLoading(LazyComponent: LazyExoticComponent<any>): JSX.Element {
-  return (
+function lazyLoading<P = {}>(LazyComponent: LazyExoticComponent<any>) {
+  return (props: P): JSX.Element => (
     <Suspense fallback={<Loading />}>
-      <LazyComponent />
+      <LazyComponent {...props} />
     </Suspense>
   )
 }
@@ -37,23 +44,23 @@ const App = (): JSX.Element => (
   <Routes>
     <Route
       path="/admin"
-      element={Admin}
+      element={<Admin />}
     >
       <Route
         index
-        element={Welcome}
+        element={<Welcome />}
       />
       <Route
         path="users"
-        element={Users}
+        element={<Users />}
       />
       <Route
         path="roles"
-        element={Roles}
+        element={<Roles />}
       />
       <Route
         path="privileges"
-        element={Privileges}
+        element={<Privileges />}
       />
       <Route path="*" element={<Page404 />} />
     </Route>
