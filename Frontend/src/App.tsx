@@ -24,6 +24,9 @@ const Users = lazyLoading(lazy(() => import('./pages/Admin/Users')))
 const Roles = lazyLoading(lazy(() => import('./pages/Admin/Roles')))
 const Privileges = lazyLoading(lazy(() => import('./pages/Admin/Privileges')))
 
+const Register = lazyLoading(lazy(() => import('./pages/Register')))
+const Login = lazyLoading(lazy(() => import('./pages/Login')))
+
 
 /**
  * HOC
@@ -42,28 +45,15 @@ function lazyLoading<P = {}>(LazyComponent: LazyExoticComponent<any>) {
  */
 const App = (): JSX.Element => (
   <Routes>
-    <Route
-      path="/admin"
-      element={<Admin />}
-    >
-      <Route
-        index
-        element={<Welcome />}
-      />
-      <Route
-        path="users"
-        element={<Users />}
-      />
-      <Route
-        path="roles"
-        element={<Roles />}
-      />
-      <Route
-        path="privileges"
-        element={<Privileges />}
-      />
+    <Route path="/admin" element={<Admin />}>
+      <Route index element={<Welcome />} />
+      <Route path="users" element={<Users />} />
+      <Route path="roles" element={<Roles />} />
+      <Route path="privileges" element={<Privileges />} />
       <Route path="*" element={<Page404 />} />
     </Route>
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
     <Route path="*" element={<Page404 lang />} />
   </Routes>
 )

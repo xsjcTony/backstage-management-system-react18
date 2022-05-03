@@ -6,8 +6,8 @@ import {
   SettingOutlined,
   UnlockOutlined,
   EyeOutlined,
-  VerifiedOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  SafetyCertificateOutlined
 } from '@ant-design/icons'
 import { Layout, Menu, Avatar, Dropdown } from 'antd'
 import { useState } from 'react'
@@ -66,7 +66,7 @@ const StyledLayout = styled(Layout)`
             cursor: pointer;
 
             &.ant-dropdown-open {
-                background: #252a3d;
+                background: #444;
             }
         }
 
@@ -206,7 +206,7 @@ const Admin = (): JSX.Element => {
             defaultMessage: 'Privilege List'
           }),
           '/admin/privileges',
-          <VerifiedOutlined />
+          <SafetyCertificateOutlined />
         )
       ]
     )
