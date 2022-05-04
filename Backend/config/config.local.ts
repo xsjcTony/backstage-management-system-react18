@@ -11,7 +11,7 @@ export default (): PowerPartial<EggAppConfig> => {
     username: 'root',
     password: '123456',
     port: 3306,
-    database: 'aelita',
+    database: 'backstage-management-system-react18',
     timezone: '+11:00'
   }
 

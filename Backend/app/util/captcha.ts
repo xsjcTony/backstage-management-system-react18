@@ -1,7 +1,7 @@
 /* eslint '@typescript-eslint/no-unsafe-member-access': 'off' */
 /* eslint '@typescript-eslint/no-unsafe-assignment': 'off' */
 
-import { Context } from 'egg'
+import type { Context } from 'egg'
 import svgCaptcha from 'svg-captcha'
 
 
@@ -9,13 +9,13 @@ export const generateCaptcha = (ctx: Context): string => {
   // generate captcha
   const captcha = svgCaptcha.create({
     size: 4,
-    width: 160,
-    height: 60,
+    width: 140,
+    height: 40,
     fontSize: 50,
     ignoreChars: '0oO1ilI',
     noise: 3,
     color: true,
-    background: '#eee'
+    background: '#fff'
   })
 
   // save captcha
