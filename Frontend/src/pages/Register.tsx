@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
+import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
 
 
 /**
@@ -106,12 +107,13 @@ const Register = (): JSX.Element => {
   const navigate = useNavigate()
   const [formInstance] = useForm()
   const password = useWatch<string | undefined>('password', formInstance)
+  const email = useWatch<string | undefined>('email', formInstance)
   const [passwordPopoverVisible, setPasswordPopoverVisible] = useState<boolean>(false)
   const [emailSent, setEmailSent] = useState<boolean>(false)
 
   useEffect(() => {
     document.title = `${intl.formatMessage({ id: 'pages.register.title' })} - ${intl.formatMessage({ id: 'title' })}`
-  })
+  }, [intl])
 
 
   /**
@@ -187,6 +189,18 @@ const Register = (): JSX.Element => {
       return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password-check.invalid' }))
     }
     return Promise.resolve()
+  }
+
+  const onGetCaptcha = async (): Promise<void> => {
+    try {
+      await formInstance.validateFields(['email'])
+    } catch (err) {
+      void message.error((err as ValidateErrorEntity).errorFields[0].errors[0], 3)
+      throw new Error()
+    }
+
+    void message.success(intl.formatMessage({ id: 'pages.register.message.send-captcha.success' }), 3)
+    setEmailSent(true)
   }
 
 
@@ -375,7 +389,7 @@ const Register = (): JSX.Element => {
                     : emailSent
                       ? intl.formatMessage({ id: 'pages.register.captcha.button.resend' })
                       : intl.formatMessage({ id: 'pages.register.captcha.button.send' })}
-                countDown={60}
+                countDown={2}
                 fieldProps={{
                   size: 'large',
                   prefix: <CheckOutlined className="prefix-icon" />,
@@ -383,7 +397,6 @@ const Register = (): JSX.Element => {
                   maxLength: 4
                 }}
                 name="captcha"
-                phoneName="email"
                 placeholder={intl.formatMessage({ id: 'pages.register.placeholder.captcha' })}
                 rules={[
                   {
@@ -395,10 +408,7 @@ const Register = (): JSX.Element => {
                     message: intl.formatMessage({ id: 'pages.register.error-message.captcha.invalid' })
                   }
                 ]}
-                onGetCaptcha={async (email) => {
-                  void message.success(intl.formatMessage({ id: 'pages.register.message.send-captcha.success' }), 3)
-                  setEmailSent(true)
-                }}
+                onGetCaptcha={onGetCaptcha}
               />
             </>
           )}

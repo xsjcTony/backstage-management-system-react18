@@ -13,7 +13,7 @@ const Welcome = (): JSX.Element => {
       id: 'title',
       defaultMessage: `Aelita's BMS`
     })}`
-  })
+  }, [intl])
 
   return (
     <div>Welcome</div>

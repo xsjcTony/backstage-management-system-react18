@@ -43,7 +43,7 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
       id: 'title',
       defaultMessage: `Aelita's BMS`
     })}`
-  })
+  }, [intl])
 
   return (
     <CenteredContainer>

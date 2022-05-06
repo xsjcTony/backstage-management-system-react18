@@ -113,7 +113,7 @@ const Login = (): JSX.Element => {
 
   useEffect(() => {
     document.title = `${intl.formatMessage({ id: 'pages.login.title' })} - ${intl.formatMessage({ id: 'title' })}`
-  })
+  }, [intl])
 
 
   return (

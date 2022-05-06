@@ -13,7 +13,7 @@ const Roles = (): JSX.Element => {
       id: 'title',
       defaultMessage: `Aelita's BMS`
     })}`
-  })
+  }, [intl])
 
   return (
     <div>Roles</div>

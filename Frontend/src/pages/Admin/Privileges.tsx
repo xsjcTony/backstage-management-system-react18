@@ -13,7 +13,7 @@ const Privileges = (): JSX.Element => {
       id: 'title',
       defaultMessage: `Aelita's BMS`
     })}`
-  })
+  }, [intl])
 
   return (
     <div>Privileges</div>
