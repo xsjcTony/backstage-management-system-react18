@@ -5,7 +5,7 @@ import {
   CheckOutlined,
   SafetyOutlined
 } from '@ant-design/icons'
-import { LoginForm, ProForm, ProFormCaptcha, ProFormText } from '@ant-design/pro-form'
+import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
 import { Tabs, Divider, Button, Form, Popover, Progress, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
@@ -369,14 +369,12 @@ const Register = (): JSX.Element => {
                 captchaProps={{
                   size: 'large'
                 }}
-                captchaTextRender={(timing, count) => {
-                  if (timing) {
-                    return `${count}s`
-                  }
-                  return emailSent
-                    ? intl.formatMessage({ id: 'pages.register.captcha.button.resend' })
-                    : intl.formatMessage({ id: 'pages.register.captcha.button.send' })
-                }}
+                captchaTextRender={(timing, count) =>
+                  timing
+                    ? `${count}s`
+                    : emailSent
+                      ? intl.formatMessage({ id: 'pages.register.captcha.button.resend' })
+                      : intl.formatMessage({ id: 'pages.register.captcha.button.send' })}
                 countDown={60}
                 fieldProps={{
                   size: 'large',
@@ -398,13 +396,27 @@ const Register = (): JSX.Element => {
                   }
                 ]}
                 onGetCaptcha={async (email) => {
-                  void message.success(intl.formatMessage({ id: 'pages.register.message.send-captcha.success' }))
+                  void message.success(intl.formatMessage({ id: 'pages.register.message.send-captcha.success' }), 3)
                   setEmailSent(true)
                 }}
               />
             </>
           )}
-
+          <ProFormCheckbox
+            name="agreement"
+            rules={[
+              {
+                validator: async (_rule, value) => value
+                  ? Promise.resolve()
+                  : Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.agreement.missing' }))
+              }
+            ]}
+          >
+            {intl.formatMessage({ id: 'pages.register.agreement.text' })}
+            <a href="https://www.google.com/" rel="noreferrer noopener" target="_blank">
+              {intl.formatMessage({ id: 'pages.register.agreement.terms' })}
+            </a>
+          </ProFormCheckbox>
         </LoginForm>
       </div>
       <Footer iconSize="18" textSize="16" />
