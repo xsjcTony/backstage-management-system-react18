@@ -6,8 +6,8 @@ import {
   CheckOutlined
 } from '@ant-design/icons'
 import { LoginForm, ProFormText, ProFormCheckbox } from '@ant-design/pro-form'
-import { Tabs, Divider } from 'antd'
-import { useState } from 'react'
+import { Tabs, Divider, Button } from 'antd'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -88,6 +88,11 @@ const LoginContainer = styled.div`
         .prefix-icon {
             color: #ccc;
         }
+        
+        .register-button,
+        .login-button {
+            width: 100%;
+        }
     }
 `
 
@@ -106,6 +111,11 @@ const Login = (): JSX.Element => {
   const intl = useIntl()
   const navigate = useNavigate()
 
+  useEffect(() => {
+    document.title = `${intl.formatMessage({ id: 'pages.login.title' })} - ${intl.formatMessage({ id: 'title' })}`
+  })
+
+
   return (
     <LoginContainer>
       <div className="language">
@@ -122,15 +132,28 @@ const Login = (): JSX.Element => {
               <Divider plain className="divider">
                 {intl.formatMessage({ id: 'pages.login.or' })}
               </Divider>
-              <a
-                role="button"
+              <Button
+                className="register-button"
+                size="large"
                 onClick={() => void navigate('/register', { replace: false })}
               >
                 {intl.formatMessage({ id: 'pages.login.register' })}
-              </a>
+              </Button>
             </>
           )}
           logo={logo}
+          submitter={{
+            render: props => (
+              <Button
+                className="login-button"
+                size="large"
+                type="primary"
+                onClick={() => { /* TODO */ }}
+              >
+                {intl.formatMessage({ id: 'pages.login.login' })}
+              </Button>
+            )
+          }}
           subTitle={intl.formatMessage({ id: 'subtitle' })}
           title={intl.formatMessage({ id: 'title' })}
         >
