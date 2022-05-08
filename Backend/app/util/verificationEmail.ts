@@ -46,8 +46,8 @@ function _createEmailInfoAndCode(ctx: Context, to: string): EmailInfo {
   return {
     from: 'Aelita <xsjcTony@126.com>', // sender address
     to, // list of receivers
-    subject: 'Backstage management system verification', // Subject line
-    text: `You are registering the backstage management system, Your code is ${ verificationCode }` // plain text body
+    subject: 'Backstage management system (React18) verification', // Subject line
+    text: `You are registering the backstage management system, Your verification code is ${verificationCode}` // plain text body
   }
 }
 

@@ -14,6 +14,8 @@ import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
+import { sendVerificationEmail } from '../services/register'
+import type { ResponseData } from '../services/types'
 import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
 
 
@@ -26,7 +28,7 @@ type RegisterType = 'account' | 'email'
 /**
  * Style
  */
-const LoginContainer = styled.div`
+const RegisterContainer = styled.div`
     width: 100%;
     height: 100%;
     background: #f0f2f5 url('/src/assets/images/login_bg.svg') center 110px / 100% no-repeat;
@@ -110,6 +112,7 @@ const Register = (): JSX.Element => {
   const email = useWatch<string | undefined>('email', formInstance)
   const [passwordPopoverVisible, setPasswordPopoverVisible] = useState<boolean>(false)
   const [emailSent, setEmailSent] = useState<boolean>(false)
+  const [captchaSrc, setCaptchaSrc] = useState<string>(`http://127.0.0.1:7001/captcha?t=${Date.now()}`)
 
   useEffect(() => {
     document.title = `${intl.formatMessage({ id: 'pages.register.title' })} - ${intl.formatMessage({ id: 'title' })}`
@@ -199,6 +202,25 @@ const Register = (): JSX.Element => {
       throw new Error()
     }
 
+    if (!email) {
+      void message.error('Invalid E-mail address')
+      throw new Error()
+    }
+
+    let data: ResponseData
+
+    try {
+      data = await sendVerificationEmail({ email })
+    } catch (err) {
+      void message.error(intl.formatMessage({ id: 'error.network' }))
+      throw new Error()
+    }
+
+    if (data.code !== 200) {
+      void message.error(intl.formatMessage({ id: 'pages.register.message.send-captcha.error' }))
+      throw new Error()
+    }
+
     void message.success(intl.formatMessage({ id: 'pages.register.message.send-captcha.success' }), 3)
     setEmailSent(true)
   }
@@ -254,7 +276,7 @@ const Register = (): JSX.Element => {
   )
 
   return (
-    <LoginContainer>
+    <RegisterContainer>
       <div className="language">
         <SelectLanguage size="24" />
       </div>
@@ -351,9 +373,8 @@ const Register = (): JSX.Element => {
                 <img
                   alt="captcha"
                   className="captcha-image"
-                  // src={`http://127.0.0.1:7001/captcha?t=${Date.now()}`}
-                  src="/src/assets/images/captcha_test.svg"
-                  onClick={() => { /* TODO */ }}
+                  src={captchaSrc}
+                  onClick={() => { setCaptchaSrc(`http://127.0.0.1:7001/captcha?t=${Date.now()}`) }}
                 />
               </div>
             </>
@@ -389,7 +410,7 @@ const Register = (): JSX.Element => {
                     : emailSent
                       ? intl.formatMessage({ id: 'pages.register.captcha.button.resend' })
                       : intl.formatMessage({ id: 'pages.register.captcha.button.send' })}
-                countDown={2}
+                countDown={60}
                 fieldProps={{
                   size: 'large',
                   prefix: <CheckOutlined className="prefix-icon" />,
@@ -430,7 +451,7 @@ const Register = (): JSX.Element => {
         </LoginForm>
       </div>
       <Footer iconSize="18" textSize="16" />
-    </LoginContainer>
+    </RegisterContainer>
   )
 }
 

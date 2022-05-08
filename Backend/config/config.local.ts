@@ -1,4 +1,4 @@
-import { EggAppConfig, PowerPartial } from 'egg'
+import type { EggAppConfig, PowerPartial } from 'egg'
 
 
 export default (): PowerPartial<EggAppConfig> => {
@@ -37,7 +37,7 @@ export default (): PowerPartial<EggAppConfig> => {
     host: 'smtp.126.com',
     port: 465,
     user: 'xsjcTony@126.com',
-    pass: 'PZOWNQMNHOQTHMCC'
+    pass: 'WAYJJHTOHRIXSZXG'
   }
 
   return config

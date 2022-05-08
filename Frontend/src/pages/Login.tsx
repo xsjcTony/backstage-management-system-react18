@@ -110,6 +110,7 @@ const Login = (): JSX.Element => {
   const [loginType, setLoginType] = useState<LoginType>('account')
   const intl = useIntl()
   const navigate = useNavigate()
+  const [captchaSrc, setCaptchaSrc] = useState<string>(`http://127.0.0.1:7001/captcha?t=${Date.now()}`)
 
   useEffect(() => {
     document.title = `${intl.formatMessage({ id: 'pages.login.title' })} - ${intl.formatMessage({ id: 'title' })}`
@@ -245,9 +246,8 @@ const Login = (): JSX.Element => {
             <img
               alt="captcha"
               className="captcha-image"
-              // src={`http://127.0.0.1:7001/captcha?t=${Date.now()}`}
-              src="/src/assets/images/captcha_test.svg"
-              onClick={() => { /* TODO */ }}
+              src={captchaSrc}
+              onClick={() => { setCaptchaSrc(`http://127.0.0.1:7001/captcha?t=${Date.now()}`) }}
             />
           </div>
           <div className="actions">

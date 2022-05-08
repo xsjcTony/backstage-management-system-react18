@@ -7,6 +7,7 @@ const enUS: Record<string, string> = {
   subtitle: `Built by React 18 + TypeScript, Powered by Vite`,
   'header.title': `Aelita's Backstage Management System`,
   'header.user-dropdown.logout': 'Log out',
+  'error.network': 'Network error',
   ...pages,
   ...menu
 }
