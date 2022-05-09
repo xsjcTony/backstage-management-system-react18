@@ -1,4 +1,5 @@
 import menu from './en-US/menu'
+import message from './en-US/message'
 import pages from './en-US/pages'
 
 
@@ -9,7 +10,8 @@ const enUS: Record<string, string> = {
   'header.user-dropdown.logout': 'Log out',
   'error.network': 'Network error',
   ...pages,
-  ...menu
+  ...menu,
+  ...message
 }
 
 export default enUS

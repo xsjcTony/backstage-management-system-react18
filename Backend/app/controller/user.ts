@@ -97,7 +97,7 @@ export default class UserController extends Controller {
     const registerType: RegisterType = data.registerType
 
     switch (registerType) {
-      case RegisterType.Normal:
+      case RegisterType.Account:
         ctx.validate(NormalUserRule, data)
         ctx.helper.verifyCaptcha(data.captcha)
         break
@@ -106,7 +106,7 @@ export default class UserController extends Controller {
         ctx.helper.verifyEmail(data.captcha)
         break
       default:
-        throw new Error(`Register type '${ data.registerType }' is invalid`)
+        throw new Error(`Register type '${data.registerType}' is invalid`)
     }
   }
 }

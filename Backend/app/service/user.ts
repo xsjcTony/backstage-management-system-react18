@@ -3,7 +3,6 @@ import { Role } from '../model/Role'
 import type { User } from '../model/User'
 import type { LoginData, RegisterData } from '../types'
 import type { WhereOptions } from 'sequelize'
-import { Privilege } from '../model/Privilege'
 
 
 export default class UserService extends Service {
@@ -31,7 +30,8 @@ export default class UserService extends Service {
    * @param {LoginData} data
    * @return {Promise<object>}
    */
-  public async loginUser(data: LoginData): Promise<User> {
+  public async loginUser(data: LoginData): Promise<any> /*Promise<User>*/ {
+    /*
     const usernameRegex = /^[A-Za-z0-9]{6,20}$/
     const emailRegex = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
     const { username, password } = data
@@ -47,6 +47,7 @@ export default class UserService extends Service {
       // Invalid username or email
       throw new Error('Invalid username or email')
     }
+    */
   }
 
 

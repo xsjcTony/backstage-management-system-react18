@@ -1,5 +1,6 @@
+import { useTitle } from 'ahooks'
 import { Button, Result } from 'antd'
-import { memo, useEffect } from 'react'
+import { memo } from 'react'
 import { useIntl } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -38,9 +39,7 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
   const intl = useIntl()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    document.title = `404 - ${intl.formatMessage({ id: 'title' })}`
-  }, [intl])
+  useTitle(`404 - ${intl.formatMessage({ id: 'title' })}`)
 
   return (
     <CenteredContainer>

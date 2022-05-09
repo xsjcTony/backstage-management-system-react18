@@ -6,8 +6,9 @@ import {
   CheckOutlined
 } from '@ant-design/icons'
 import { LoginForm, ProFormText, ProFormCheckbox, ProForm } from '@ant-design/pro-form'
+import { useTitle } from 'ahooks'
 import { Tabs, Divider, Button } from 'antd'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -125,9 +126,7 @@ const Login = (): JSX.Element => {
   /**
    * Title
    */
-  useEffect(() => {
-    document.title = `${intl.formatMessage({ id: 'pages.login.title' })} - ${intl.formatMessage({ id: 'title' })}`
-  }, [intl])
+  useTitle(`${intl.formatMessage({ id: 'pages.login.title' })} - ${intl.formatMessage({ id: 'title' })}`)
 
 
   /**

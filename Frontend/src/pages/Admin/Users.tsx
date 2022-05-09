@@ -1,13 +1,11 @@
-import { useEffect } from 'react'
+import { useTitle } from 'ahooks'
 import { useIntl } from 'react-intl'
 
 
 const Users = (): JSX.Element => {
   const intl = useIntl()
 
-  useEffect(() => {
-    document.title = `${intl.formatMessage({ id: 'pages.admin.user-list.title' })} - ${intl.formatMessage({ id: 'title' })}`
-  }, [intl])
+  useTitle(`${intl.formatMessage({ id: 'pages.admin.user-list.title' })} - ${intl.formatMessage({ id: 'title' })}`)
 
   return (
     <div>Users</div>

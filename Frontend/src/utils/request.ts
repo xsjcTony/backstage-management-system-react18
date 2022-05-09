@@ -1,9 +1,10 @@
 import { extend } from 'umi-request'
+import store from '../store'
 
 
 const request = extend({
   credentials: 'include', // cross-origin Cookie
-  prefix: 'http://127.0.0.1:7001',
+  prefix: store.getState().layout.apiBaseUrl,
   timeout: 10000
 })
 

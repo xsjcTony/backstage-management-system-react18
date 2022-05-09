@@ -9,8 +9,8 @@ import {
   LogoutOutlined,
   SafetyCertificateOutlined
 } from '@ant-design/icons'
+import { useBoolean } from 'ahooks'
 import { Layout, Menu, Avatar, Dropdown } from 'antd'
-import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -151,7 +151,7 @@ const StyledLayout = styled(Layout)`
  * Component
  */
 const Admin = (): JSX.Element => {
-  const [collapsed, setCollapsed] = useState<boolean>(false)
+  const [collapsed, { toggle: toggleMenuCollapse }] = useBoolean(false)
   const intl = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
@@ -222,12 +222,7 @@ const Admin = (): JSX.Element => {
           onClick={() => void navigate('/admin', { replace: false })}
         >
           <img alt="logo" src="/src/assets/images/logo.png" />
-          <h1>
-            {intl.formatMessage({
-              id: 'header.title',
-              defaultMessage: `Aelita's Backstage Management System`
-            })}
-          </h1>
+          <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
         <div className="header-right">
           <Dropdown overlay={userDropdownMenu} placement="bottom">
@@ -255,7 +250,7 @@ const Admin = (): JSX.Element => {
           theme="light"
           trigger={null}
           width={230}
-          onCollapse={() => void setCollapsed(!collapsed)}
+          onCollapse={toggleMenuCollapse}
         >
           <Menu
             className="menu"
@@ -267,7 +262,7 @@ const Admin = (): JSX.Element => {
             onClick={({ key }) => void navigate(key, { replace: false })}
           />
           <ul className="menu-footer">
-            <li className="menu-collapse-trigger" onClick={() => void setCollapsed(!collapsed)}>
+            <li className="menu-collapse-trigger" onClick={toggleMenuCollapse}>
               {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </li>
             <li>

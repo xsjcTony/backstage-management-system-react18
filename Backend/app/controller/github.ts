@@ -106,7 +106,7 @@ export default class GithubController extends Controller {
           .substring(0, 20),
         password: 'com.123456',
         captcha: '',
-        registerType: RegisterType.Normal,
+        registerType: RegisterType.Account,
         github: true
       }
 

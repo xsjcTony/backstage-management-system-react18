@@ -2,7 +2,7 @@
 
 // RegisterData
 export const enum RegisterType {
-  Normal = 'normal',
+  Account = 'account',
   Email = 'email'
 }
 
@@ -12,7 +12,7 @@ interface BaseRegisterData {
   registerType: RegisterType
 }
 
-interface NormalRegisterData extends BaseRegisterData {
+interface AccountRegisterData extends BaseRegisterData {
   username: string
   github?: boolean
 }
@@ -21,7 +21,7 @@ interface EmailRegisterData extends BaseRegisterData {
   email: string
 }
 
-export type RegisterData = EmailRegisterData | NormalRegisterData
+export type RegisterData = AccountRegisterData | EmailRegisterData
 
 
 // Email Verification
@@ -34,11 +34,20 @@ export interface EmailInfo {
 
 
 // loginData
-export interface LoginData {
-  username: string
+interface BaseLoginData {
   password: string
   captcha: string
 }
+
+interface AccountLoginData extends BaseLoginData {
+  username: string
+}
+
+interface EmailLoginData extends BaseLoginData {
+  email: string
+}
+
+export type LoginData = AccountLoginData | EmailLoginData
 
 
 // OAuthUserData

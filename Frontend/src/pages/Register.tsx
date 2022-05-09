@@ -6,8 +6,9 @@ import {
   SafetyOutlined
 } from '@ant-design/icons'
 import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
+import { useBoolean, useTitle } from 'ahooks'
 import { Tabs, Divider, Button, Form, Popover, Progress, message } from 'antd'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -136,9 +137,7 @@ const Register = (): JSX.Element => {
   /**
    * Title
    */
-  useEffect(() => {
-    document.title = `${intl.formatMessage({ id: 'pages.register.title' })} - ${intl.formatMessage({ id: 'title' })}`
-  }, [intl])
+  useTitle(`${intl.formatMessage({ id: 'pages.register.title' })} - ${intl.formatMessage({ id: 'title' })}`)
 
 
   /**
@@ -234,7 +233,7 @@ const Register = (): JSX.Element => {
    * Password
    */
   const password = useWatch<string | undefined>('password', formInstance)
-  const [passwordPopoverVisible, setPasswordPopoverVisible] = useState<boolean>(false)
+  const [passwordPopoverVisible, { setTrue: showPopover, setFalse: hidePopover }] = useBoolean(false)
 
   // validate methods
   const checkPassword = async (_: unknown, value: string): Promise<void> => {
@@ -264,8 +263,8 @@ const Register = (): JSX.Element => {
   const passwordFieldProps: ProFormFieldItemProps['fieldProps'] = {
     size: 'large',
     prefix: <LockOutlined className="prefix-icon" />,
-    onFocus: () => void setPasswordPopoverVisible(true),
-    onBlur: () => void setPasswordPopoverVisible(false)
+    onFocus: showPopover,
+    onBlur: hidePopover
   }
 
   const passwordCheckFieldProps: ProFormFieldItemProps['fieldProps'] = {
@@ -336,7 +335,7 @@ const Register = (): JSX.Element => {
   /**
    * Verification code
    */
-  const [emailSent, setEmailSent] = useState<boolean>(false)
+  const [emailSent, { setTrue: setEmailSent }] = useBoolean(false)
 
   const getCaptcha: ProFormCaptchaProps['onGetCaptcha'] = async (): Promise<void> => {
     try {
@@ -366,7 +365,7 @@ const Register = (): JSX.Element => {
     }
 
     void message.success(intl.formatMessage({ id: 'pages.register.message.send-captcha.success' }), 3)
-    setEmailSent(true)
+    setEmailSent()
   }
 
   const captchaTextRender: ProFormCaptchaProps['captchaTextRender'] = (timing: boolean, count: number): ReactNode =>

@@ -1,4 +1,5 @@
 import menu from './zh-CN/menu'
+import message from './zh-CN/message'
 import pages from './zh-CN/pages'
 
 
@@ -9,7 +10,8 @@ const zhCN: Record<string, string> = {
   'header.user-dropdown.logout': '退出登录',
   'error.network': '网络错误',
   ...pages,
-  ...menu
+  ...menu,
+  ...message
 }
 
 export default zhCN
