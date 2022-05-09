@@ -58,6 +58,7 @@ const pages: Record<string, string> = {
   'pages.register.error-message.captcha.missing': 'Please input captcha',
   'pages.register.error-message.captcha.invalid': 'Invalid Captcha',
   'pages.register.error-message.agreement.missing': 'Please agree to the "Terms and Conditions"',
+  'pages.register.error-message.data.invalid': 'Invalid registration data',
   'pages.register.captcha.button.send': 'Send email',
   'pages.register.captcha.button.resend': 'Resend email',
   'pages.register.message.send-captcha.success': 'Verification email has been sent',

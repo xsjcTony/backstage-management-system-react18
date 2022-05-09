@@ -58,6 +58,7 @@ const pages: Record<string, string> = {
   'pages.register.error-message.captcha.missing': '请输入验证码',
   'pages.register.error-message.captcha.invalid': '验证码不正确',
   'pages.register.error-message.agreement.missing': '请同意"条款和条件"',
+  'pages.register.error-message.data.invalid': '注册数据不正确',
   'pages.register.captcha.button.send': '发送验证码',
   'pages.register.captcha.button.resend': '重新发送验证码',
   'pages.register.message.send-captcha.success': '验证码发送成功',

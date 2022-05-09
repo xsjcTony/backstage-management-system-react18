@@ -6,13 +6,7 @@ const Users = (): JSX.Element => {
   const intl = useIntl()
 
   useEffect(() => {
-    document.title = `${intl.formatMessage({
-      id: 'pages.admin.user-list.title',
-      defaultMessage: 'User List'
-    })} - ${intl.formatMessage({
-      id: 'title',
-      defaultMessage: `Aelita's BMS`
-    })}`
+    document.title = `${intl.formatMessage({ id: 'pages.admin.user-list.title' })} - ${intl.formatMessage({ id: 'title' })}`
   }, [intl])
 
   return (

@@ -159,52 +159,34 @@ const Admin = (): JSX.Element => {
 
   const items: ItemType[] = [
     createItem(
-      intl.formatMessage({
-        id: 'menu.welcome',
-        defaultMessage: 'Welcome'
-      }),
+      intl.formatMessage({ id: 'menu.welcome' }),
       '/admin',
       <SmileOutlined />
     ),
     createItem(
-      intl.formatMessage({
-        id: 'menu.user-management',
-        defaultMessage: 'User Management'
-      }),
+      intl.formatMessage({ id: 'menu.user-management' }),
       'user-management',
       <SettingOutlined />,
       [
         createItem(
-          intl.formatMessage({
-            id: 'menu.user-management.user-list',
-            defaultMessage: 'User List'
-          }),
+          intl.formatMessage({ id: 'menu.user-management.user-list' }),
           '/admin/users',
           <UserOutlined />
         )
       ]
     ),
     createItem(
-      intl.formatMessage({
-        id: 'menu.privilege-management',
-        defaultMessage: 'Privilege Management'
-      }),
+      intl.formatMessage({ id: 'menu.privilege-management' }),
       'privilege-management',
       <UnlockOutlined />,
       [
         createItem(
-          intl.formatMessage({
-            id: 'menu.privilege-management.role-list',
-            defaultMessage: 'Role List'
-          }),
+          intl.formatMessage({ id: 'menu.privilege-management.role-list' }),
           '/admin/roles',
           <EyeOutlined />
         ),
         createItem(
-          intl.formatMessage({
-            id: 'menu.privilege-management.privilege-list',
-            defaultMessage: 'Privilege List'
-          }),
+          intl.formatMessage({ id: 'menu.privilege-management.privilege-list' }),
           '/admin/privileges',
           <SafetyCertificateOutlined />
         )
@@ -222,10 +204,7 @@ const Admin = (): JSX.Element => {
     <Menu
       items={[
         createItem(
-          intl.formatMessage({
-            id: 'header.user-dropdown.logout',
-            defaultMessage: 'Log out'
-          }),
+          intl.formatMessage({ id: 'header.user-dropdown.logout' }),
           'logout',
           <LogoutOutlined />
         )

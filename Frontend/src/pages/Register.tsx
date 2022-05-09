@@ -16,13 +16,34 @@ import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
 import { sendVerificationEmail } from '../services/register'
 import type { ResponseData } from '../services/types'
+import type { LoginFormProps, ProFormCaptchaProps } from '@ant-design/pro-form'
+import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
+import type { TabsProps } from 'antd'
+import type { InternalFieldProps } from 'rc-field-form/es/Field'
 import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
+import type { ReactNode } from 'react'
 
 
 /**
  * Types
  */
 type RegisterType = 'account' | 'email'
+
+export interface AccountData {
+  username: string
+  password: string
+  'password-check': string
+  captcha: string
+  agreement: boolean
+}
+
+export interface EmailData {
+  email: string
+  password: string
+  'password-check': string
+  captcha: string
+  agreement: boolean
+}
 
 
 /**
@@ -101,27 +122,164 @@ const StyledProgress = styled(Progress)`
  * Component
  */
 const Register = (): JSX.Element => {
+
   /**
-   * Hooks
+   * Utils
    */
-  const [registerType, setRegisterType] = useState<RegisterType>('account')
   const intl = useIntl()
   const navigate = useNavigate()
-  const [formInstance] = useForm()
-  const password = useWatch<string | undefined>('password', formInstance)
-  const email = useWatch<string | undefined>('email', formInstance)
-  const [passwordPopoverVisible, setPasswordPopoverVisible] = useState<boolean>(false)
-  const [emailSent, setEmailSent] = useState<boolean>(false)
-  const [captchaSrc, setCaptchaSrc] = useState<string>(`http://127.0.0.1:7001/captcha?t=${Date.now()}`)
 
+
+  /**
+   * Title
+   */
   useEffect(() => {
     document.title = `${intl.formatMessage({ id: 'pages.register.title' })} - ${intl.formatMessage({ id: 'title' })}`
   }, [intl])
 
 
   /**
-   * Data & Methods
+   * Tabs
    */
+  const [registerType, setRegisterType] = useState<RegisterType>('account')
+
+  const changeTab: TabsProps['onChange'] = (activeKey: string): void => {
+    formInstance.resetFields()
+    setRegisterType(activeKey as RegisterType)
+  }
+
+
+  /**
+   * Form
+   */
+  const [formInstance] = useForm()
+
+  const formActions: LoginFormProps<Record<string, any>>['actions'] = (
+    <>
+      <Divider plain className="divider">
+        {intl.formatMessage({ id: 'pages.register.or' })}
+      </Divider>
+      <Button
+        className="login-button"
+        size="large"
+        onClick={() => void navigate('/login', { replace: false })}
+      >
+        {intl.formatMessage({ id: 'pages.register.login' })}
+      </Button>
+    </>
+  )
+
+  const formSubmitter: LoginFormProps<Record<string, any>>['submitter'] = {
+    render: () => (
+      <Button
+        className="register-button"
+        htmlType="submit"
+        size="large"
+        type="primary"
+      >
+        {intl.formatMessage({ id: 'pages.register.register' })}
+      </Button>
+    )
+  }
+
+
+  /**
+   * Account
+   */
+  const usernameFieldProps: ProFormFieldItemProps['fieldProps'] = {
+    size: 'large',
+    prefix: <UserOutlined className="prefix-icon" />,
+    maxLength: 20,
+    showCount: true
+  }
+
+  const usernameRules: ProFormFieldItemProps['rules'] = [
+    {
+      required: true,
+      message: intl.formatMessage({ id: 'pages.register.error-message.username.missing' })
+    },
+    {
+      pattern: /^[A-Za-z0-9]{6,20}$/,
+      message: intl.formatMessage({ id: 'pages.register.error-message.username.rule' })
+    }
+  ]
+
+
+  /**
+   * Email
+   */
+  const email = useWatch<string | undefined>('email', formInstance)
+
+  const emailFieldProps: ProFormFieldItemProps['fieldProps'] = {
+    size: 'large',
+    prefix: <MailOutlined className="prefix-icon" />
+  }
+
+  const emailRules: ProFormFieldItemProps['rules'] = [
+    {
+      required: true,
+      message: intl.formatMessage({ id: 'pages.register.error-message.email.missing' })
+    },
+    {
+      pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+      message: intl.formatMessage({ id: 'pages.register.error-message.email.invalid' })
+    }
+  ]
+
+
+  /**
+   * Password
+   */
+  const password = useWatch<string | undefined>('password', formInstance)
+  const [passwordPopoverVisible, setPasswordPopoverVisible] = useState<boolean>(false)
+
+  // validate methods
+  const checkPassword = async (_: unknown, value: string): Promise<void> => {
+    const regex = /^((?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[,.#%'+*\-:;^_`].*))[,.#%'+*\-:;^_`0-9A-Za-z]{8,20}$/
+
+    if (!value) {
+      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password.missing' }))
+    }
+
+    void formInstance.validateFields(['password-check'])
+
+    if (!regex.test(value)) {
+      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password.rule' }))
+    }
+
+    return Promise.resolve()
+  }
+
+  const checkConfirmPassword = async (_: unknown, value: string): Promise<void> => {
+    if (value && value !== password) {
+      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password-check.invalid' }))
+    }
+    return Promise.resolve()
+  }
+
+  // props
+  const passwordFieldProps: ProFormFieldItemProps['fieldProps'] = {
+    size: 'large',
+    prefix: <LockOutlined className="prefix-icon" />,
+    onFocus: () => void setPasswordPopoverVisible(true),
+    onBlur: () => void setPasswordPopoverVisible(false)
+  }
+
+  const passwordCheckFieldProps: ProFormFieldItemProps['fieldProps'] = {
+    size: 'large',
+    prefix: <SafetyOutlined className="prefix-icon" />
+  }
+
+  // rules
+  const passwordCheckRules: ProFormFieldItemProps['rules'] = [
+    {
+      required: true,
+      message: intl.formatMessage({ id: 'pages.register.error-message.password-check.missing' })
+    },
+    { validator: checkConfirmPassword }
+  ]
+
+  // strength
   const passwordStrengthMap: Record<string, JSX.Element> = {
     low: (
       <div style={{ color: '#f5222d' }}>
@@ -171,30 +329,13 @@ const Register = (): JSX.Element => {
     )
   }
 
-  const checkPassword = async (_: unknown, value: string): Promise<void> => {
-    const regex = /^((?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[,.#%'+*\-:;^_`].*))[,.#%'+*\-:;^_`0-9A-Za-z]{8,20}$/
 
-    if (!value) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password.missing' }))
-    }
+  /**
+   * Verification code
+   */
+  const [emailSent, setEmailSent] = useState<boolean>(false)
 
-    void formInstance.validateFields(['password-check'])
-
-    if (!regex.test(value)) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password.rule' }))
-    }
-
-    return Promise.resolve()
-  }
-
-  const checkConfirmPassword = async (_: unknown, value: string): Promise<void> => {
-    if (value && value !== password) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password-check.invalid' }))
-    }
-    return Promise.resolve()
-  }
-
-  const onGetCaptcha = async (): Promise<void> => {
+  const getCaptcha: ProFormCaptchaProps['onGetCaptcha'] = async (): Promise<void> => {
     try {
       await formInstance.validateFields(['email'])
     } catch (err) {
@@ -225,6 +366,92 @@ const Register = (): JSX.Element => {
     setEmailSent(true)
   }
 
+  const captchaTextRender: ProFormCaptchaProps['captchaTextRender'] = (timing: boolean, count: number): ReactNode =>
+    timing ? `${count}s` : emailSent
+      ? intl.formatMessage({ id: 'pages.register.captcha.button.resend' })
+      : intl.formatMessage({ id: 'pages.register.captcha.button.send' })
+
+  const verificationCodeFieldProps: ProFormCaptchaProps['fieldProps'] = {
+    size: 'large',
+    prefix: <CheckOutlined className="prefix-icon" />,
+    showCount: true,
+    maxLength: 4
+  }
+
+  const verificationCodeRules: ProFormCaptchaProps['rules'] = [
+    {
+      required: true,
+      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.missing' })
+    },
+    {
+      pattern: /^[A-Za-z0-9]{4}$/,
+      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.invalid' })
+    }
+  ]
+
+  /**
+   * Captcha
+   */
+  const [captchaSrc, setCaptchaSrc] = useState<string>(`http://127.0.0.1:7001/captcha?t=${Date.now()}`)
+
+  const captchaRules: ProFormFieldItemProps['rules'] = [
+    {
+      required: true,
+      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.missing' })
+    },
+    {
+      pattern: /^[A-Za-z0-9]{4}$/,
+      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.invalid' })
+    }
+  ]
+
+  const captchaFieldProps: ProFormFieldItemProps['fieldProps'] = {
+    size: 'large',
+    prefix: <CheckOutlined className="prefix-icon" />,
+    maxLength: 4,
+    showCount: true
+  }
+
+
+  /**
+   * Agreement
+   */
+  const agreementRule: InternalFieldProps['rules'] = [
+    {
+      validator: async (_rule, value) => value
+        ? Promise.resolve()
+        : Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.agreement.missing' }))
+    }
+  ]
+
+
+  /**
+   * Register
+   */
+  const register = async (err: ValidateErrorEntity): Promise<void> => {
+    if (registerType === 'account') {
+      // account
+      const { errorFields, values } = err as ValidateErrorEntity<AccountData>
+
+      if (errorFields.length !== 0) {
+        void message.error(intl.formatMessage({ id: 'pages.register.error-message.data.invalid' }))
+        return
+      }
+
+      console.log(values)
+    } else {
+      // email
+      const { errorFields, values } = err as ValidateErrorEntity<EmailData>
+
+      if (errorFields.length !== 0) {
+        void message.error(intl.formatMessage({ id: 'pages.register.error-message.data.invalid' }))
+        return
+      }
+
+      console.log(values)
+    }
+  }
+
 
   /**
    * Component
@@ -246,31 +473,17 @@ const Register = (): JSX.Element => {
         visible={passwordPopoverVisible}
       >
         <ProFormText.Password
-          fieldProps={{
-            size: 'large',
-            prefix: <LockOutlined className="prefix-icon" />,
-            onFocus: () => void setPasswordPopoverVisible(true),
-            onBlur: () => void setPasswordPopoverVisible(false)
-          }}
+          fieldProps={passwordFieldProps}
           name="password"
           placeholder={intl.formatMessage({ id: 'pages.register.placeholder.password' })}
           rules={[{ validator: checkPassword }]}
         />
       </Popover>
       <ProFormText.Password
-        fieldProps={{
-          size: 'large',
-          prefix: <SafetyOutlined className="prefix-icon" />
-        }}
+        fieldProps={passwordCheckFieldProps}
         name="password-check"
         placeholder={intl.formatMessage({ id: 'pages.register.placeholder.password' })}
-        rules={[
-          {
-            required: true,
-            message: intl.formatMessage({ id: 'pages.register.error-message.password-check.missing' })
-          },
-          { validator: checkConfirmPassword }
-        ]}
+        rules={passwordCheckRules}
       />
     </>
   )
@@ -282,40 +495,17 @@ const Register = (): JSX.Element => {
       </div>
       <div className="register-form-container">
         <LoginForm
-          actions={(
-            <>
-              <Divider plain className="divider">
-                {intl.formatMessage({ id: 'pages.register.or' })}
-              </Divider>
-              <Button
-                className="login-button"
-                size="large"
-                onClick={() => void navigate('/login', { replace: false })}
-              >
-                {intl.formatMessage({ id: 'pages.register.login' })}
-              </Button>
-            </>
-          )}
+          actions={formActions}
           form={formInstance}
           logo={logo}
-          submitter={{
-            render: props => (
-              <Button
-                className="register-button"
-                size="large"
-                type="primary"
-                onClick={() => { /* TODO */ }}
-              >
-                {intl.formatMessage({ id: 'pages.register.register' })}
-              </Button>
-            )
-          }}
+          submitter={formSubmitter}
           subTitle={intl.formatMessage({ id: 'subtitle' })}
           title={intl.formatMessage({ id: 'title' })}
+          onFinishFailed={err => void register(err)}
         >
           <Tabs
             activeKey={registerType}
-            onChange={activeKey => void setRegisterType(activeKey as RegisterType)}
+            onChange={changeTab}
           >
             <TabPane
               key="account"
@@ -329,52 +519,24 @@ const Register = (): JSX.Element => {
           {registerType === 'account' && (
             <>
               <ProFormText
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined className="prefix-icon" />,
-                  maxLength: 20,
-                  showCount: true
-                }}
+                fieldProps={usernameFieldProps}
                 name="username"
                 placeholder={intl.formatMessage({ id: 'pages.register.placeholder.username' })}
-                rules={[
-                  {
-                    required: true,
-                    message: intl.formatMessage({ id: 'pages.register.error-message.username.missing' })
-                  },
-                  {
-                    pattern: /^[A-Za-z0-9]{6,20}$/,
-                    message: intl.formatMessage({ id: 'pages.register.error-message.username.rule' })
-                  }
-                ]}
+                rules={usernameRules}
               />
               {passwordForm}
               <div className="captcha-container">
                 <ProFormText
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <CheckOutlined className="prefix-icon" />,
-                    maxLength: 4,
-                    showCount: true
-                  }}
+                  fieldProps={captchaFieldProps}
                   name="captcha"
                   placeholder={intl.formatMessage({ id: 'pages.register.placeholder.captcha' })}
-                  rules={[
-                    {
-                      required: true,
-                      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.missing' })
-                    },
-                    {
-                      pattern: /^[A-Za-z0-9]{4}$/,
-                      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.invalid' })
-                    }
-                  ]}
+                  rules={captchaRules}
                 />
                 <img
                   alt="captcha"
                   className="captcha-image"
                   src={captchaSrc}
-                  onClick={() => { setCaptchaSrc(`http://127.0.0.1:7001/captcha?t=${Date.now()}`) }}
+                  onClick={() => void setCaptchaSrc(`http://127.0.0.1:7001/captcha?t=${Date.now()}`)}
                 />
               </div>
             </>
@@ -382,66 +544,27 @@ const Register = (): JSX.Element => {
           {registerType === 'email' && (
             <>
               <ProFormText
-                fieldProps={{
-                  size: 'large',
-                  prefix: <MailOutlined className="prefix-icon" />
-                }}
+                fieldProps={emailFieldProps}
                 name="email"
                 placeholder={intl.formatMessage({ id: 'pages.register.placeholder.email' })}
-                rules={[
-                  {
-                    required: true,
-                    message: intl.formatMessage({ id: 'pages.register.error-message.email.missing' })
-                  },
-                  {
-                    pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
-                    message: intl.formatMessage({ id: 'pages.register.error-message.email.invalid' })
-                  }
-                ]}
+                rules={emailRules}
               />
               {passwordForm}
               <ProFormCaptcha
-                captchaProps={{
-                  size: 'large'
-                }}
-                captchaTextRender={(timing, count) =>
-                  timing
-                    ? `${count}s`
-                    : emailSent
-                      ? intl.formatMessage({ id: 'pages.register.captcha.button.resend' })
-                      : intl.formatMessage({ id: 'pages.register.captcha.button.send' })}
+                captchaProps={{ size: 'large' }}
+                captchaTextRender={captchaTextRender}
                 countDown={60}
-                fieldProps={{
-                  size: 'large',
-                  prefix: <CheckOutlined className="prefix-icon" />,
-                  showCount: true,
-                  maxLength: 4
-                }}
+                fieldProps={verificationCodeFieldProps}
                 name="captcha"
                 placeholder={intl.formatMessage({ id: 'pages.register.placeholder.captcha' })}
-                rules={[
-                  {
-                    required: true,
-                    message: intl.formatMessage({ id: 'pages.register.error-message.captcha.missing' })
-                  },
-                  {
-                    pattern: /^[A-Za-z0-9]{4}$/,
-                    message: intl.formatMessage({ id: 'pages.register.error-message.captcha.invalid' })
-                  }
-                ]}
-                onGetCaptcha={onGetCaptcha}
+                rules={verificationCodeRules}
+                onGetCaptcha={getCaptcha}
               />
             </>
           )}
           <ProFormCheckbox
             name="agreement"
-            rules={[
-              {
-                validator: async (_rule, value) => value
-                  ? Promise.resolve()
-                  : Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.agreement.missing' }))
-              }
-            ]}
+            rules={agreementRule}
           >
             {intl.formatMessage({ id: 'pages.register.agreement.text' })}
             <a href="https://www.google.com/" rel="noreferrer noopener" target="_blank">

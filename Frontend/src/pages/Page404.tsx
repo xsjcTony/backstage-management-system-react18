@@ -39,10 +39,7 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    document.title = `404 - ${intl.formatMessage({
-      id: 'title',
-      defaultMessage: `Aelita's BMS`
-    })}`
+    document.title = `404 - ${intl.formatMessage({ id: 'title' })}`
   }, [intl])
 
   return (
@@ -53,19 +50,11 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
             type="primary"
             onClick={() => void navigate('/admin', { replace: true })}
           >
-            {intl.formatMessage({
-              id: 'pages.404.back',
-              defaultMessage: 'Back to Home',
-              description: 'Text of "back" button in 404 error page'
-            })}
+            {intl.formatMessage({ id: 'pages.404.back' })}
           </Button>
         )}
         status="404"
-        subTitle={intl.formatMessage({
-          id: 'pages.404.description',
-          defaultMessage: 'Sorry, the page you visited does not exist',
-          description: 'Description of 404 error page'
-        })}
+        subTitle={intl.formatMessage({ id: 'pages.404.description' })}
         title="404"
       />
       {lang && <FixedSelectLanguage size="24" />}

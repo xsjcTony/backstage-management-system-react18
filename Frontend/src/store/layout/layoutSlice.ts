@@ -7,6 +7,8 @@ import type { PayloadAction } from '@reduxjs/toolkit'
  */
 interface LayoutState {
   locale: string
+  assetBaseUrl: string
+  apiBaseUrl: string
 }
 
 
@@ -14,7 +16,9 @@ interface LayoutState {
  * Slice
  */
 const initialState: LayoutState = {
-  locale: localStorage.getItem('locale') ?? 'en-US'
+  locale: localStorage.getItem('locale') ?? 'en-US',
+  assetBaseUrl: 'http://127.0.0.1:7001',
+  apiBaseUrl: 'http://127.0.0.1:7001'
 }
 
 const layoutSlice = createSlice({

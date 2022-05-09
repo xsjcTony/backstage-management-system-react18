@@ -79,7 +79,7 @@ module.exports = {
     'react/no-children-prop': 'error',
     'react/no-danger': 'error',
     'react/no-deprecated': 'error',
-    'react/no-multi-comp': ['error', { ignoreStateless: false }],
+    'react/no-multi-comp': ['error', { ignoreStateless: true }],
     'react/no-string-refs': ['error', { noTemplateLiterals: true }],
     'react/no-this-in-sfc': 'error',
     'react/no-unescaped-entities': [
