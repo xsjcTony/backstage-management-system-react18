@@ -9,6 +9,7 @@ import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox, ProFormText } from
 import { Tabs, Divider, Button, Form, Popover, Progress, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
@@ -16,6 +17,7 @@ import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
 import { sendVerificationEmail } from '../services/register'
 import type { ResponseData } from '../services/types'
+import type { RootState } from '../store'
 import type { LoginFormProps, ProFormCaptchaProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
 import type { TabsProps } from 'antd'
@@ -128,6 +130,7 @@ const Register = (): JSX.Element => {
    */
   const intl = useIntl()
   const navigate = useNavigate()
+  const apiBaseUrl = useSelector((state: RootState) => state.layout.apiBaseUrl)
 
 
   /**
@@ -392,7 +395,7 @@ const Register = (): JSX.Element => {
   /**
    * Captcha
    */
-  const [captchaSrc, setCaptchaSrc] = useState<string>(`http://127.0.0.1:7001/captcha?t=${Date.now()}`)
+  const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
 
   const captchaRules: ProFormFieldItemProps['rules'] = [
     {
@@ -536,7 +539,7 @@ const Register = (): JSX.Element => {
                   alt="captcha"
                   className="captcha-image"
                   src={captchaSrc}
-                  onClick={() => void setCaptchaSrc(`http://127.0.0.1:7001/captcha?t=${Date.now()}`)}
+                  onClick={() => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`)}
                 />
               </div>
             </>
@@ -567,7 +570,11 @@ const Register = (): JSX.Element => {
             rules={agreementRule}
           >
             {intl.formatMessage({ id: 'pages.register.agreement.text' })}
-            <a href="https://www.google.com/" rel="noreferrer noopener" target="_blank">
+            <a
+              href="https://www.google.com/"
+              rel="noreferrer noopener"
+              target="_blank"
+            >
               {intl.formatMessage({ id: 'pages.register.agreement.terms' })}
             </a>
           </ProFormCheckbox>

@@ -9,11 +9,13 @@ import { LoginForm, ProFormText, ProFormCheckbox, ProForm } from '@ant-design/pr
 import { Tabs, Divider, Button } from 'antd'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
+import type { RootState } from '../store'
 import type { LoginFormProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
 import type { TabsProps } from 'antd'
@@ -117,6 +119,7 @@ const Login = (): JSX.Element => {
    */
   const intl = useIntl()
   const navigate = useNavigate()
+  const apiBaseUrl = useSelector((state: RootState) => state.layout.apiBaseUrl)
 
 
   /**
@@ -232,7 +235,7 @@ const Login = (): JSX.Element => {
   /**
    * Captcha
    */
-  const [captchaSrc, setCaptchaSrc] = useState<string>(`http://127.0.0.1:7001/captcha?t=${Date.now()}`)
+  const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
 
   const captchaFieldProps: ProFormFieldItemProps['fieldProps'] = {
     size: 'large',
@@ -316,7 +319,7 @@ const Login = (): JSX.Element => {
               alt="captcha"
               className="captcha-image"
               src={captchaSrc}
-              onClick={() => { setCaptchaSrc(`http://127.0.0.1:7001/captcha?t=${Date.now()}`) }}
+              onClick={() => { setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`) }}
             />
           </div>
           <div className="actions">
