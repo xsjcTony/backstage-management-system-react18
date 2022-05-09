@@ -7,7 +7,6 @@ import { URLSearchParams } from 'node:url'
 import { Controller } from 'egg'
 import * as jwt from 'jsonwebtoken'
 import { v4 as uuidV4 } from 'uuid'
-import { RegisterType } from '../types'
 import type { OAuthUserData } from '../types'
 
 
@@ -24,7 +23,7 @@ export default class GithubController extends Controller {
       scope: 'user'
     }
 
-    const url = `${ baseURL }?${ new URLSearchParams(options).toString() }`
+    const url = `${baseURL}?${new URLSearchParams(options).toString()}`
     this.ctx.redirect(url)
   }
 
@@ -61,7 +60,7 @@ export default class GithubController extends Controller {
       dataType: 'json',
       headers: {
         Accept: 'application/vnd.github.v3+json',
-        Authorization: `token ${ accessToken }`
+        Authorization: `token ${accessToken}`
       }
     })
 
@@ -106,7 +105,6 @@ export default class GithubController extends Controller {
           .substring(0, 20),
         password: 'com.123456',
         captcha: '',
-        registerType: RegisterType.Account,
         github: true
       }
 

@@ -18,9 +18,5 @@ export default {
     // 必须是数字字母符号组合
     format: /^[A-Za-z0-9]{4}$/,
     message: 'Captcha does not meet the requirements.'
-  },
-  registerType: {
-    type: 'enum',
-    values: ['normal', 'email', 'phone']
   }
 }

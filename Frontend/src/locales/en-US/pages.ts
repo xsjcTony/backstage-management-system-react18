@@ -62,7 +62,8 @@ const pages: Record<string, string> = {
   'pages.register.captcha.button.send': 'Send email',
   'pages.register.captcha.button.resend': 'Resend email',
   'pages.register.message.send-captcha.success': 'Verification email has been sent',
-  'pages.register.message.send-captcha.error': 'Failed to send verification email'
+  'pages.register.message.send-captcha.error': 'Failed to send verification email',
+  'pages.register.success': 'Successfully registered'
 }
 
 export default pages

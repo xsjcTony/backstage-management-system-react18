@@ -1,8 +1,8 @@
 /* eslint '@typescript-eslint/no-unsafe-member-access': 'off' */
 /* eslint '@typescript-eslint/no-unsafe-assignment': 'off' */
 
-import type { Context } from 'egg'
 import svgCaptcha from 'svg-captcha'
+import type { Context } from 'egg'
 
 
 export const generateCaptcha = (ctx: Context): string => {
@@ -31,11 +31,11 @@ export const verifyCaptcha = (ctx: Context, clientCaptcha: string): void => {
 
   if (!captchaText) {
     // captcha expired
-    throw new Error('Captcha has expired. Please refresh to get a new one.')
+    throw new Error('message.captcha.expired')
   } else if (captchaText.toLowerCase() !== clientCaptcha.toLowerCase()) {
     // invalid
     ctx.session.captcha = null
-    throw new Error('Incorrect captcha.')
+    throw new Error('message.captcha.incorrect')
   }
 
   ctx.session.captcha = null

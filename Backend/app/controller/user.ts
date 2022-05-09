@@ -6,10 +6,10 @@
  */
 import { Controller } from 'egg'
 import * as jwt from 'jsonwebtoken'
-import { User } from '../model/User'
-import { RegisterType, RegisterData, LoginData } from '../types'
+import AccountUserRule from '../validator/accountUserRule'
 import EmailUserRule from '../validator/emailUserRule'
-import NormalUserRule from '../validator/normalUserRule'
+import type { User } from '../model/User'
+import type { RegisterData, LoginData } from '../types'
 
 
 /**
@@ -31,7 +31,7 @@ export default class UserController extends Controller {
       // save into database
       const user = await ctx.service.user.createUser(ctx.request.body)
 
-      ctx.success(200, 'Registered', user)
+      ctx.success(200, 'message.register.success', user)
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)
@@ -86,7 +86,6 @@ export default class UserController extends Controller {
    * Helper functions
    */
 
-
   /**
    * Validate helper.
    * @private
@@ -94,19 +93,15 @@ export default class UserController extends Controller {
   private _validateUserInfo(): void {
     const { ctx } = this
     const data: RegisterData = ctx.request.body
-    const registerType: RegisterType = data.registerType
 
-    switch (registerType) {
-      case RegisterType.Account:
-        ctx.validate(NormalUserRule, data)
-        ctx.helper.verifyCaptcha(data.captcha)
-        break
-      case RegisterType.Email:
-        ctx.validate(EmailUserRule, data)
-        ctx.helper.verifyEmail(data.captcha)
-        break
-      default:
-        throw new Error(`Register type '${data.registerType}' is invalid`)
+    if ('username' in data) {
+      ctx.validate(AccountUserRule, data)
+      ctx.helper.verifyCaptcha(data.captcha)
+    } else if ('email' in data) {
+      ctx.validate(EmailUserRule, data)
+      ctx.helper.verifyEmail(data.captcha)
+    } else {
+      throw new Error(`Register type is invalid`)
     }
   }
 }

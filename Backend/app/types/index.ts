@@ -1,15 +1,9 @@
 /* eslint '@typescript-eslint/no-explicit-any': 'off' */
 
 // RegisterData
-export const enum RegisterType {
-  Account = 'account',
-  Email = 'email'
-}
-
 interface BaseRegisterData {
   password: string
   captcha: string
-  registerType: RegisterType
 }
 
 interface AccountRegisterData extends BaseRegisterData {

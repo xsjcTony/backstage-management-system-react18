@@ -236,6 +236,8 @@ const Login = (): JSX.Element => {
    */
   const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
 
+  const refreshCaptcha = (): void => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`)
+
   const captchaFieldProps: ProFormFieldItemProps['fieldProps'] = {
     size: 'large',
     prefix: <CheckOutlined className="prefix-icon" />,
@@ -318,7 +320,7 @@ const Login = (): JSX.Element => {
               alt="captcha"
               className="captcha-image"
               src={captchaSrc}
-              onClick={() => { setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`) }}
+              onClick={refreshCaptcha}
             />
           </div>
           <div className="actions">

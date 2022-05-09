@@ -62,7 +62,8 @@ const pages: Record<string, string> = {
   'pages.register.captcha.button.send': '发送验证码',
   'pages.register.captcha.button.resend': '重新发送验证码',
   'pages.register.message.send-captcha.success': '验证码发送成功',
-  'pages.register.message.send-captcha.error': '验证码发送失败'
+  'pages.register.message.send-captcha.error': '验证码发送失败',
+  'pages.register.success': '注册成功'
 }
 
 export default pages

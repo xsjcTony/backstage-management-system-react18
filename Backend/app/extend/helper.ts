@@ -33,7 +33,7 @@ export default {
 
   encryptByMd5(this: IHelper, password: string): string {
     // 加盐处理
-    return this._md5(`${ password }${ this.app.config.keys }`)
+    return this._md5(`${password}${this.app.config.keys}`)
   },
 
 

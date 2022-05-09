@@ -77,10 +77,10 @@ export const verifyEmail = (ctx: Context, clientCode: string): void => {
 
   if (!emailCode) {
     // captcha expired
-    throw new Error('Code has expired. Click to send another verification email.')
+    throw new Error('message.verification-code.expired')
   } else if (emailCode.toLowerCase() !== clientCode.toLowerCase()) {
     // invalid
-    throw new Error('Incorrect verification code.')
+    throw new Error('message.verification-code.incorrect')
   }
 
   ctx.session.email = null

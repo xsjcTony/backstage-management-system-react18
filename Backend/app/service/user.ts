@@ -83,7 +83,7 @@ export default class UserService extends Service {
   private async _createUserByUsername(username: string, password: string, github = false): Promise<User> {
     const user = await this._findUser({ username })
     if (user) {
-      throw new Error('Username already exists.')
+      throw new Error('message.register.username.exist')
     }
 
     const data = await this.ctx.model.User.create({
@@ -125,7 +125,7 @@ export default class UserService extends Service {
   private async _createUserByEmail(email: string, password: string): Promise<User> {
     const user = await this._findUser({ email })
     if (user) {
-      throw new Error('Username already exists.')
+      throw new Error('message.register.email.exist')
     }
 
     const data = await this.ctx.model.User.create({

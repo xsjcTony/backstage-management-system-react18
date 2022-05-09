@@ -16,7 +16,7 @@ import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
-import { sendVerificationEmail } from '../services/register'
+import { registerUser, sendVerificationEmail } from '../services/register'
 import type { ResponseData } from '../services/types'
 import type { RootState } from '../store'
 import type { LoginFormProps, ProFormCaptchaProps } from '@ant-design/pro-form'
@@ -32,20 +32,19 @@ import type { ReactNode } from 'react'
  */
 type RegisterType = 'account' | 'email'
 
-export interface AccountData {
-  username: string
+interface BaseData {
   password: string
   'password-check': string
   captcha: string
   agreement: boolean
 }
 
-export interface EmailData {
+export interface AccountData extends BaseData {
+  username: string
+}
+
+export interface EmailData extends BaseData {
   email: string
-  password: string
-  'password-check': string
-  captcha: string
-  agreement: boolean
 }
 
 
@@ -355,12 +354,12 @@ const Register = (): JSX.Element => {
     try {
       data = await sendVerificationEmail({ email })
     } catch (err) {
-      void message.error(intl.formatMessage({ id: 'error.network' }))
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       throw new Error()
     }
 
     if (data.code !== 200) {
-      void message.error(intl.formatMessage({ id: 'pages.register.message.send-captcha.error' }))
+      void message.error(intl.formatMessage({ id: 'pages.register.message.send-captcha.error' }), 3)
       throw new Error()
     }
 
@@ -396,6 +395,8 @@ const Register = (): JSX.Element => {
    */
   const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
 
+  const refreshCaptcha = (): void => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`)
+
   const captchaRules: ProFormFieldItemProps['rules'] = [
     {
       required: true,
@@ -430,28 +431,31 @@ const Register = (): JSX.Element => {
   /**
    * Register
    */
-  const register = async (err: ValidateErrorEntity): Promise<void> => {
-    if (registerType === 'account') {
-      // account
-      const { errorFields, values } = err as ValidateErrorEntity<AccountData>
+  const register = async (err: ValidateErrorEntity<AccountData | EmailData>): Promise<void> => {
+    const { errorFields, values } = err
 
-      if (errorFields.length !== 0) {
-        void message.error(intl.formatMessage({ id: 'pages.register.error-message.data.invalid' }))
-        return
-      }
-
-      console.log(values)
-    } else {
-      // email
-      const { errorFields, values } = err as ValidateErrorEntity<EmailData>
-
-      if (errorFields.length !== 0) {
-        void message.error(intl.formatMessage({ id: 'pages.register.error-message.data.invalid' }))
-        return
-      }
-
-      console.log(values)
+    if (errorFields.length !== 0) {
+      void message.error(intl.formatMessage({ id: 'pages.register.error-message.data.invalid' }))
+      return
     }
+
+    let data: ResponseData
+
+    try {
+      data = await registerUser(values)
+    } catch (err) {
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+      return
+    }
+
+    if (data.code !== 200) {
+      void message.error(intl.formatMessage({ id: data.msg }), 3)
+      refreshCaptcha()
+      return
+    }
+
+    void message.success(intl.formatMessage({ id: 'pages.register.success' }))
+    navigate('/login', { replace: false })
   }
 
 
@@ -538,7 +542,7 @@ const Register = (): JSX.Element => {
                   alt="captcha"
                   className="captcha-image"
                   src={captchaSrc}
-                  onClick={() => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`)}
+                  onClick={refreshCaptcha}
                 />
               </div>
             </>
@@ -570,7 +574,7 @@ const Register = (): JSX.Element => {
           >
             {intl.formatMessage({ id: 'pages.register.agreement.text' })}
             <a
-              href="https://www.google.com/"
+              href="https://github.com/xsjcTony"
               rel="noreferrer noopener"
               target="_blank"
             >
