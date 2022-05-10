@@ -9,6 +9,8 @@ const zhCN: Record<string, string> = {
   'header.title': `Aelita's 后台管理系统`,
   'header.user-dropdown.logout': '退出登录',
   'error.network': '网络错误',
+  'error.need-login': '请先登录',
+  'error.no-privilege': '您没有权限访问',
   ...pages,
   ...menu,
   ...message

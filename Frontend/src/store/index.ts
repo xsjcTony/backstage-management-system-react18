@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
+import authenticationReducer from './authentication/authenticationSlice'
 import layoutReducer from './layout/layoutSlice'
 
 
 const store = configureStore({
   reducer: {
-    layout: layoutReducer
+    layout: layoutReducer,
+    authentication: authenticationReducer
   }
 })
 

@@ -9,6 +9,8 @@ const enUS: Record<string, string> = {
   'header.title': `Aelita's Backstage Management System`,
   'header.user-dropdown.logout': 'Log out',
   'error.network': 'Network error',
+  'error.need-login': 'Please login first',
+  'error.no-privilege': 'You are not allowed to visit',
   ...pages,
   ...menu,
   ...message

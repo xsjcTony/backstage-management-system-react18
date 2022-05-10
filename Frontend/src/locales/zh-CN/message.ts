@@ -1,3 +1,6 @@
+/**
+ * Server returned message
+ */
 const message: Record<string, string> = {
   // Register & Login
   'message.captcha.expired': '验证码已过期, 输入新的验证码',

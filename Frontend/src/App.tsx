@@ -3,10 +3,14 @@
 /* eslint 'react/no-multi-comp': 'off' */
 /* eslint 'react/display-name': 'off' */
 
+import Cookies from 'js-cookie'
 import { lazy, Suspense } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate, Route, Routes, useLocation, Outlet } from 'react-router-dom'
 import Loading from './components/Loading'
 import Page404 from './pages/Page404'
+import { setAuthenticated, setLoggedIn } from './store/authentication/authenticationSlice'
+import type { RootState, AppDispatch } from './store'
 import type { LazyExoticComponent } from 'react'
 
 
@@ -41,20 +45,122 @@ function lazyLoading<P = {}>(LazyComponent: LazyExoticComponent<any>) {
 
 
 /**
+ * Navigation guard
+ */
+const RouteGuard = (): JSX.Element => {
+  /**
+   * Utils
+   */
+  const dispatch = useDispatch<AppDispatch>()
+  const location = useLocation()
+
+
+  /**
+   * Data
+   */
+  const authenticated = useSelector((state: RootState) => state.authentication.authenticated)
+  const loggedIn = useSelector((state: RootState) => state.authentication.loggedIn)
+  const { pathname } = location
+
+
+  /**
+   * OAuth cookie
+   */
+  const t = Cookies.get('token')
+  if (t) {
+    dispatch(setAuthenticated(false))
+    localStorage.setItem('token', t)
+    Cookies.remove(t)
+  }
+
+
+  /**
+   * Authentication
+   */
+  if (!authenticated) {
+    try {
+
+    } catch (err) {
+      dispatch(setLoggedIn(false))
+    }
+
+    dispatch(setAuthenticated(true))
+  }
+
+  if (pathname === '/login' || pathname === '/register') {
+    if (loggedIn) {
+      return <Navigate to="/admin" replace />
+    } else {
+      return <Outlet />
+    }
+  }
+
+  if (!loggedIn) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{
+          type: 'prompt',
+          promptInfo: {
+            type: 'error',
+            intlId: 'error.need-login',
+            duration: 3,
+            path: pathname,
+            noPrivilege: false
+          }
+        }}
+      />
+    )
+  }
+
+
+  /**
+   * Privileges
+   */
+  /*
+  if (/!*privileges*!/) {
+    return (
+      <Navigate
+        to="/admin"
+        replace
+        state={{
+          type: 'prompt',
+          promptInfo: {
+            type: 'error',
+            intlId: 'error.no-privilege',
+            duration: 3,
+            path: pathname,
+            noPrivilege: true
+          }
+        }}
+      />
+    )
+  }
+  */
+
+  return <Outlet />
+}
+
+
+/**
  * App Component
  */
 const App = (): JSX.Element => (
   <Routes>
-    <Route path="/admin" element={<Admin />}>
-      <Route index element={<Welcome />} />
-      <Route path="users" element={<Users />} />
-      <Route path="roles" element={<Roles />} />
-      <Route path="privileges" element={<Privileges />} />
-      <Route path="*" element={<Page404 />} />
+    <Route element={<RouteGuard />}>
+      <Route index element={<Navigate to="/admin" replace />} />
+      <Route path="/admin" element={<Admin />}>
+        <Route index element={<Welcome />} />
+        <Route path="users" element={<Users />} />
+        <Route path="roles" element={<Roles />} />
+        <Route path="privileges" element={<Privileges />} />
+        <Route path="*" element={<Page404 />} />
+      </Route>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="*" element={<Page404 lang />} />
     </Route>
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
-    <Route path="*" element={<Page404 lang />} />
   </Routes>
 )
 

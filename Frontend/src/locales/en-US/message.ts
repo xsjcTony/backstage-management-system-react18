@@ -1,3 +1,6 @@
+/**
+ * Server returned message
+ */
 const message: Record<string, string> = {
   // Register & Login
   'message.captcha.expired': 'Captcha has expired. Re-try the new one',

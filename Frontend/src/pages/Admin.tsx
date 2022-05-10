@@ -10,11 +10,13 @@ import {
   SafetyCertificateOutlined
 } from '@ant-design/icons'
 import { useBoolean } from 'ahooks'
-import { Layout, Menu, Avatar, Dropdown } from 'antd'
+import { Layout, Menu, Avatar, Dropdown, message } from 'antd'
+import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import SelectLanguage from '../locales/components/SelectLanguage'
+import { isPromptInfo } from './types'
 import type { ItemType } from 'antd/es/menu/hooks/useItems'
 import type React from 'react'
 
@@ -151,10 +153,29 @@ const StyledLayout = styled(Layout)`
  * Component
  */
 const Admin = (): JSX.Element => {
+
+  /**
+   * Utils
+   */
   const [collapsed, { toggle: toggleMenuCollapse }] = useBoolean(false)
   const intl = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
+
+
+  /**
+   * Prompt
+   */
+  /**
+   * Prompt
+   */
+  useEffect(() => {
+    if (isPromptInfo(location.state)) {
+      const { type, intlId, duration, path, noPrivilege } = location.state.promptInfo
+      void message[type](`${intl.formatMessage({ id: intlId })}${noPrivilege ? ` "${path}"` : ''}`, duration)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
 
   const items: ItemType[] = [
@@ -196,9 +217,7 @@ const Admin = (): JSX.Element => {
 
 
   // TODO: logout user
-  const logout = (): void => {
-    // Logout user
-  }
+  const logout = (): void => void navigate('/login', { replace: false })
 
   const userDropdownMenu = (
     <Menu
@@ -209,7 +228,7 @@ const Admin = (): JSX.Element => {
           <LogoutOutlined />
         )
       ]}
-      onClick={() => void logout()}
+      onClick={logout}
     />
   )
 

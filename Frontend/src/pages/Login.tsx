@@ -7,15 +7,16 @@ import {
 } from '@ant-design/icons'
 import { LoginForm, ProFormText, ProFormCheckbox, ProForm } from '@ant-design/pro-form'
 import { useTitle } from 'ahooks'
-import { Tabs, Divider, Button } from 'antd'
-import { useState } from 'react'
+import { Tabs, Divider, Button, message } from 'antd'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
+import { isPromptInfo } from './types'
 import type { RootState } from '../store'
 import type { LoginFormProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
@@ -121,12 +122,25 @@ const Login = (): JSX.Element => {
   const intl = useIntl()
   const navigate = useNavigate()
   const apiBaseUrl = useSelector((state: RootState) => state.layout.apiBaseUrl)
+  const location = useLocation()
 
 
   /**
    * Title
    */
   useTitle(`${intl.formatMessage({ id: 'pages.login.title' })} - ${intl.formatMessage({ id: 'title' })}`)
+
+
+  /**
+   * Prompt
+   */
+  useEffect(() => {
+    if (isPromptInfo(location.state)) {
+      const { type, intlId, duration } = location.state.promptInfo
+      void message[type](intl.formatMessage({ id: intlId }), duration)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
 
   /**
