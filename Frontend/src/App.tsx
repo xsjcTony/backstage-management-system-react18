@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes, useLocation, Outlet } from 'react-router-dom'
 import Loading from './components/Loading'
 import Page404 from './pages/Page404'
-import { setAuthenticated, setLoggedIn } from './store/authentication/authenticationSlice'
+import { setLoggedIn } from './store/authentication/authenticationSlice'
 import type { RootState, AppDispatch } from './store'
 import type { LazyExoticComponent } from 'react'
 
@@ -47,6 +47,7 @@ function lazyLoading<P = {}>(LazyComponent: LazyExoticComponent<any>) {
 /**
  * Navigation guard
  */
+let authenticated = false
 const RouteGuard = (): JSX.Element => {
   /**
    * Utils
@@ -58,7 +59,6 @@ const RouteGuard = (): JSX.Element => {
   /**
    * Data
    */
-  const authenticated = useSelector((state: RootState) => state.authentication.authenticated)
   const loggedIn = useSelector((state: RootState) => state.authentication.loggedIn)
   const { pathname } = location
 
@@ -68,9 +68,9 @@ const RouteGuard = (): JSX.Element => {
    */
   const t = Cookies.get('token')
   if (t) {
-    dispatch(setAuthenticated(false))
+    authenticated = false
     localStorage.setItem('token', t)
-    Cookies.remove(t)
+    Cookies.remove('token')
   }
 
 
@@ -84,9 +84,13 @@ const RouteGuard = (): JSX.Element => {
       dispatch(setLoggedIn(false))
     }
 
-    dispatch(setAuthenticated(true))
+    authenticated = true
   }
 
+
+  /**
+   * Guard
+   */
   if (pathname === '/login' || pathname === '/register') {
     if (loggedIn) {
       return <Navigate to="/admin" replace />
