@@ -5,8 +5,17 @@ import store from '../store'
 const request = extend({
   credentials: 'include', // cross-origin Cookie
   prefix: store.getState().layout.apiBaseUrl,
-  timeout: 10000
+  timeout: 10000,
+  headers: { Authorization: localStorage.getItem('token') ?? '' }
 })
+
+
+// Interceptor
+/*
+request.interceptors.request.use((url, options) => {
+  // TODO: 处理 request privilege
+})
+*/
 
 export const get = async <T = any>(url: string, data = {}): Promise<T> => request.get<T>(url, {
   params: data

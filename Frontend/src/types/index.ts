@@ -1,3 +1,6 @@
+/**
+ * User
+ */
 export interface User {
   id: number
   username: string | null
@@ -9,6 +12,11 @@ export interface User {
   privilegeTree?: PrivilegeNode[]
 }
 
+export type UserWithJWT = User & { token: string }
+
+/**
+ * Role
+ */
 export interface Role {
   id: number
   roleName: string
@@ -18,6 +26,10 @@ export interface Role {
   privilegeTree?: PrivilegeNode[]
 }
 
+
+/**
+ * Privilege
+ */
 export interface Privilege {
   id: number
   privilegeName: string

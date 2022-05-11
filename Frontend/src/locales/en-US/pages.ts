@@ -35,6 +35,7 @@ const pages: Record<string, string> = {
   'pages.login.error-message.email.invalid': 'Invalid E-mail address',
   'pages.login.error-message.captcha.missing': 'Please input captcha',
   'pages.login.error-message.captcha.invalid': 'Invalid Captcha',
+  'pages.login.error-message.data.invalid': 'Invalid login data',
 
   // Register
   'pages.register.title': 'Register',
@@ -68,8 +69,7 @@ const pages: Record<string, string> = {
   'pages.register.captcha.button.send': 'Send email',
   'pages.register.captcha.button.resend': 'Resend email',
   'pages.register.message.send-captcha.success': 'Verification email has been sent',
-  'pages.register.message.send-captcha.error': 'Failed to send verification email',
-  'pages.register.success': 'Successfully registered, Please login'
+  'pages.register.message.send-captcha.error': 'Failed to send verification email'
 }
 
 export default pages

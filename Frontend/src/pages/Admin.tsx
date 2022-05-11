@@ -18,7 +18,7 @@ import styled from 'styled-components'
 import SelectLanguage from '../locales/components/SelectLanguage'
 import { isPromptInfo } from './types'
 import type { ItemType } from 'antd/es/menu/hooks/useItems'
-import type React from 'react'
+import type { ReactNode, Key } from 'react'
 
 
 /**
@@ -31,9 +31,9 @@ const { Header, Content, Sider } = Layout
  * Utils
  */
 const createItem = (
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
+  label: ReactNode,
+  key: Key,
+  icon?: ReactNode,
   children?: ItemType[]
 ): ItemType => {
   return { key, icon, children, label }

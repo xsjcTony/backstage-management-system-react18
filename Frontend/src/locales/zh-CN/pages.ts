@@ -35,6 +35,7 @@ const pages: Record<string, string> = {
   'pages.login.error-message.email.invalid': '邮箱不正确',
   'pages.login.error-message.captcha.missing': '请输入验证码',
   'pages.login.error-message.captcha.invalid': '验证码不正确',
+  'pages.login.error-message.data.invalid': '登录数据不正确',
 
   // Register
   'pages.register.title': '注册',
@@ -68,8 +69,7 @@ const pages: Record<string, string> = {
   'pages.register.captcha.button.send': '发送验证码',
   'pages.register.captcha.button.resend': '重新发送验证码',
   'pages.register.message.send-captcha.success': '验证码发送成功',
-  'pages.register.message.send-captcha.error': '验证码发送失败',
-  'pages.register.success': '注册成功, 请登录'
+  'pages.register.message.send-captcha.error': '验证码发送失败'
 }
 
 export default pages

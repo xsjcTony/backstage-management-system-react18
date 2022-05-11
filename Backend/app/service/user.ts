@@ -30,24 +30,18 @@ export default class UserService extends Service {
    * @param {LoginData} data
    * @return {Promise<object>}
    */
-  public async loginUser(data: LoginData): Promise<any> /*Promise<User>*/ {
-    /*
-    const usernameRegex = /^[A-Za-z0-9]{6,20}$/
-    const emailRegex = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
-    const { username, password } = data
+  public async loginUser(data: LoginData): Promise<User> {
+    // const usernameRegex = /^[A-Za-z0-9]{6,20}$/
+    // const emailRegex = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+
+    const { password } = data
     const encryptedPassword = this.ctx.helper.encryptByMd5(password)
 
-    if (usernameRegex.test(username)) {
-      // Username Login
-      return this._loginUserByUsername(username, encryptedPassword)
-    } else if (emailRegex.test(username)) {
-      // Email Login
-      return this._loginUserByEmail(username, encryptedPassword)
+    if ('username' in data) {
+      return this._loginUserByUsername(data.username, encryptedPassword)
     } else {
-      // Invalid username or email
-      throw new Error('Invalid username or email')
+      return this._loginUserByEmail(data.email, encryptedPassword)
     }
-    */
   }
 
 
@@ -167,7 +161,7 @@ export default class UserService extends Service {
     const user = await this._findUser({ username, password })
 
     if (!user || !user.userState) {
-      throw new Error('Incorrect login credential')
+      throw new Error('message.login.wrong-username')
     }
 
     return user
@@ -185,7 +179,7 @@ export default class UserService extends Service {
     const user = await this._findUser({ email, password })
 
     if (!user || !user.userState) {
-      throw new Error('Incorrect login credential')
+      throw new Error('message.login.wrong-email')
     }
 
     return user

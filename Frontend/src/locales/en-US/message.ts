@@ -8,7 +8,14 @@ const message: Record<string, string> = {
   'message.verification-code.expired': 'Code has expired. Click to send another verification email',
   'message.verification-code.incorrect': 'Incorrect verification code',
   'message.register.username.exist': 'Username already exists',
-  'message.register.email.exist': 'E-mail address already exists'
+  'message.register.email.exist': 'E-mail address already exists',
+  'message.register.success': 'Successfully registered. Please login',
+  'message.login.success': 'Successfully logged in',
+  'message.login.wrong-username': 'Invalid username or password',
+  'message.login.wrong-email': 'Invalid e-mail address or password',
+
+  // Permission
+  'message.permission.denied': 'Permission denied'
 }
 
 export default message

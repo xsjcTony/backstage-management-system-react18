@@ -6,18 +6,23 @@ import {
   CheckOutlined
 } from '@ant-design/icons'
 import { LoginForm, ProFormText, ProFormCheckbox, ProForm } from '@ant-design/pro-form'
-import { useTitle } from 'ahooks'
+import { useRequest, useTitle } from 'ahooks'
 import { Tabs, Divider, Button, message } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
+import { loginUser } from '../services/login'
+import { getUserById } from '../services/users'
+import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
 import { isPromptInfo } from './types'
-import type { RootState } from '../store'
+import type { ResponseData } from '../services/types'
+import type { AppDispatch, RootState } from '../store'
+import type { User, UserWithJWT } from '../types'
 import type { LoginFormProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
 import type { TabsProps } from 'antd'
@@ -27,6 +32,20 @@ import type { TabsProps } from 'antd'
  * Types
  */
 type LoginType = 'account' | 'email'
+
+interface BaseLoginData {
+  password: string
+  captcha: string
+  remember: boolean
+}
+
+export interface AccountLoginData extends BaseLoginData {
+  username: string
+}
+
+export interface EmailLoginData extends BaseLoginData {
+  email: string
+}
 
 
 /**
@@ -142,6 +161,7 @@ const Login = (): JSX.Element => {
   const navigate = useNavigate()
   const apiBaseUrl = useSelector((state: RootState) => state.layout.apiBaseUrl)
   const location = useLocation()
+  const dispatch = useDispatch<AppDispatch>()
 
 
   /**
@@ -201,9 +221,10 @@ const Login = (): JSX.Element => {
     render: () => (
       <Button
         className="login-button"
-        htmlType="submit"
+        loading={loggingIn}
         size="large"
         type="primary"
+        onClick={() => void formInstance.submit()}
       >
         {intl.formatMessage({ id: 'pages.login.login' })}
       </Button>
@@ -291,6 +312,69 @@ const Login = (): JSX.Element => {
 
 
   /**
+   * Login
+   */
+  const _login = async (values: AccountLoginData | EmailLoginData): Promise<void> => new Promise(async (resolve, reject) => {
+    // Remember me: default to false (Because it won't be in values if it's not changed at all)
+    if (!values.remember) {
+      values.remember = false
+    }
+
+    console.log(values)
+    let loginResponse: ResponseData<UserWithJWT>
+
+    try {
+      loginResponse = await loginUser(values)
+    } catch (err) {
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+      return void reject()
+    }
+
+    if (loginResponse.code !== 200) {
+      void message.error(intl.formatMessage({ id: loginResponse.msg }), 3)
+      refreshCaptcha()
+      return void reject()
+    }
+
+    // save JWT token into Local Storage
+    localStorage.setItem('token', loginResponse.data.token)
+
+    // fetch user data with roles
+    let userResponse: ResponseData<User>
+
+    try {
+      userResponse = await getUserById(loginResponse.data.id)
+    } catch (err) {
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+      return void reject()
+    }
+
+    if (userResponse.code !== 200) {
+      void message.error(intl.formatMessage({ id: userResponse.msg }), 3)
+      refreshCaptcha()
+      return void reject()
+    }
+
+    const user = userResponse.data
+
+    // build privilege tree
+    // TODO: 处理 Privilege tree
+
+    // Redux
+    dispatch(setLoggedIn(true))
+    dispatch(setCurrentUser(user))
+
+    void message.success(intl.formatMessage({ id: loginResponse.msg }), 3)
+    navigate('/admin', { replace: false })
+    resolve()
+  })
+
+  const { loading: loggingIn, run: login } = useRequest(_login, {
+    manual: true,
+    onError: () => { /* Prevent printing meaningless error in console */ }
+  })
+
+  /**
    * Component
    */
   return (
@@ -313,6 +397,8 @@ const Login = (): JSX.Element => {
           submitter={formSubmitter}
           subTitle={intl.formatMessage({ id: 'subtitle' })}
           title={intl.formatMessage({ id: 'title' })}
+          onFinish={async (values: AccountLoginData | EmailLoginData) => void login(values)}
+          onFinishFailed={() => void message.error(intl.formatMessage({ id: 'pages.login.error-message.data.invalid' }))}
         >
           <Tabs
             activeKey={loginType}
@@ -364,7 +450,7 @@ const Login = (): JSX.Element => {
             />
           </div>
           <div className="actions">
-            <ProFormCheckbox noStyle>
+            <ProFormCheckbox noStyle name="remember">
               {intl.formatMessage({ id: 'pages.login.actions.remember-me' })}
             </ProFormCheckbox>
             <a>{intl.formatMessage({ id: 'pages.login.actions.forgot-password' })}</a>

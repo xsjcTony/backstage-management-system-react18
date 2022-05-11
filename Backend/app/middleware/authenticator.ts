@@ -11,6 +11,6 @@ export default (options: EggAppConfig['authenticator'], app: Application): any =
     jwt.verify(token, app.config.keys)
     await next()
   } catch (err) {
-    ctx.error(401, 'Permission denied', err)
+    ctx.error(401, 'message.permission.denied', err)
   }
 }

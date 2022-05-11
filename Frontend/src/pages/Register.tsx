@@ -6,9 +6,9 @@ import {
   SafetyOutlined
 } from '@ant-design/icons'
 import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
-import { useBoolean, useTitle } from 'ahooks'
+import { useBoolean, useRequest, useTitle } from 'ahooks'
 import { Tabs, Divider, Button, Form, Popover, Progress, message } from 'antd'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -32,18 +32,18 @@ import type { ReactNode } from 'react'
  */
 type RegisterType = 'account' | 'email'
 
-interface BaseData {
+interface BaseRegisterData {
   password: string
   'password-check': string
   captcha: string
   agreement: boolean
 }
 
-export interface AccountData extends BaseData {
+export interface AccountRegisterData extends BaseRegisterData {
   username: string
 }
 
-export interface EmailData extends BaseData {
+export interface EmailRegisterData extends BaseRegisterData {
   email: string
 }
 
@@ -118,6 +118,12 @@ const RegisterContainer = styled.div`
     }
 `
 
+const StyledProgress = styled(Progress)`
+    &.ant-progress-status-normal .ant-progress-bg {
+        background: #faad14;
+    }
+`
+
 
 /**
  * Constants
@@ -131,12 +137,6 @@ const passwordProgressMap = {
   medium: 'normal' as const,
   low: 'exception' as const
 }
-
-const StyledProgress = styled(Progress)`
-    &.ant-progress-status-normal .ant-progress-bg {
-        background: #faad14;
-    }
-`
 
 
 /**
@@ -193,9 +193,10 @@ const Register = (): JSX.Element => {
     render: () => (
       <Button
         className="register-button"
-        htmlType="submit"
+        loading={registering}
         size="large"
         type="primary"
+        onClick={() => void formInstance.submit()}
       >
         {intl.formatMessage({ id: 'pages.register.register' })}
       </Button>
@@ -450,12 +451,12 @@ const Register = (): JSX.Element => {
   /**
    * Register
    */
-  const register = async (err: ValidateErrorEntity<AccountData | EmailData>): Promise<void> => {
+  const _register = async (err: ValidateErrorEntity<AccountRegisterData | EmailRegisterData>): Promise<void> => new Promise(async (resolve, reject) => {
     const { errorFields, values } = err
 
     if (errorFields.length !== 0) {
       void message.error(intl.formatMessage({ id: 'pages.register.error-message.data.invalid' }))
-      return
+      return void reject()
     }
 
     let data: ResponseData
@@ -464,18 +465,24 @@ const Register = (): JSX.Element => {
       data = await registerUser(values)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
-      return
+      return void reject()
     }
 
     if (data.code !== 200) {
       void message.error(intl.formatMessage({ id: data.msg }), 3)
       refreshCaptcha()
-      return
+      return void reject()
     }
 
-    void message.success(intl.formatMessage({ id: 'pages.register.success' }))
+    void message.success(intl.formatMessage({ id: data.msg }), 3)
     navigate('/login', { replace: false })
-  }
+    resolve()
+  })
+
+  const { loading: registering, run: register } = useRequest(_register, {
+    manual: true,
+    onError: () => { /* Prevent printing meaningless error in console */ }
+  })
 
 
   /**

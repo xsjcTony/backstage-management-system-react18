@@ -57,7 +57,7 @@ export default class UserController extends Controller {
       // JWT
       const token = jwt.sign(user, this.config.keys, { expiresIn: '7d' })
 
-      ctx.success(200, 'Logged in', { ...user, token })
+      ctx.success(200, 'message.login.success', { ...user, token })
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)
