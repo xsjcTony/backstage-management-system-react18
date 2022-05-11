@@ -17,7 +17,6 @@ const pages: Record<string, string> = {
 
   // Login
   'pages.login.title': 'Login',
-  'pages.login.home': 'Home',
   'pages.login.placeholder.username': 'Username',
   'pages.login.placeholder.password': 'Password',
   'pages.login.placeholder.email': 'E-mail example@domain.xxx',
@@ -39,7 +38,6 @@ const pages: Record<string, string> = {
 
   // Register
   'pages.register.title': 'Register',
-  'pages.register.home': 'Home',
   'pages.register.placeholder.username': 'Username',
   'pages.register.placeholder.password': 'Password',
   'pages.register.placeholder.email': 'E-mail example@domain.xxx',

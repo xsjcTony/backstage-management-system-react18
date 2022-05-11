@@ -8,7 +8,7 @@ import {
 import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
 import { useBoolean, useTitle } from 'ahooks'
 import { Tabs, Divider, Button, Form, Popover, Progress, message } from 'antd'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -62,8 +62,22 @@ const RegisterContainer = styled.div`
         display: flex;
         justify-content: space-between;
 
-        .home {
-            margin: 5px 0 0 5px;
+        .logo {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            cursor: pointer;
+            margin-left: 25px;
+
+            img {
+                height: 30px;
+                margin-right: 10px;
+            }
+
+            h1 {
+                line-height: 30px;
+                font-size: 18px;
+            }
         }
 
         & > span {
@@ -502,13 +516,13 @@ const Register = (): JSX.Element => {
   return (
     <RegisterContainer>
       <div className="header">
-        <Button
-          className="home"
-          size="large"
+        <div
+          className="logo"
           onClick={() => void navigate('/', { replace: false })}
         >
-          {intl.formatMessage({ id: 'pages.register.home' })}
-        </Button>
+          <img alt="logo" src="/src/assets/images/logo.png" />
+          <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
+        </div>
         <SelectLanguage size="24" />
       </div>
       <div className="register-form-container">

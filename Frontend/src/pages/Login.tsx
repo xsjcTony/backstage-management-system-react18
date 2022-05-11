@@ -8,7 +8,7 @@ import {
 import { LoginForm, ProFormText, ProFormCheckbox, ProForm } from '@ant-design/pro-form'
 import { useTitle } from 'ahooks'
 import { Tabs, Divider, Button, message } from 'antd'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -43,8 +43,22 @@ const LoginContainer = styled.div`
         display: flex;
         justify-content: space-between;
 
-        .home {
-            margin: 5px 0 0 5px;
+        .logo {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            cursor: pointer;
+            margin-left: 25px;
+
+            img {
+                height: 30px;
+                margin-right: 10px;
+            }
+
+            h1 {
+                line-height: 30px;
+                font-size: 18px;
+            }
         }
 
         & > span {
@@ -282,13 +296,13 @@ const Login = (): JSX.Element => {
   return (
     <LoginContainer>
       <div className="header">
-        <Button
-          className="home"
-          size="large"
+        <div
+          className="logo"
           onClick={() => void navigate('/', { replace: false })}
         >
-          {intl.formatMessage({ id: 'pages.login.home' })}
-        </Button>
+          <img alt="logo" src="/src/assets/images/logo.png" />
+          <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
+        </div>
         <SelectLanguage size="24" />
       </div>
       <div className="login-form-container">

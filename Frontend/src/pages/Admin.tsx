@@ -166,9 +166,6 @@ const Admin = (): JSX.Element => {
   /**
    * Prompt
    */
-  /**
-   * Prompt
-   */
   useEffect(() => {
     if (isPromptInfo(location.state)) {
       const { type, intlId, duration, path, noPrivilege } = location.state.promptInfo
@@ -238,7 +235,7 @@ const Admin = (): JSX.Element => {
       <Header className="header">
         <div
           className="header-left"
-          onClick={() => void navigate('/admin', { replace: false })}
+          onClick={() => void navigate('/', { replace: false })}
         >
           <img alt="logo" src="/src/assets/images/logo.png" />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>

@@ -17,7 +17,6 @@ const pages: Record<string, string> = {
 
   // Login
   'pages.login.title': '登录',
-  'pages.login.home': '首页',
   'pages.login.placeholder.username': '用户名',
   'pages.login.placeholder.password': '密码',
   'pages.login.placeholder.email': '邮箱 example@domain.xxx',
@@ -39,7 +38,6 @@ const pages: Record<string, string> = {
 
   // Register
   'pages.register.title': '注册',
-  'pages.register.home': '首页',
   'pages.register.placeholder.username': '用户名',
   'pages.register.placeholder.password': '密码',
   'pages.register.placeholder.email': '邮箱 example@domain.xxx',
