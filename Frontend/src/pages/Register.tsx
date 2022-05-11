@@ -58,10 +58,15 @@ const RegisterContainer = styled.div`
     display: flex;
     flex-direction: column;
 
-    .language {
-        text-align: right;
+    .header {
+        display: flex;
+        justify-content: space-between;
 
-        span {
+        .home {
+            margin: 5px 0 0 5px;
+        }
+
+        & > span {
             margin: 5px 25px 0 0;
         }
     }
@@ -496,7 +501,14 @@ const Register = (): JSX.Element => {
 
   return (
     <RegisterContainer>
-      <div className="language">
+      <div className="header">
+        <Button
+          className="home"
+          size="large"
+          onClick={() => void navigate('/', { replace: false })}
+        >
+          {intl.formatMessage({ id: 'pages.register.home' })}
+        </Button>
         <SelectLanguage size="24" />
       </div>
       <div className="register-form-container">

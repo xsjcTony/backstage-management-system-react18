@@ -3,6 +3,12 @@ const pages: Record<string, string> = {
   'pages.404.description': '对不起, 您所访问的页面不存在',
   'pages.404.back': '返回首页',
 
+  // Home
+  'pages.home.title': '首页',
+  'pages.home.login': '登录',
+  'pages.home.register': '注册',
+  'pages.home.dashboard': '管理页',
+
   // Admin
   'pages.admin.welcome.title': '欢迎',
   'pages.admin.user-list.title': '用户列表',
@@ -11,6 +17,7 @@ const pages: Record<string, string> = {
 
   // Login
   'pages.login.title': '登录',
+  'pages.login.home': '首页',
   'pages.login.placeholder.username': '用户名',
   'pages.login.placeholder.password': '密码',
   'pages.login.placeholder.email': '邮箱 example@domain.xxx',
@@ -32,6 +39,7 @@ const pages: Record<string, string> = {
 
   // Register
   'pages.register.title': '注册',
+  'pages.register.home': '首页',
   'pages.register.placeholder.username': '用户名',
   'pages.register.placeholder.password': '密码',
   'pages.register.placeholder.email': '邮箱 example@domain.xxx',

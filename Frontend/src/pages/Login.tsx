@@ -39,10 +39,15 @@ const LoginContainer = styled.div`
     display: flex;
     flex-direction: column;
 
-    .language {
-        text-align: right;
+    .header {
+        display: flex;
+        justify-content: space-between;
 
-        span {
+        .home {
+            margin: 5px 0 0 5px;
+        }
+
+        & > span {
             margin: 5px 25px 0 0;
         }
     }
@@ -95,7 +100,7 @@ const LoginContainer = styled.div`
         .prefix-icon {
             color: #ccc;
         }
-        
+
         .register-button,
         .login-button {
             width: 100%;
@@ -276,7 +281,14 @@ const Login = (): JSX.Element => {
    */
   return (
     <LoginContainer>
-      <div className="language">
+      <div className="header">
+        <Button
+          className="home"
+          size="large"
+          onClick={() => void navigate('/', { replace: false })}
+        >
+          {intl.formatMessage({ id: 'pages.login.home' })}
+        </Button>
         <SelectLanguage size="24" />
       </div>
       <div className="login-form-container">

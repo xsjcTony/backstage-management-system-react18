@@ -17,6 +17,7 @@ import type { LazyExoticComponent } from 'react'
 /**
  * Lazy Loading Components
  */
+const Home = lazyLoading(lazy(() => import('./pages/Home')))
 const Admin = lazyLoading(lazy(() => import('./pages/Admin')))
 // Intentionally wait for 2s for testing lazy loading
 const Welcome = lazyLoading(lazy(() => new Promise((resolve) => {
@@ -49,6 +50,7 @@ function lazyLoading<P = {}>(LazyComponent: LazyExoticComponent<any>) {
  */
 let authenticated = false
 const RouteGuard = (): JSX.Element => {
+
   /**
    * Utils
    */
@@ -152,8 +154,8 @@ const RouteGuard = (): JSX.Element => {
  */
 const App = (): JSX.Element => (
   <Routes>
+    <Route path="/" element={<Home />} />
     <Route element={<RouteGuard />}>
-      <Route index element={<Navigate to="/admin" replace />} />
       <Route path="/admin" element={<Admin />}>
         <Route index element={<Welcome />} />
         <Route path="users" element={<Users />} />
