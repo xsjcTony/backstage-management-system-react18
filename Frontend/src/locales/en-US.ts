@@ -11,6 +11,7 @@ const enUS: Record<string, string> = {
   'error.network': 'Network error',
   'error.need-login': 'Please login first',
   'error.no-privilege': 'You are not allowed to visit',
+  'success.logout': 'Successfully logged out',
   ...pages,
   ...menu,
   ...message

@@ -27,7 +27,7 @@ const authenticationSlice = createSlice({
     setLoggedIn: (state, action: PayloadAction<boolean>) => {
       state.loggedIn = action.payload
     },
-    setCurrentUser: (state, action: PayloadAction<User>) => {
+    setCurrentUser: (state, action: PayloadAction<User | null>) => {
       state.currentUser = action.payload
     }
   }

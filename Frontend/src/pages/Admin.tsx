@@ -13,10 +13,13 @@ import { useBoolean } from 'ahooks'
 import { Layout, Menu, Avatar, Dropdown, message } from 'antd'
 import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
+import { useDispatch } from 'react-redux'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import SelectLanguage from '../locales/components/SelectLanguage'
+import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
 import { isPromptInfo } from './types'
+import type { AppDispatch } from '../store'
 import type { ItemType } from 'antd/es/menu/hooks/useItems'
 import type { ReactNode, Key } from 'react'
 
@@ -161,6 +164,7 @@ const Admin = (): JSX.Element => {
   const intl = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>()
 
 
   /**
@@ -175,6 +179,9 @@ const Admin = (): JSX.Element => {
   }, [])
 
 
+  /**
+   * Menu items
+   */
   const items: ItemType[] = [
     createItem(
       intl.formatMessage({ id: 'menu.welcome' }),
@@ -213,8 +220,27 @@ const Admin = (): JSX.Element => {
   ]
 
 
-  // TODO: logout user
-  const logout = (): void => void navigate('/login', { replace: false })
+  /**
+   * Logout
+   */
+  const logout = (): void => {
+    localStorage.removeItem('token')
+    dispatch(setLoggedIn(false))
+    dispatch(setCurrentUser(null))
+    navigate('/login', {
+      replace: false,
+      state: {
+        type: 'prompt',
+        promptInfo: {
+          type: 'success',
+          intlId: 'success.logout',
+          duration: 3,
+          path: location.pathname,
+          noPrivilege: false
+        }
+      }
+    })
+  }
 
   const userDropdownMenu = (
     <Menu
@@ -230,6 +256,9 @@ const Admin = (): JSX.Element => {
   )
 
 
+  /**
+   * Component
+   */
   return (
     <StyledLayout>
       <Header className="header">

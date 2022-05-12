@@ -11,6 +11,7 @@ const zhCN: Record<string, string> = {
   'error.network': '网络错误',
   'error.need-login': '请先登录',
   'error.no-privilege': '您没有权限访问',
+  'success.logout': '退出成功',
   ...pages,
   ...menu,
   ...message
