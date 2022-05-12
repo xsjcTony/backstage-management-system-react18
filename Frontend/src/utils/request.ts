@@ -35,5 +35,3 @@ export const getFile = async <T = any>(path: string, data = {}): Promise<T> => r
   params: data,
   responseType: 'blob'
 })
-
-export default request

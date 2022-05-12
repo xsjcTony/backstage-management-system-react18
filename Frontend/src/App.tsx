@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes, useLocation, Outlet } from 'react-router-dom'
 import Loading from './components/Loading'
 import Page404 from './pages/Page404'
+import { isLoggedIn } from './services/login'
 import { setLoggedIn } from './store/authentication/authenticationSlice'
 import type { RootState, AppDispatch } from './store'
 import type { LazyExoticComponent } from 'react'
@@ -80,11 +81,15 @@ const RouteGuard = (): JSX.Element => {
    * Authentication
    */
   if (!authenticated) {
-    try {
-
-    } catch (err) {
-      dispatch(setLoggedIn(false))
-    }
+    isLoggedIn()
+      .then((data) => {
+        if (data.code === 200) {
+          dispatch(setLoggedIn(true))
+        } else {
+          dispatch(setLoggedIn(false))
+        }
+      })
+      .catch(() => void dispatch(setLoggedIn(false)))
 
     authenticated = true
   }
@@ -93,6 +98,10 @@ const RouteGuard = (): JSX.Element => {
   /**
    * Guard
    */
+  if (pathname === '/') {
+    return <Outlet />
+  }
+
   if (pathname === '/login' || pathname === '/register') {
     if (loggedIn) {
       return <Navigate to="/admin" replace />
@@ -154,8 +163,8 @@ const RouteGuard = (): JSX.Element => {
  */
 const App = (): JSX.Element => (
   <Routes>
-    <Route path="/" element={<Home />} />
     <Route element={<RouteGuard />}>
+      <Route path="/" element={<Home />} />
       <Route path="/admin" element={<Admin />}>
         <Route index element={<Welcome />} />
         <Route path="users" element={<Users />} />
