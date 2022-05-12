@@ -31,6 +31,7 @@ export interface EmailInfo {
 interface BaseLoginData {
   password: string
   captcha: string
+  remember: boolean
 }
 
 interface AccountLoginData extends BaseLoginData {

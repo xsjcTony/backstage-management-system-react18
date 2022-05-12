@@ -11,11 +11,20 @@ const request = extend({
 
 
 // Interceptor
-/*
 request.interceptors.request.use((url, options) => {
+  return {
+    options: {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: localStorage.getItem('token') ?? ''
+      }
+    }
+  }
+
   // TODO: 处理 request privilege
 })
-*/
+
 
 export const get = async <T = any>(url: string, data = {}): Promise<T> => request.get<T>(url, {
   params: data

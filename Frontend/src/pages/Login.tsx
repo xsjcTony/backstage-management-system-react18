@@ -320,7 +320,6 @@ const Login = (): JSX.Element => {
       values.remember = false
     }
 
-    console.log(values)
     let loginResponse: ResponseData<UserWithJWT>
 
     try {

@@ -54,8 +54,10 @@ export default class UserController extends Controller {
       ctx.helper.verifyCaptcha(data.captcha)
       const user = (await ctx.service.user.loginUser(data)).toJSON() as User
 
+      const expiresIn = data.remember ? '30d' : '7d'
+
       // JWT
-      const token = jwt.sign(user, this.config.keys, { expiresIn: '7d' })
+      const token = jwt.sign(user, this.config.keys, { expiresIn })
 
       ctx.success(200, 'message.login.success', { ...user, token })
     } catch (err) {
