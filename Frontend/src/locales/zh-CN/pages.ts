@@ -8,6 +8,8 @@ const pages: Record<string, string> = {
   'pages.home.login': '登录',
   'pages.home.register': '注册',
   'pages.home.dashboard': '管理页',
+  'pages.home.hi': '您好, ',
+  'pages.home.logout': '退出登录',
 
   // Admin
   'pages.admin.welcome.title': '欢迎',

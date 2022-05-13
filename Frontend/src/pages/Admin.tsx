@@ -181,6 +181,29 @@ const Admin = (): JSX.Element => {
 
 
   /**
+   * Header
+   */
+  if (!currentUser) {
+    return (
+      <Navigate
+        replace
+        state={{
+          type: 'prompt',
+          promptInfo: {
+            type: 'error',
+            intlId: 'error.need-login',
+            duration: 3,
+            path: location.pathname,
+            noPrivilege: false
+          }
+        }}
+        to="/login"
+      />
+    )
+  }
+
+
+  /**
    * Menu items
    */
   const items: ItemType[] = [
@@ -260,25 +283,6 @@ const Admin = (): JSX.Element => {
   /**
    * Component
    */
-  if (!currentUser) {
-    return (
-      <Navigate
-        replace
-        state={{
-          type: 'prompt',
-          promptInfo: {
-            type: 'error',
-            intlId: 'error.need-login',
-            duration: 3,
-            path: location.pathname,
-            noPrivilege: false
-          }
-        }}
-        to="/login"
-      />
-    )
-  }
-
   return (
     <StyledLayout>
       <Header className="header">

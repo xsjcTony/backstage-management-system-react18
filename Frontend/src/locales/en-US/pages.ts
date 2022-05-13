@@ -8,6 +8,8 @@ const pages: Record<string, string> = {
   'pages.home.login': 'Login',
   'pages.home.register': 'Register',
   'pages.home.dashboard': 'Dashboard',
+  'pages.home.hi': 'Hi, ',
+  'pages.home.logout': 'Log out',
 
   // Admin
   'pages.admin.welcome.title': 'Welcome',

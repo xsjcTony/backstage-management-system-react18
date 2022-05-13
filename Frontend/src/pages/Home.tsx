@@ -1,12 +1,13 @@
 import { useTitle } from 'ahooks'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { useIntl } from 'react-intl'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
-import type { RootState } from '../store'
+import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
+import type { AppDispatch, RootState } from '../store'
 
 
 /**
@@ -19,11 +20,29 @@ const HomeContainer = styled.div`
     flex-direction: column;
     background: #f0f2f5 url('/src/assets/images/login_bg.svg') center 110px / 100% no-repeat;
 
-    .language {
-        text-align: right;
+    .header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 20px;
+        
+        .logout {
+            cursor: pointer;
+            padding: 10px 10px;
+            border-radius: 5px;
+            
+            &:hover {
+                background: #ddd;
+            }
+        }
 
         span {
             margin: 5px 25px 0 0;
+            
+            &:hover {
+                background: #ddd;
+                border-radius: 5px;
+            }
         }
     }
 
@@ -66,6 +85,8 @@ const Home = (): JSX.Element => {
   const loggedIn = useSelector((state: RootState) => state.authentication.loggedIn)
   const navigate = useNavigate()
   const intl = useIntl()
+  const dispatch = useDispatch<AppDispatch>()
+  const currentUser = useSelector((state: RootState) => state.authentication.currentUser)
 
 
   /**
@@ -75,11 +96,30 @@ const Home = (): JSX.Element => {
 
 
   /**
+   * Logout
+   */
+  const logout = (): void => {
+    localStorage.removeItem('token')
+    dispatch(setLoggedIn(false))
+    dispatch(setCurrentUser(null))
+    void message.success(intl.formatMessage({ id: 'success.logout' }), 3)
+  }
+
+
+  /**
    * Component
    */
   return (
     <HomeContainer>
-      <div className="language">
+      <div className="header">
+        {loggedIn && (
+          <div
+            className="logout"
+            onClick={logout}
+          >
+            {intl.formatMessage({ id: 'pages.home.logout' })}
+          </div>
+        )}
         <SelectLanguage size="24" />
       </div>
       <div className="container">
@@ -87,6 +127,12 @@ const Home = (): JSX.Element => {
           <img alt="logo" src="/src/assets/images/logo.png" />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
+        {loggedIn && (
+          <h2>
+            {intl.formatMessage({ id: 'pages.home.hi' })}
+            {currentUser?.username ?? currentUser?.email ?? 'Placeholder'}
+          </h2>
+        )}
         {
           loggedIn
             ? (
