@@ -19,7 +19,7 @@ export default class GithubController extends Controller {
   public async getLoginView(): Promise<void> {
     const baseURL = 'https://github.com/login/oauth/authorize'
     const options = {
-      client_id: 'f3ca6a1f5ca9ed50e6ca',
+      client_id: 'f9c9bc30f7f29b46a30a',
       scope: 'user'
     }
 
@@ -34,8 +34,8 @@ export default class GithubController extends Controller {
 
     const baseURL = 'https://github.com/login/oauth/access_token'
     const options = {
-      client_id: 'f3ca6a1f5ca9ed50e6ca',
-      client_secret: '33e0aa6ac3f01448edca777c40a10ceabeff80a6',
+      client_id: 'f9c9bc30f7f29b46a30a',
+      client_secret: '37f38f5f231a0510cda6c65da08f88948caaa0dc',
       code
     }
 
@@ -103,7 +103,7 @@ export default class GithubController extends Controller {
         username: uuidV4()
           .replace(/-/g, '')
           .substring(0, 20),
-        password: 'com.123456',
+        password: '123456a.',
         captcha: '',
         github: true
       }

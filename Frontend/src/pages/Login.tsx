@@ -202,7 +202,9 @@ const Login = (): JSX.Element => {
     <>
       <div className="other-login">
         {intl.formatMessage({ id: 'pages.login.other' })}
-        <GithubOutlined />
+        <a href="http://127.0.0.1:7001/github">
+          <GithubOutlined />
+        </a>
       </div>
       <Divider plain className="divider">
         {intl.formatMessage({ id: 'pages.login.or' })}
