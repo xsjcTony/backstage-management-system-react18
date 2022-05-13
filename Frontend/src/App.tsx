@@ -10,8 +10,10 @@ import { Navigate, Route, Routes, useLocation, Outlet } from 'react-router-dom'
 import Loading from './components/Loading'
 import Page404 from './pages/Page404'
 import { isLoggedIn } from './services/login'
-import { setLoggedIn } from './store/authentication/authenticationSlice'
+import { getUserById } from './services/users'
+import { setCurrentUser, setLoggedIn } from './store/authentication/authenticationSlice'
 import type { RootState, AppDispatch } from './store'
+import type { User } from './types'
 import type { LazyExoticComponent } from 'react'
 
 
@@ -82,8 +84,21 @@ const RouteGuard = (): JSX.Element => {
    */
   if (!authenticated) {
     isLoggedIn()
-      .then((data) => {
+      .then(async (data) => {
         if (data.code === 200) {
+          const userResponse = await getUserById((data.data as User).id)
+
+          if (userResponse.code !== 200) {
+            localStorage.removeItem('token')
+            dispatch(setLoggedIn(false))
+            return
+          }
+
+          const user = userResponse.data
+
+          // TODO: Privilege tree
+
+          dispatch(setCurrentUser(user))
           dispatch(setLoggedIn(true))
         } else {
           dispatch(setLoggedIn(false))

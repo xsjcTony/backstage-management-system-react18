@@ -13,13 +13,13 @@ import { useBoolean } from 'ahooks'
 import { Layout, Menu, Avatar, Dropdown, message } from 'antd'
 import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
-import { useDispatch } from 'react-redux'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import SelectLanguage from '../locales/components/SelectLanguage'
 import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
 import { isPromptInfo } from './types'
-import type { AppDispatch } from '../store'
+import type { AppDispatch, RootState } from '../store'
 import type { ItemType } from 'antd/es/menu/hooks/useItems'
 import type { ReactNode, Key } from 'react'
 
@@ -165,6 +165,7 @@ const Admin = (): JSX.Element => {
   const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
+  const currentUser = useSelector((state: RootState) => state.authentication.currentUser)
 
 
   /**
@@ -259,6 +260,25 @@ const Admin = (): JSX.Element => {
   /**
    * Component
    */
+  if (!currentUser) {
+    return (
+      <Navigate
+        replace
+        state={{
+          type: 'prompt',
+          promptInfo: {
+            type: 'error',
+            intlId: 'error.need-login',
+            duration: 3,
+            path: location.pathname,
+            noPrivilege: false
+          }
+        }}
+        to="/login"
+      />
+    )
+  }
+
   return (
     <StyledLayout>
       <Header className="header">
@@ -279,7 +299,7 @@ const Admin = (): JSX.Element => {
                 size="default"
                 src="/src/assets/images/avatar.jpg"
               />
-              Aelita Schaeffer
+              {currentUser.username ?? currentUser.email ?? 'Placeholder'}
             </div>
           </Dropdown>
           <SelectLanguage color="#fff" size="20" />
