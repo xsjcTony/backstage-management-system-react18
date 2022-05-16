@@ -23,7 +23,23 @@ export default class OauthService extends Service {
     if (res) {
       return res
     } else {
-      throw new Error('OAuth user does not exist')
+      throw new Error('message.oauth.invalid')
+    }
+  }
+
+
+  public async getOAuthById(data: OAuthUserData): Promise<Oauth> {
+    const res = await this.ctx.model.Oauth.findOne({
+      where: {
+        id: data.id,
+        provider: data.provider
+      }
+    })
+
+    if (res) {
+      return res
+    } else {
+      throw new Error('message.oauth.invalid')
     }
   }
 
@@ -36,6 +52,18 @@ export default class OauthService extends Service {
       userId
     })
   }
+
+
+  public async updateOAuthUser(id: number, userId: number): Promise<void> {
+    const oauth = await this.ctx.model.Oauth.findByPk(id)
+
+    if (!oauth) {
+      throw new Error(`OAuth doesn't exist`)
+    }
+
+    await oauth.update({ userId })
+  }
+
 
   public async deleteOAuth(id: number): Promise<void> {
     await this.ctx.model.Oauth.destroy({ where: { id } })

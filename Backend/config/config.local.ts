@@ -40,5 +40,12 @@ export default (): PowerPartial<EggAppConfig> => {
     pass: 'WAYJJHTOHRIXSZXG'
   }
 
+  // CORS
+  config.cors = {
+    origin: 'http://127.0.0.1:3000',
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
+    credentials: true
+  }
+
   return config
 }

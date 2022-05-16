@@ -15,8 +15,14 @@ export default (app: Application): void => {
 
 
   /**
-   * Oauth - GitHub
+   * OAuth - GitHub
    */
   router.get('/github', controller.github.getLoginView)
   router.get('/github/callback', controller.github.getAccessToken)
+
+
+  /**
+   * OAuth - bind account
+   */
+  router.post('/oauth/bind', controller.user.bindAccount)
 }

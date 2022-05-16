@@ -71,7 +71,12 @@ const pages: Record<string, string> = {
   'pages.register.captcha.button.send': '发送验证码',
   'pages.register.captcha.button.resend': '重新发送验证码',
   'pages.register.message.send-captcha.success': '验证码发送成功',
-  'pages.register.message.send-captcha.error': '验证码发送失败'
+  'pages.register.message.send-captcha.error': '验证码发送失败',
+
+  // OAuth
+  'pages.oauth.title': '绑定账号',
+  'pages.oauth.id.invalid': 'OAuth ID 不正确',
+  'pages.oauth.github.subtitle': '绑定您的账号到此GitHub'
 }
 
 export default pages

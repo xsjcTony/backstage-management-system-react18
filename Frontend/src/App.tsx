@@ -34,6 +34,7 @@ const Privileges = lazyLoading(lazy(() => import('./pages/Admin/Privileges')))
 
 const Register = lazyLoading(lazy(() => import('./pages/Register')))
 const Login = lazyLoading(lazy(() => import('./pages/Login')))
+const Github = lazyLoading(lazy(() => import('./pages/OAuth/Github')))
 
 
 /**
@@ -117,7 +118,7 @@ const RouteGuard = (): JSX.Element => {
     return <Outlet />
   }
 
-  if (pathname === '/login' || pathname === '/register') {
+  if (pathname === '/login' || pathname === '/register' || pathname.startsWith('/oauth/')) {
     if (loggedIn) {
       return <Navigate to="/admin" replace />
     } else {
@@ -125,49 +126,50 @@ const RouteGuard = (): JSX.Element => {
     }
   }
 
-  if (!loggedIn) {
-    return (
-      <Navigate
-        to="/login"
-        replace
-        state={{
-          type: 'prompt',
-          promptInfo: {
-            type: 'error',
-            intlId: 'error.need-login',
-            duration: 3,
-            path: pathname,
-            noPrivilege: false
-          }
-        }}
-      />
-    )
-  }
+  if (pathname.startsWith('/admin')) {
+    if (!loggedIn) {
+      return (
+        <Navigate
+          to="/login"
+          replace
+          state={{
+            type: 'prompt',
+            promptInfo: {
+              type: 'error',
+              intlId: 'error.need-login',
+              duration: 3,
+              path: pathname,
+              noPrivilege: false
+            }
+          }}
+        />
+      )
+    }
 
-
-  /**
-   * Privileges
-   */
-  /*
-  if (/!*privileges*!/) {
-    return (
-      <Navigate
-        to="/admin"
-        replace
-        state={{
-          type: 'prompt',
-          promptInfo: {
-            type: 'error',
-            intlId: 'error.no-privilege',
-            duration: 3,
-            path: pathname,
-            noPrivilege: true
-          }
-        }}
-      />
-    )
+    /**
+     * Privileges
+     */
+    /*
+    if (/!*privileges*!/) {
+      return (
+        <Navigate
+          to="/admin"
+          replace
+          state={{
+            type: 'prompt',
+            promptInfo: {
+              type: 'error',
+              intlId: 'error.no-privilege',
+              duration: 3,
+              path: pathname,
+              noPrivilege: true
+            }
+          }}
+        />
+      )
+    }
+    */
   }
-  */
 
   return <Outlet />
 }
@@ -189,6 +191,11 @@ const App = (): JSX.Element => (
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/oauth">
+        <Route index element={<Page404 lang />} />
+        <Route path="github" element={<Github />} />
+        <Route path="*" element={<Page404 lang />} />
+      </Route>
       <Route path="*" element={<Page404 lang />} />
     </Route>
   </Routes>

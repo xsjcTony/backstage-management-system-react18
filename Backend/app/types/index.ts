@@ -52,6 +52,15 @@ export interface OAuthUserData {
   provider: string
 }
 
+export interface OAuthBindData {
+  username: string
+  email: string
+  password: string
+  captcha: string
+  oauthId: string
+  provider: string
+}
+
 
 // AddUserData
 export interface AddUserData {

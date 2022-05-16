@@ -6,7 +6,6 @@
 import { URLSearchParams } from 'node:url'
 import { Controller } from 'egg'
 import * as jwt from 'jsonwebtoken'
-import { v4 as uuidV4 } from 'uuid'
 import type { OAuthUserData } from '../types'
 
 
@@ -97,37 +96,15 @@ export default class GithubController extends Controller {
     } catch (err) {
       /**
        * User doesn't exist
-       * 1. Create a user
+       * 1. Save user's OAuth info (1 for temp userId)
        */
-      const userInfo = {
-        username: uuidV4()
-          .replace(/-/g, '')
-          .substring(0, 20),
-        password: '123456a.',
-        captcha: '',
-        github: true
-      }
-
-      const user = await ctx.service.user.createUser(userInfo)
+      const oauth = await ctx.service.oauth.createOAuth(accessToken, data.provider, data.id, 1)
 
       /**
-       * 2. Save user's OAuth info
+       * 2. Bind username, e-mail and password (redirect to '/oauth/github')
        */
-      await ctx.service.oauth.createOAuth(accessToken, data.provider, data.id, user.id)
-
-      /**
-       * 3. Login (redirect to '/admin')
-       */
-      const token = jwt.sign(user.toJSON(), this.config.keys, { expiresIn: '7d' })
-
-      ctx.cookies.set('token', token, {
-        path: '/',
-        maxAge: 24 * 60 * 60 * 1000, // 1 day,
-        httpOnly: false,
-        signed: false
-      })
-
-      ctx.redirect('http://127.0.0.1:3000/admin')
+      const params = { oauthId: oauth.id.toString() }
+      ctx.redirect(`http://127.0.0.1:3000/oauth/github?${new URLSearchParams(params).toString()}`)
     }
   }
 }

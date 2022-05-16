@@ -14,6 +14,10 @@ const message: Record<string, string> = {
   'message.login.wrong-username': '用户名或密码错误',
   'message.login.wrong-email': '邮箱或密码错误',
 
+  // OAuth
+  'message.oauth.bind.success': '绑定账号成功',
+  'message.oauth.invalid': 'OAuth ID 不正确',
+
   // Permission
   'message.permission.denied': '没有权限'
 }

@@ -1,7 +1,7 @@
 import { Service } from 'egg'
 import { Role } from '../model/Role'
 import type { User } from '../model/User'
-import type { LoginData, RegisterData } from '../types'
+import type { LoginData, OAuthBindData, RegisterData } from '../types'
 import type { WhereOptions } from 'sequelize'
 
 
@@ -42,6 +42,15 @@ export default class UserService extends Service {
     } else {
       return this._loginUserByEmail(data.email, encryptedPassword)
     }
+  }
+
+
+  public async createFullUser(data: OAuthBindData): Promise<User> {
+    const encryptedPassword = this.ctx.helper.encryptByMd5(data.password)
+
+    const { username, email } = data
+
+    return this._createUser(username, email, encryptedPassword)
   }
 
 
@@ -148,6 +157,39 @@ export default class UserService extends Service {
       throw new Error()
     }
   }
+
+
+  private async _createUser(username: string, email: string, password: string): Promise<User> {
+    let user = await this._findUser({ username })
+    if (user) {
+      throw new Error('message.register.username.exist')
+    }
+
+    user = await this._findUser({ email })
+    if (user) {
+      throw new Error('message.register.email.exist')
+    }
+
+    const data = await this.ctx.model.User.create({
+      username,
+      email,
+      password,
+      github: true
+    })
+
+    const res = await this.ctx.model.User.findByPk(data.id, {
+      attributes: {
+        exclude: ['password', 'createdAt', 'updatedAt']
+      }
+    })
+
+    if (res) {
+      return res
+    } else {
+      throw new Error()
+    }
+  }
+
 
 
   /**

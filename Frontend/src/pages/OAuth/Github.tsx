@@ -7,22 +7,24 @@ import {
 } from '@ant-design/icons'
 import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
 import { useBoolean, useRequest, useTitle } from 'ahooks'
-import { Tabs, Divider, Button, Form, Popover, message } from 'antd'
-import { useState } from 'react'
+import { Button, Form, Popover, message } from 'antd'
 import { useIntl } from 'react-intl'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
-import Footer from '../components/Footer'
-import PasswordStrength from '../components/PasswordStrength'
-import SelectLanguage from '../locales/components/SelectLanguage'
-import { registerUser, sendVerificationEmail } from '../services/register'
-import type { ResponseData } from '../services/types'
-import type { RootState } from '../store'
+import Footer from '../../components/Footer'
+import PasswordStrength from '../../components/PasswordStrength'
+import SelectLanguage from '../../locales/components/SelectLanguage'
+import { bindAccount } from '../../services/oauth'
+import { sendVerificationEmail } from '../../services/register'
+import { getUserById } from '../../services/users'
+import { setCurrentUser, setLoggedIn } from '../../store/authentication/authenticationSlice'
+import type { ResponseData } from '../../services/types'
+import type { AppDispatch } from '../../store'
+import type { UserWithJWT, User } from '../../types'
 import type { LoginFormProps, ProFormCaptchaProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
-import type { TabsProps } from 'antd'
 import type { InternalFieldProps } from 'rc-field-form/es/Field'
 import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import type { ReactNode } from 'react'
@@ -31,21 +33,15 @@ import type { ReactNode } from 'react'
 /**
  * Types
  */
-type RegisterType = 'account' | 'email'
-
-interface BaseRegisterData {
+export interface OAuthRegisterData {
+  username: string
+  email: string
   password: string
   'password-check': string
   captcha: string
   agreement: boolean
-}
-
-export interface AccountRegisterData extends BaseRegisterData {
-  username: string
-}
-
-export interface EmailRegisterData extends BaseRegisterData {
-  email: string
+  oauthId: string
+  provider: 'github'
 }
 
 
@@ -123,7 +119,6 @@ const RegisterContainer = styled.div`
 /**
  * Constants
  */
-const { TabPane } = Tabs
 const { useForm } = ProForm
 const { useWatch } = Form
 
@@ -131,52 +126,28 @@ const { useWatch } = Form
 /**
  * Component
  */
-const Register = (): JSX.Element => {
+const Github = (): JSX.Element => {
 
   /**
    * Utils
    */
   const intl = useIntl()
   const navigate = useNavigate()
-  const apiBaseUrl = useSelector((state: RootState) => state.layout.apiBaseUrl)
+  const dispatch = useDispatch<AppDispatch>()
+  const [searchParams] = useSearchParams()
+  const oauthId = searchParams.get('oauthId')
 
 
   /**
    * Title
    */
-  useTitle(`${intl.formatMessage({ id: 'pages.register.title' })} - ${intl.formatMessage({ id: 'title' })}`)
-
-
-  /**
-   * Tabs
-   */
-  const [registerType, setRegisterType] = useState<RegisterType>('account')
-
-  const changeTab: TabsProps['onChange'] = (activeKey: string): void => {
-    formInstance.resetFields()
-    setRegisterType(activeKey as RegisterType)
-  }
+  useTitle(`${intl.formatMessage({ id: 'pages.oauth.title' })} - ${intl.formatMessage({ id: 'title' })}`)
 
 
   /**
    * Form
    */
   const [formInstance] = useForm()
-
-  const formActions: LoginFormProps<Record<string, any>>['actions'] = (
-    <>
-      <Divider plain className="divider">
-        {intl.formatMessage({ id: 'pages.register.or' })}
-      </Divider>
-      <Button
-        className="login-button"
-        size="large"
-        onClick={() => void navigate('/login', { replace: false })}
-      >
-        {intl.formatMessage({ id: 'pages.register.login' })}
-      </Button>
-    </>
-  )
 
   const formSubmitter: LoginFormProps<Record<string, any>>['submitter'] = {
     render: () => (
@@ -194,7 +165,7 @@ const Register = (): JSX.Element => {
 
 
   /**
-   * Account
+   * Username
    */
   const usernameFieldProps: ProFormFieldItemProps['fieldProps'] = {
     size: 'large',
@@ -349,31 +320,6 @@ const Register = (): JSX.Element => {
     }
   ]
 
-  /**
-   * Captcha
-   */
-  const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
-
-  const refreshCaptcha = (): void => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`)
-
-  const captchaRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.missing' })
-    },
-    {
-      pattern: /^[A-Za-z0-9]{4}$/,
-      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.invalid' })
-    }
-  ]
-
-  const captchaFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <CheckOutlined className="prefix-icon" />,
-    maxLength: 4,
-    showCount: true
-  }
-
 
   /**
    * Agreement
@@ -390,18 +336,29 @@ const Register = (): JSX.Element => {
   /**
    * Register
    */
-  const _register = async (err: ValidateErrorEntity<AccountRegisterData | EmailRegisterData>): Promise<void> => new Promise(async (resolve, reject) => {
-    const { errorFields, values } = err
+  const _register = async (err: ValidateErrorEntity<OAuthRegisterData>): Promise<void> => new Promise(async (resolve, reject) => {
+    let { errorFields, values } = err
 
     if (errorFields.length !== 0) {
       void message.error(intl.formatMessage({ id: 'pages.register.error-message.data.invalid' }))
       return void reject()
     }
 
-    let data: ResponseData
+    if (!oauthId) {
+      void message.error(intl.formatMessage({ id: 'pages.oauth.id.invalid' }))
+      return void reject()
+    }
+
+    values = {
+      ...values,
+      oauthId,
+      provider: 'github'
+    }
+
+    let data: ResponseData<UserWithJWT>
 
     try {
-      data = await registerUser(values)
+      data = await bindAccount(values)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return void reject()
@@ -409,12 +366,38 @@ const Register = (): JSX.Element => {
 
     if (data.code !== 200) {
       void message.error(intl.formatMessage({ id: data.msg }), 3)
-      refreshCaptcha()
       return void reject()
     }
 
+    // save JWT token into Local Storage
+    localStorage.setItem('token', data.data.token)
+
+    // fetch user data with roles
+    let userResponse: ResponseData<User>
+
+    try {
+      userResponse = await getUserById(data.data.id)
+    } catch (err) {
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+      return void reject()
+    }
+
+    if (userResponse.code !== 200) {
+      void message.error(intl.formatMessage({ id: userResponse.msg }), 3)
+      return void reject()
+    }
+
+    const user = userResponse.data
+
+    // build privilege tree
+    // TODO: 处理 Privilege tree
+
+    // Redux
+    dispatch(setLoggedIn(true))
+    dispatch(setCurrentUser(user))
+
     void message.success(intl.formatMessage({ id: data.msg }), 3)
-    navigate('/login', { replace: false })
+    navigate('/admin', { replace: false })
     resolve()
   })
 
@@ -465,73 +448,36 @@ const Register = (): JSX.Element => {
       </div>
       <div className="register-form-container">
         <LoginForm
-          actions={formActions}
           form={formInstance}
           logo={logo}
           submitter={formSubmitter}
-          subTitle={intl.formatMessage({ id: 'subtitle' })}
-          title={intl.formatMessage({ id: 'title' })}
+          subTitle={intl.formatMessage({ id: 'pages.oauth.github.subtitle' })}
+          title={intl.formatMessage({ id: 'pages.oauth.title' })}
           onFinishFailed={err => void register(err)}
         >
-          <Tabs
-            activeKey={registerType}
-            onChange={changeTab}
-          >
-            <TabPane
-              key="account"
-              tab={intl.formatMessage({ id: 'pages.register.register-type.account' })}
-            />
-            <TabPane
-              key="email"
-              tab={intl.formatMessage({ id: 'pages.register.register-type.email' })}
-            />
-          </Tabs>
-          {registerType === 'account' && (
-            <>
-              <ProFormText
-                fieldProps={usernameFieldProps}
-                name="username"
-                placeholder={intl.formatMessage({ id: 'pages.register.placeholder.username' })}
-                rules={usernameRules}
-              />
-              {passwordForm}
-              <div className="captcha-container">
-                <ProFormText
-                  fieldProps={captchaFieldProps}
-                  name="captcha"
-                  placeholder={intl.formatMessage({ id: 'pages.register.placeholder.captcha' })}
-                  rules={captchaRules}
-                />
-                <img
-                  alt="captcha"
-                  className="captcha-image"
-                  src={captchaSrc}
-                  onClick={refreshCaptcha}
-                />
-              </div>
-            </>
-          )}
-          {registerType === 'email' && (
-            <>
-              <ProFormText
-                fieldProps={emailFieldProps}
-                name="email"
-                placeholder={intl.formatMessage({ id: 'pages.register.placeholder.email' })}
-                rules={emailRules}
-              />
-              {passwordForm}
-              <ProFormCaptcha
-                captchaProps={{ size: 'large' }}
-                captchaTextRender={captchaTextRender}
-                countDown={60}
-                fieldProps={verificationCodeFieldProps}
-                name="captcha"
-                placeholder={intl.formatMessage({ id: 'pages.register.placeholder.captcha' })}
-                rules={verificationCodeRules}
-                onGetCaptcha={getCaptcha}
-              />
-            </>
-          )}
+          <ProFormText
+            fieldProps={usernameFieldProps}
+            name="username"
+            placeholder={intl.formatMessage({ id: 'pages.register.placeholder.username' })}
+            rules={usernameRules}
+          />
+          <ProFormText
+            fieldProps={emailFieldProps}
+            name="email"
+            placeholder={intl.formatMessage({ id: 'pages.register.placeholder.email' })}
+            rules={emailRules}
+          />
+          {passwordForm}
+          <ProFormCaptcha
+            captchaProps={{ size: 'large' }}
+            captchaTextRender={captchaTextRender}
+            countDown={60}
+            fieldProps={verificationCodeFieldProps}
+            name="captcha"
+            placeholder={intl.formatMessage({ id: 'pages.register.placeholder.captcha' })}
+            rules={verificationCodeRules}
+            onGetCaptcha={getCaptcha}
+          />
           <ProFormCheckbox
             name="agreement"
             rules={agreementRule}
@@ -552,4 +498,4 @@ const Register = (): JSX.Element => {
   )
 }
 
-export default Register
+export default Github

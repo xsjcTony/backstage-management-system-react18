@@ -14,6 +14,10 @@ const message: Record<string, string> = {
   'message.login.wrong-username': 'Invalid username or password',
   'message.login.wrong-email': 'Invalid e-mail address or password',
 
+  // OAuth
+  'message.oauth.bind.success': 'Successfully bound account',
+  'message.oauth.invalid': 'Invalid OAuth ID',
+
   // Permission
   'message.permission.denied': 'Permission denied'
 }
