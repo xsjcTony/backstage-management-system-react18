@@ -13,3 +13,14 @@ export const isPromptInfo = (state: unknown): state is PromptInfo => {
   if (!state) return false
   return (state as PromptInfo).type === 'prompt'
 }
+
+
+export interface ResetPasswordInfo {
+  email: string
+  verified: boolean
+}
+
+export const isResetPasswordInfo = (state: unknown): state is ResetPasswordInfo => {
+  if (!state) return false
+  return (state as ResetPasswordInfo).verified
+}

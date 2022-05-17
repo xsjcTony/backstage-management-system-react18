@@ -25,4 +25,11 @@ export default (app: Application): void => {
    * OAuth - bind account
    */
   router.post('/oauth/bind', controller.user.bindAccount)
+
+
+  /**
+   * Reset password
+   */
+  router.post('/reset-password/verify-email', controller.user.verifyEmail)
+  router.put('/reset-password/reset', controller.user.resetPassword)
 }

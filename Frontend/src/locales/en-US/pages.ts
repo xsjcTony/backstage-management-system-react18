@@ -43,6 +43,7 @@ const pages: Record<string, string> = {
   'pages.register.title': 'Register',
   'pages.register.placeholder.username': 'Username',
   'pages.register.placeholder.password': 'Password',
+  'pages.register.placeholder.password-check': 'Confirm password',
   'pages.register.placeholder.email': 'E-mail example@domain.xxx',
   'pages.register.placeholder.captcha': 'Captcha',
   'pages.register.register-type.account': 'Account',
@@ -76,7 +77,15 @@ const pages: Record<string, string> = {
   // OAuth
   'pages.oauth.title': 'Bind account',
   'pages.oauth.id.invalid': 'Invalid OAuth ID',
-  'pages.oauth.github.subtitle': 'Bind your account with GitHub'
+  'pages.oauth.github.subtitle': 'Bind your account with GitHub',
+
+  // Reset password
+  'pages.reset-password.title': 'Reset password',
+  'pages.reset-password.verify.subtitle': 'Reset password - verify your E-mail address',
+  'pages.reset-password.verify.verify': 'Verify',
+  'pages.reset-password.reset.subtitle': 'Reset password',
+  'pages.reset-password.reset.reset': 'Reset password',
+  'pages.reset-password.reset.email.not-verified': 'E-mail address is not verified'
 }
 
 export default pages

@@ -54,6 +54,34 @@ export default class UserService extends Service {
   }
 
 
+  public async findByEmail(email: string): Promise<User | null> {
+    const res = await this._findUser({ email })
+
+    if (res) {
+      return res
+    } else {
+      throw new Error('message.reset-password.verify.email.invalid')
+    }
+  }
+
+
+  public async resetPassword(email: string, password: string): Promise<User> {
+    const encryptedPassword = this.ctx.helper.encryptByMd5(password)
+
+    const user = await this._findUser({ email })
+
+    if (!user) {
+      throw new Error('message.reset-password.verify.email.invalid')
+    }
+
+    await user.update({ password: encryptedPassword })
+
+    const res = user.toJSON() as User
+    delete res.updatedAt
+    return res
+  }
+
+
   /**
    * Helper functions
    */
@@ -189,7 +217,6 @@ export default class UserService extends Service {
       throw new Error()
     }
   }
-
 
 
   /**

@@ -19,7 +19,7 @@ import SelectLanguage from '../locales/components/SelectLanguage'
 import { loginUser } from '../services/login'
 import { getUserById } from '../services/users'
 import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
-import { isPromptInfo } from './types'
+import { isPromptInfo } from '../types/locationState'
 import type { ResponseData } from '../services/types'
 import type { AppDispatch, RootState } from '../store'
 import type { User, UserWithJWT } from '../types'
@@ -454,7 +454,9 @@ const Login = (): JSX.Element => {
             <ProFormCheckbox noStyle name="remember">
               {intl.formatMessage({ id: 'pages.login.actions.remember-me' })}
             </ProFormCheckbox>
-            <a>{intl.formatMessage({ id: 'pages.login.actions.forgot-password' })}</a>
+            <a href="/reset_password/verify">
+              {intl.formatMessage({ id: 'pages.login.actions.forgot-password' })}
+            </a>
           </div>
         </LoginForm>
       </div>

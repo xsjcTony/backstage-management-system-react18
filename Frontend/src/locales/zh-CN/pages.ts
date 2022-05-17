@@ -43,6 +43,7 @@ const pages: Record<string, string> = {
   'pages.register.title': '注册',
   'pages.register.placeholder.username': '用户名',
   'pages.register.placeholder.password': '密码',
+  'pages.register.placeholder.password-check': '确认密码',
   'pages.register.placeholder.email': '邮箱 example@domain.xxx',
   'pages.register.placeholder.captcha': '验证码',
   'pages.register.register-type.account': '账号密码注册',
@@ -76,7 +77,15 @@ const pages: Record<string, string> = {
   // OAuth
   'pages.oauth.title': '绑定账号',
   'pages.oauth.id.invalid': 'OAuth ID 不正确',
-  'pages.oauth.github.subtitle': '绑定您的账号到此GitHub'
+  'pages.oauth.github.subtitle': '绑定您的账号到此GitHub',
+
+  // Reset password
+  'pages.reset-password.title': '重置密码',
+  'pages.reset-password.verify.subtitle': '重置密码 - 验证您的邮箱',
+  'pages.reset-password.verify.verify': '验证',
+  'pages.reset-password.reset.subtitle': '重置密码',
+  'pages.reset-password.reset.reset': '重置密码',
+  'pages.reset-password.reset.email.not-verified': '邮箱地址未验证'
 }
 
 export default pages

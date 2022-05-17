@@ -21,6 +21,7 @@ import type { LazyExoticComponent } from 'react'
  * Lazy Loading Components
  */
 const Home = lazyLoading(lazy(() => import('./pages/Home')))
+
 const Admin = lazyLoading(lazy(() => import('./pages/Admin')))
 // Intentionally wait for 2s for testing lazy loading
 const Welcome = lazyLoading(lazy(() => new Promise((resolve) => {
@@ -35,6 +36,9 @@ const Privileges = lazyLoading(lazy(() => import('./pages/Admin/Privileges')))
 const Register = lazyLoading(lazy(() => import('./pages/Register')))
 const Login = lazyLoading(lazy(() => import('./pages/Login')))
 const Github = lazyLoading(lazy(() => import('./pages/OAuth/Github')))
+
+const Verify = lazyLoading(lazy(() => import('./pages/resetPassword/Verify')))
+const Reset = lazyLoading(lazy(() => import('./pages/resetPassword/Reset')))
 
 
 /**
@@ -118,12 +122,12 @@ const RouteGuard = (): JSX.Element => {
     return <Outlet />
   }
 
-  if (pathname === '/login' || pathname === '/register' || pathname.startsWith('/oauth/')) {
-    if (loggedIn) {
-      return <Navigate to="/admin" replace />
-    } else {
-      return <Outlet />
-    }
+  if (
+    ['/login', '/register'].includes(pathname)
+    || pathname.startsWith('/oauth/')
+    || pathname.startsWith('/reset_password/')
+  ) {
+    return loggedIn ? <Navigate to="/admin" replace /> : <Outlet />
   }
 
   if (pathname.startsWith('/admin')) {
@@ -191,6 +195,12 @@ const App = (): JSX.Element => (
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/reset_password">
+        <Route index element={<Page404 lang />} />
+        <Route path="verify" element={<Verify />} />
+        <Route path="reset" element={<Reset />} />
+        <Route path="*" element={<Page404 lang />} />
+      </Route>
       <Route path="/oauth">
         <Route index element={<Page404 lang />} />
         <Route path="github" element={<Github />} />

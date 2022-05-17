@@ -86,30 +86,11 @@ const RegisterContainer = styled.div`
         flex: 1;
         padding: 30px 0;
 
-        .captcha-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-
-            .captcha-image {
-                height: 40px;
-                cursor: pointer;
-            }
-        }
-
-        .ant-pro-form-login-other {
-            .divider {
-                user-select: none;
-                color: #ccc;
-            }
-        }
-
         .prefix-icon {
             color: #ccc;
         }
 
-        .register-button,
-        .login-button {
+        .register-button {
             width: 100%;
         }
     }

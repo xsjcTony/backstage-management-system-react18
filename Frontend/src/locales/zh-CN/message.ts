@@ -18,6 +18,11 @@ const message: Record<string, string> = {
   'message.oauth.bind.success': '绑定账号成功',
   'message.oauth.invalid': 'OAuth ID 不正确',
 
+  // Reset password
+  'message.reset-password.verify.success': '验证成功',
+  'message.reset-password.verify.email.invalid': `邮箱地址没有和账号绑定`,
+  'message.reset-password.reset.success': '重置密码成功, 请登录',
+
   // Permission
   'message.permission.denied': '没有权限'
 }

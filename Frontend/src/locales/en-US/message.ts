@@ -18,6 +18,11 @@ const message: Record<string, string> = {
   'message.oauth.bind.success': 'Successfully bound account',
   'message.oauth.invalid': 'Invalid OAuth ID',
 
+  // Reset password
+  'message.reset-password.verify.success': 'Verify Success',
+  'message.reset-password.verify.email.invalid': `E-mail address isn't associated with an account`,
+  'message.reset-password.reset.success': 'Successfully reset password, Please log in',
+
   // Permission
   'message.permission.denied': 'Permission denied'
 }

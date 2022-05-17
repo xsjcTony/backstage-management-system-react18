@@ -445,7 +445,7 @@ const Register = (): JSX.Element => {
       <ProFormText.Password
         fieldProps={passwordCheckFieldProps}
         name="password-check"
-        placeholder={intl.formatMessage({ id: 'pages.register.placeholder.password' })}
+        placeholder={intl.formatMessage({ id: 'pages.register.placeholder.password-check' })}
         rules={passwordCheckRules}
       />
     </>

@@ -10,7 +10,7 @@ import AccountUserRule from '../validator/accountUserRule'
 import BindAccountRule from '../validator/BindAccountRule'
 import EmailUserRule from '../validator/emailUserRule'
 import type { User } from '../model/User'
-import type { RegisterData, LoginData, OAuthBindData } from '../types'
+import type { RegisterData, LoginData, OAuthBindData, VerifyEmailData, ResetPasswordData } from '../types'
 
 
 /**
@@ -102,6 +102,43 @@ export default class UserController extends Controller {
       const token = jwt.sign(user, this.config.keys, { expiresIn: '7d' })
 
       ctx.success(200, 'message.oauth.bind.success', { ...user, token })
+    } catch (err) {
+      if (err instanceof Error) {
+        ctx.error(400, err.message, err)
+      } else {
+        ctx.error(400, 'error', err)
+      }
+    }
+  }
+
+
+  public async verifyEmail(): Promise<void> {
+    const { ctx } = this
+    const { email, captcha }: VerifyEmailData = ctx.request.body
+
+    try {
+      await ctx.service.user.findByEmail(email)
+      ctx.helper.verifyEmail(captcha)
+
+      ctx.success(200, 'message.reset-password.verify.success')
+    } catch (err) {
+      if (err instanceof Error) {
+        ctx.error(400, err.message, err)
+      } else {
+        ctx.error(400, 'error', err)
+      }
+    }
+  }
+
+
+  public async resetPassword(): Promise<void> {
+    const { ctx } = this
+    const { email, password }: ResetPasswordData = ctx.request.body
+
+    try {
+      await ctx.service.user.resetPassword(email, password)
+
+      ctx.success(200, 'message.reset-password.reset.success')
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)

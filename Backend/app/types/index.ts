@@ -17,6 +17,11 @@ interface EmailRegisterData extends BaseRegisterData {
 
 export type RegisterData = AccountRegisterData | EmailRegisterData
 
+export interface ResetPasswordData {
+  email: string
+  password: string
+}
+
 
 // Email Verification
 export interface EmailInfo {
@@ -24,6 +29,11 @@ export interface EmailInfo {
   to: string
   subject: string
   text: string
+}
+
+export interface VerifyEmailData {
+  email: string
+  captcha: string
 }
 
 
