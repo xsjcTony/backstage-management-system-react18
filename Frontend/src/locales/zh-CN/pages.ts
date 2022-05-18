@@ -12,6 +12,8 @@ const pages: Record<string, string> = {
   'pages.home.logout': '退出登录',
 
   // Admin
+  'pages.admin.home': '首页',
+
   // Welcome
   'pages.admin.welcome.title': '欢迎',
 

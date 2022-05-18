@@ -12,6 +12,8 @@ const pages: Record<string, string> = {
   'pages.home.logout': 'Log out',
 
   // Admin
+  'pages.admin.home': 'Home',
+
   // Welcome
   'pages.admin.welcome.title': 'Welcome',
 

@@ -7,5 +7,5 @@ export const breadcrumbItemRender = (route: Route, params: any, routes: Route[],
 
   return isLast
     ? <span>{route.breadcrumbName}</span>
-    : <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+    : <Link to={`/${paths.join('/')}`}>{route.breadcrumbName}</Link>
 }

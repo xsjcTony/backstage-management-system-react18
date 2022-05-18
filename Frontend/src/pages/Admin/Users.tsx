@@ -1,8 +1,11 @@
-import { PageContainer } from '@ant-design/pro-layout'
+import ProTable from '@ant-design/pro-table'
 import { useTitle } from 'ahooks'
+import { PageHeader } from 'antd'
 import { useIntl } from 'react-intl'
+import Footer from '../../components/Footer'
+import SubpageContainer from '../../components/SubpageContainer'
 import { breadcrumbItemRender } from '../../utils'
-import type { PageContainerProps } from '@ant-design/pro-layout'
+import type { PageHeaderProps } from 'antd'
 
 
 /**
@@ -30,16 +33,16 @@ const Users = (): JSX.Element => {
   /**
    * Header
    */
-  const breadcrumb: PageContainerProps['breadcrumb'] = {
+  const breadcrumb: PageHeaderProps['breadcrumb'] = {
     itemRender: breadcrumbItemRender,
     routes: [
       {
-        path: '/',
-        breadcrumbName: 'Home'
+        path: 'admin',
+        breadcrumbName: intl.formatMessage({ id: 'pages.admin.home' })
       },
       {
         path: '',
-        breadcrumbName: 'User List'
+        breadcrumbName: intl.formatMessage({ id: 'pages.admin.user-list.title' })
       }
     ]
   }
@@ -49,12 +52,18 @@ const Users = (): JSX.Element => {
    * Component
    */
   return (
-    <PageContainer
-      breadcrumb={breadcrumb}
-      title="User List"
+    <SubpageContainer
+      footer={<Footer />}
+      header={(
+        <PageHeader
+          breadcrumb={breadcrumb}
+          ghost={false}
+          title={intl.formatMessage({ id: 'pages.admin.user-list.title' })}
+        />
+      )}
     >
-      Welcome
-    </PageContainer>
+      <ProTable />
+    </SubpageContainer>
   )
 }
 

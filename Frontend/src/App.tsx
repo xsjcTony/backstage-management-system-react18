@@ -191,7 +191,7 @@ const App = (): JSX.Element => (
         <Route path="users" element={<Users />} />
         <Route path="roles" element={<Roles />} />
         <Route path="privileges" element={<Privileges />} />
-        <Route path="*" element={<Page404 />} />
+        <Route path="*" element={<Page404 homePath="/admin" />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

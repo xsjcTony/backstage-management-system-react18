@@ -11,6 +11,7 @@ import SelectLanguage from '../locales/components/SelectLanguage'
  * Types
  */
 interface Page404Props {
+  homePath?: string
   lang?: boolean
 }
 
@@ -35,7 +36,7 @@ const FixedSelectLanguage = styled(SelectLanguage)`
 /**
  * Component
  */
-const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
+const Page404 = ({ homePath = '/', lang = false }: Page404Props): JSX.Element => {
   const intl = useIntl()
   const navigate = useNavigate()
 
@@ -47,7 +48,7 @@ const Page404 = ({ lang = false }: Page404Props): JSX.Element => {
         extra={(
           <Button
             type="primary"
-            onClick={() => void navigate('/', { replace: true })}
+            onClick={() => void navigate(homePath, { replace: true })}
           >
             {intl.formatMessage({ id: 'pages.404.back' })}
           </Button>
