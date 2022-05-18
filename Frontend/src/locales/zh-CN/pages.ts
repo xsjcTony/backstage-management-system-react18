@@ -12,9 +12,16 @@ const pages: Record<string, string> = {
   'pages.home.logout': '退出登录',
 
   // Admin
+  // Welcome
   'pages.admin.welcome.title': '欢迎',
+
+  // User List
   'pages.admin.user-list.title': '用户列表',
+
+  // Role List
   'pages.admin.role-list.title': '角色列表',
+
+  // Privilege List
   'pages.admin.privilege-list.title': '权限列表',
 
   // Login

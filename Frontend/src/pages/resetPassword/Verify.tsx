@@ -63,7 +63,7 @@ const VerifyEmailContainer = styled.div`
         }
     }
 
-    .register-form-container {
+    .verify-form-container {
         flex: 1;
         padding: 30px 0;
 
@@ -255,7 +255,7 @@ const Verify = (): JSX.Element => {
         </div>
         <SelectLanguage size="24" />
       </div>
-      <div className="register-form-container">
+      <div className="verify-form-container">
         <LoginForm
           form={formInstance}
           logo={logo}

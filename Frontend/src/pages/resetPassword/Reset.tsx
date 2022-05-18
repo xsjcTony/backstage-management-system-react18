@@ -65,7 +65,7 @@ const ResetPasswordContainer = styled.div`
         }
     }
 
-    .register-form-container {
+    .reset-form-container {
         flex: 1;
         padding: 30px 0;
 
@@ -203,7 +203,6 @@ const Reset = (): JSX.Element => {
    * Reset password
    */
   const _resetPassword = async (err: ValidateErrorEntity<ResetPasswordData>): Promise<void> => new Promise(async (resolve, reject) => {
-    console.log(err)
     const { errorFields, values } = err
 
     if (errorFields.length !== 0) {
@@ -251,7 +250,7 @@ const Reset = (): JSX.Element => {
         </div>
         <SelectLanguage size="24" />
       </div>
-      <div className="register-form-container">
+      <div className="reset-form-container">
         <LoginForm
           form={formInstance}
           logo={logo}

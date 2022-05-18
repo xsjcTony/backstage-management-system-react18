@@ -12,9 +12,16 @@ const pages: Record<string, string> = {
   'pages.home.logout': 'Log out',
 
   // Admin
+  // Welcome
   'pages.admin.welcome.title': 'Welcome',
+
+  // User List
   'pages.admin.user-list.title': 'User List',
+
+  // Role List
   'pages.admin.role-list.title': 'Role List',
+
+  // Privilege List
   'pages.admin.privilege-list.title': 'Privilege List',
 
   // Login
