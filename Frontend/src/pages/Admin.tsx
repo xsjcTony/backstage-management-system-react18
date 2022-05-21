@@ -166,6 +166,7 @@ const Admin = (): JSX.Element => {
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
   const currentUser = useSelector((state: RootState) => state.authentication.currentUser)
+  const assetBaseUrl = useSelector((state: RootState) => state.layout.assetBaseUrl)
 
 
   /**
@@ -301,7 +302,7 @@ const Admin = (): JSX.Element => {
                 icon={<UserOutlined />}
                 shape="circle"
                 size="default"
-                src="/src/assets/images/avatar.jpg"
+                src={`${assetBaseUrl}${currentUser.avatarUrl}`}
               />
               {currentUser.username ?? currentUser.email ?? 'Placeholder'}
             </div>

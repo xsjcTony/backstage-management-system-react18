@@ -14,6 +14,11 @@ export interface User {
 
 export type UserWithJWT = User & { token: string }
 
+export interface UserQueryResponse {
+  rows: User[]
+  count: number
+}
+
 /**
  * Role
  */

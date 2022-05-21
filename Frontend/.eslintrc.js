@@ -110,7 +110,7 @@ module.exports = {
     'react/no-unused-prop-types': 'error',
     'react/prop-types': ['error', { skipUndeclared: true }],
     'react/react-in-jsx-scope': 'off', // disabled for JSX transform from React 17
-    // 'react/require-default-props': ['error', { functions: 'defaultArguments' }],
+    'react/require-default-props': ['error', { functions: 'defaultArguments' }],
     'react/self-closing-comp': [
       'error',
       {
