@@ -1,10 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { DeleteOutlined, EditOutlined, SettingOutlined } from '@ant-design/icons'
+import {
+  DeleteOutlined,
+  EditOutlined, ExportOutlined,
+  ImportOutlined,
+  PlusOutlined,
+  SettingOutlined,
+  UserOutlined
+} from '@ant-design/icons'
 import ProTable from '@ant-design/pro-table'
 import { useTitle } from 'ahooks'
-import { Button, message, PageHeader, Switch, Tag } from 'antd'
-import { useEffect, useState } from 'react'
+import { Avatar, Button, message, PageHeader, Switch, Tag } from 'antd'
+import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -15,7 +22,7 @@ import { breadcrumbItemRender } from '../../utils'
 import type { ResponseData } from '../../services/types'
 import type { RootState } from '../../store'
 import type { User, UserQueryResponse } from '../../types'
-import type { ProColumns } from '@ant-design/pro-table'
+import type { ProColumns, ProTableProps } from '@ant-design/pro-table'
 import type { PageHeaderProps } from 'antd'
 
 
@@ -27,8 +34,6 @@ export interface UserQueryData {
   origin: '' | 'github' | 'local'
   type: '' | 'email' | 'username'
   keyword: string
-  currentPageNumber?: number
-  pageSize?: number
 }
 
 
@@ -36,13 +41,20 @@ export interface UserQueryData {
  * Style
  */
 const StyledSubpageContainer = styled(SubpageContainer)`
-    .actions {
+    .actions-header {
+        display: flex;
+        gap: 8px;
+        margin: 0 10px;
+        
+        span {
+            margin-right: 0;
+        }
+    }
+    
+    .actions-body {
         display: flex;
         gap: 10px;
-        
-        .ant-btn {
-            border-radius: 4px;
-        }
+        margin: 0 10px;
         
         .setting {
             background-color: #faad14;
@@ -71,6 +83,7 @@ const Users = (): JSX.Element => {
    */
   const intl = useIntl()
   const currentUser = useSelector((state: RootState) => state.authentication.currentUser)
+  const assetBaseUrl = useSelector((state: RootState) => state.layout.assetBaseUrl)
 
 
   /**
@@ -104,43 +117,38 @@ const Users = (): JSX.Element => {
     role: '',
     origin: '',
     type: '',
-    keyword: '',
-    currentPageNumber: 1,
-    pageSize: parseInt(sessionStorage.getItem('userTablePageSize') ?? '10') || 10
+    keyword: ''
   })
 
-  const queryUsers = async (queryData: UserQueryData): Promise<void> => {
-    let response: ResponseData<UserQueryResponse>
+  const request: ProTableProps<User, UserQueryData>['request'] = async (params) => {
+    let data: ResponseData<UserQueryResponse>
 
     try {
-      response = await getUsersByQuery(queryData)
+      data = await getUsersByQuery({ ...queryData, ...params })
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
-      return
+      return {
+        data: undefined,
+        success: false,
+        total: 0
+      }
     }
 
-    if (response.code !== 200) {
-      void message.error(intl.formatMessage({ id: response.msg }), 3)
-      return
+    if (data.code !== 200) {
+      void message.error(intl.formatMessage({ id: data.msg }), 3)
+      return {
+        data: undefined,
+        success: false,
+        total: 0
+      }
     }
 
-    setUsers(response.data.rows)
-    setTotalUserCounts(response.data.count)
+    return {
+      data: data.data.rows,
+      success: true,
+      total: data.data.count
+    }
   }
-
-  const query = () => { /* TODO: query button */ }
-
-  // query users when component is first time loaded
-  useEffect(() => {
-    void queryUsers(queryData)
-  }, [])
-
-
-  /**
-   * Data
-   */
-  const [users, setUsers] = useState<User[]>([])
-  const [totalUserCounts, setTotalUserCounts] = useState<number>(0)
 
 
   /**
@@ -149,36 +157,77 @@ const Users = (): JSX.Element => {
   const columns: ProColumns<User>[] = [
     {
       key: 'index',
+      align: 'center',
+      search: false,
       render: (value, record, index) => index + 1
     },
     {
-      title: 'Username',
+      key: 'avatar',
+      align: 'center',
+      search: false,
+      title: intl.formatMessage({ id: 'pages.admin.user-list.table.header.avatar' }),
+      render: (value, record) => (
+        <Avatar
+          alt="avatar"
+          icon={<UserOutlined />}
+          shape="circle"
+          size="default"
+          src={`${assetBaseUrl}${record.avatarUrl}`}
+        />
+      )
+    },
+    {
+      align: 'center',
+      title: intl.formatMessage({ id: 'pages.admin.user-list.table.header.username' }),
       dataIndex: 'username'
     },
     {
-      title: 'E-mail',
+      align: 'center',
+      title: intl.formatMessage({ id: 'pages.admin.user-list.table.header.email' }),
       dataIndex: 'email'
     },
     {
+      align: 'center',
+      search: false,
       key: 'roles',
-      title: 'Role',
-      render: (value, record) => record.roles.map(role => <Tag key={role.id} color="processing">{role.roleName}</Tag>)
+      title: intl.formatMessage({ id: 'pages.admin.user-list.table.header.role' }),
+      render: (value, record) => {
+        if (record.roles.length === 0) {
+          return '-'
+        } else {
+          return record.roles.map(role => (
+            <Tag key={role.id} color="processing">
+              {role.roleName}
+            </Tag>
+          ))
+        }
+      }
     },
     {
-      title: 'State',
+      align: 'center',
+      search: false,
+      title: intl.formatMessage({ id: 'pages.admin.user-list.table.header.state' }),
       dataIndex: 'userState',
       render: (value, record) => <Switch checked={record.userState} />
     },
     {
+      width: 1,
+      search: false,
       title: (
-        <div>
-          <Tag color="processing">Edit</Tag>
-          <Tag color="warning">Assign roles</Tag>
-          <Tag color="error">Delete</Tag>
+        <div className="actions-header">
+          <Tag color="processing">
+            {intl.formatMessage({ id: 'pages.admin.user-list.table.header.actions.edit' })}
+          </Tag>
+          <Tag color="warning">
+            {intl.formatMessage({ id: 'pages.admin.user-list.table.header.actions.assign-roles' })}
+          </Tag>
+          <Tag color="error">
+            {intl.formatMessage({ id: 'pages.admin.user-list.table.header.actions.delete' })}
+          </Tag>
         </div>
       ),
       render: (value, record) => (
-        <div className="actions">
+        <div className="actions-body">
           <Button type="primary">
             <EditOutlined />
           </Button>
@@ -195,6 +244,21 @@ const Users = (): JSX.Element => {
     }
   ]
 
+  const toolbar: ProTableProps<User, UserQueryData>['toolbar'] = {
+    title: <Tag color="success">You</Tag>,
+    actions: [
+      <Button key="addUsers" icon={<PlusOutlined />} type="primary">
+        {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.add-users' })}
+      </Button>,
+      <Button key="importUsers" icon={<ImportOutlined />} type="primary">
+        {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.import-users' })}
+      </Button>,
+      <Button key="exportUsers" icon={<ExportOutlined />} type="primary">
+        {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.export-users' })}
+      </Button>
+    ]
+  }
+
 
   /**
    * Component
@@ -210,12 +274,13 @@ const Users = (): JSX.Element => {
         />
       )}
     >
-      <ProTable<User>
+      <ProTable<User, UserQueryData>
         bordered
         columns={columns}
-        dataSource={users}
+        request={request}
         rowClassName={record => record.id === currentUser?.id ? 'current-user-row' : ''}
         rowKey={record => record.id}
+        toolbar={toolbar}
       />
     </StyledSubpageContainer>
   )

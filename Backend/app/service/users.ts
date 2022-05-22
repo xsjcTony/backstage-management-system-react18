@@ -64,8 +64,8 @@ export default class UsersService extends Service {
       }]
     }
 
-    if (query.currentPageNumber && query.pageSize) {
-      const currentPageNumber = parseInt(query.currentPageNumber) || 1
+    if (query.current && query.pageSize) {
+      const currentPageNumber = parseInt(query.current) || 1
       const pageSize = parseInt(query.pageSize) || 10
 
       baseOptions = {

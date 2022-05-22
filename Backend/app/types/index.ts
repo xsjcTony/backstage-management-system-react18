@@ -118,7 +118,7 @@ export interface UserQueryData {
   origin: '' | 'github' | 'local'
   type: '' | 'email' | 'username'
   keyword: string
-  currentPageNumber?: string
+  current?: string
   pageSize?: string
 }
 

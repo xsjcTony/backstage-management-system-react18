@@ -19,6 +19,17 @@ const pages: Record<string, string> = {
 
   // User List
   'pages.admin.user-list.title': 'User List',
+  'pages.admin.user-list.table.header.avatar': 'Avatar',
+  'pages.admin.user-list.table.header.username': 'Username',
+  'pages.admin.user-list.table.header.email': 'E-mail',
+  'pages.admin.user-list.table.header.role': 'Role',
+  'pages.admin.user-list.table.header.state': 'State',
+  'pages.admin.user-list.table.header.actions.edit': 'Edit',
+  'pages.admin.user-list.table.header.actions.assign-roles': 'Assign roles',
+  'pages.admin.user-list.table.header.actions.delete': 'Delete',
+  'pages.admin.user-list.table.actions.add-users': 'Add user',
+  'pages.admin.user-list.table.actions.import-users': 'Import users',
+  'pages.admin.user-list.table.actions.export-users': 'Export users',
 
   // Role List
   'pages.admin.role-list.title': 'Role List',

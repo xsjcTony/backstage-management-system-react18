@@ -19,6 +19,17 @@ const pages: Record<string, string> = {
 
   // User List
   'pages.admin.user-list.title': '用户列表',
+  'pages.admin.user-list.table.header.avatar': '头像',
+  'pages.admin.user-list.table.header.username': '用户名',
+  'pages.admin.user-list.table.header.email': '邮箱地址',
+  'pages.admin.user-list.table.header.role': '角色',
+  'pages.admin.user-list.table.header.state': '状态',
+  'pages.admin.user-list.table.header.actions.edit': '编辑',
+  'pages.admin.user-list.table.header.actions.assign-roles': '分配角色',
+  'pages.admin.user-list.table.header.actions.delete': '删除',
+  'pages.admin.user-list.table.actions.add-users': '添加用户',
+  'pages.admin.user-list.table.actions.import-users': '导入用户',
+  'pages.admin.user-list.table.actions.export-users': '导出用户',
 
   // Role List
   'pages.admin.role-list.title': '角色列表',
