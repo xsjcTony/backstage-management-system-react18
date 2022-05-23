@@ -30,6 +30,7 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.table.actions.add-users': '添加用户',
   'pages.admin.user-list.table.actions.import-users': '导入用户',
   'pages.admin.user-list.table.actions.export-users': '导出用户',
+  'pages.admin.user-list.user.state.updated': '用户状态更新成功',
 
   // Role List
   'pages.admin.role-list.title': '角色列表',

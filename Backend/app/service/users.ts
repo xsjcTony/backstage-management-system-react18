@@ -2,6 +2,7 @@
 
 import { Service } from 'egg'
 import { Op } from 'sequelize'
+import { Privilege } from '../model/Privilege'
 import { Role } from '../model/Role'
 import type { User } from '../model/User'
 import type {
@@ -13,7 +14,6 @@ import type {
 import type { WhereOptions } from 'sequelize'
 import type { ICreateOptions, IFindOptions } from 'sequelize-typescript'
 import type { IWhereOptions } from 'sequelize-typescript/lib/interfaces/IWhereOptions'
-import { Privilege } from '../model/Privilege'
 
 
 export default class UsersService extends Service {
@@ -75,44 +75,17 @@ export default class UsersService extends Service {
       }
     }
 
-    const { role, origin, type, keyword } = query
+    const { username, email } = query
 
     let whereOptions: IWhereOptions<unknown> = {}
 
-    // origin indicated
-    if (origin) {
-      if (origin === 'github') {
-        whereOptions = {
-          ...whereOptions,
-          [origin]: true
-        }
-      } else {
-        whereOptions = {
-          ...whereOptions,
-          github: false
-        }
-      }
-    }
-
-    // type indicated
-    if (type) {
+    if (username || email) {
       whereOptions = {
-        ...whereOptions,
-        [type]: { [Op.substring]: keyword }
-      }
-    } else {
-      whereOptions = {
-        ...whereOptions,
         [Op.or]: [
-          { username: { [Op.substring]: keyword } },
-          { email: { [Op.substring]: keyword } }
+          { username: { [Op.substring]: username } },
+          { email: { [Op.substring]: email } }
         ]
       }
-    }
-
-    // role indicated
-    if (role) {
-
     }
 
     return this.ctx.model.User.findAndCountAll({
@@ -135,14 +108,14 @@ export default class UsersService extends Service {
     if (username) {
       const user = await this._findUser({ username })
       if (user) {
-        throw new Error(`Username "${ username }" already exists`)
+        throw new Error(`Username "${username}" already exists`)
       }
     }
 
     if (email) {
       const user = await this._findUser({ email })
       if (user) {
-        throw new Error(`Email "${ email }" already exists`)
+        throw new Error(`Email "${email}" already exists`)
       }
     }
 
@@ -238,7 +211,7 @@ export default class UsersService extends Service {
     if (user) {
       return user
     } else {
-      throw new Error('User doesn\'t exist.')
+      throw new Error('message.users.user.missing')
     }
   }
 

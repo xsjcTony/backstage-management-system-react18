@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import styled from 'styled-components'
 import type { PropsWithChildren, ReactNode } from 'react'
 
@@ -28,8 +30,8 @@ const Container = styled.div`
 const SubpageContainer = ({
   header = undefined,
   footer = undefined,
-  className,
-  children
+  children = undefined,
+  className
 }: PropsWithChildren<SubpageContainerProps>): JSX.Element => (
   <Container className={className}>
     {header}

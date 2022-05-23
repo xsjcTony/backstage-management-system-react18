@@ -126,7 +126,7 @@ export default class UsersController extends Controller {
       // save into database
       const user = await ctx.service.users.updateUser(ctx.params.id, data)
 
-      ctx.success(200, 'User has been updated', user)
+      ctx.success(200, 'message.users.user.updated', user)
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)

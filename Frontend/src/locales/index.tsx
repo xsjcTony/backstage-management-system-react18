@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import { useEffect, useState } from 'react'
 import { IntlProvider as ReactIntlProvider } from 'react-intl'
 import { useSelector } from 'react-redux'
@@ -16,7 +18,7 @@ const IntlProvider = ({ children }: PropsWithChildren<{}>): JSX.Element => {
   useEffect(() => {
     import(`../locales/${locale}.ts`)
       .then(module => void setMessage(module.default))
-      .catch((err) => {
+      .catch(() => {
         console.error(`Locale "${locale}" does not exist, using default "en-US" instead`)
         setMessage(enUS)
       })

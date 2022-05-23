@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import { ConfigProvider } from 'antd'
 import enUS from 'antd/es/locale/en_US'
 import { useEffect, useState } from 'react'
@@ -19,7 +21,7 @@ const AntdConfigProvider = ({ children }: PropsWithChildren<{}>): JSX.Element =>
 
     import(`../../node_modules/antd/es/locale/${_locale}.js`)
       .then(module => void setAntdLocale(module.default))
-      .catch((err) => {
+      .catch(() => {
         console.error(`Ant Design's locale "${_locale}" does not exist, using default "en_US" instead`)
         setAntdLocale(enUS)
       })

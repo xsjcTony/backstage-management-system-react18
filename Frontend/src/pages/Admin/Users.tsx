@@ -11,13 +11,12 @@ import {
 import ProTable from '@ant-design/pro-table'
 import { useTitle } from 'ahooks'
 import { Avatar, Button, message, PageHeader, Switch, Tag } from 'antd'
-import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import Footer from '../../components/Footer'
 import SubpageContainer from '../../components/SubpageContainer'
-import { getUsersByQuery } from '../../services/users'
+import { getUsersByQuery, updateUserState } from '../../services/users'
 import { breadcrumbItemRender } from '../../utils'
 import type { ResponseData } from '../../services/types'
 import type { RootState } from '../../store'
@@ -30,10 +29,8 @@ import type { PageHeaderProps } from 'antd'
  * Types
  */
 export interface UserQueryData {
-  role: string
-  origin: '' | 'github' | 'local'
-  type: '' | 'email' | 'username'
-  keyword: string
+  username?: string
+  email?: string
 }
 
 
@@ -113,18 +110,11 @@ const Users = (): JSX.Element => {
   /**
    * Query
    */
-  const [queryData, setQueryData] = useState<UserQueryData>({
-    role: '',
-    origin: '',
-    type: '',
-    keyword: ''
-  })
-
   const request: ProTableProps<User, UserQueryData>['request'] = async (params) => {
     let data: ResponseData<UserQueryResponse>
 
     try {
-      data = await getUsersByQuery({ ...queryData, ...params })
+      data = await getUsersByQuery(params)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return {
@@ -150,6 +140,26 @@ const Users = (): JSX.Element => {
     }
   }
 
+  const changeUserState = async (user: User, checked: boolean): Promise<void> => {
+    let res: ResponseData<User>
+
+    try {
+      res = await updateUserState(user.id, checked)
+    } catch (err) {
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+      return
+    }
+
+    if (res.code !== 200) {
+      void message.error(intl.formatMessage({ id: res.msg }), 3)
+      return
+    }
+
+    void message.success(intl.formatMessage({ id: 'pages.admin.user-list.user.state.updated' }), 3)
+    user.userState = checked
+    return
+  }
+
 
   /**
    * Table
@@ -158,12 +168,14 @@ const Users = (): JSX.Element => {
     {
       key: 'index',
       align: 'center',
+      width: 50,
       search: false,
       render: (value, record, index) => index + 1
     },
     {
       key: 'avatar',
       align: 'center',
+      width: 80,
       search: false,
       title: intl.formatMessage({ id: 'pages.admin.user-list.table.header.avatar' }),
       render: (value, record) => (
@@ -205,10 +217,16 @@ const Users = (): JSX.Element => {
     },
     {
       align: 'center',
+      width: 80,
       search: false,
       title: intl.formatMessage({ id: 'pages.admin.user-list.table.header.state' }),
       dataIndex: 'userState',
-      render: (value, record) => <Switch checked={record.userState} />
+      render: (value, record) => (
+        <Switch
+          checked={record.userState}
+          onChange={checked => void changeUserState(record, checked)}
+        />
+      )
     },
     {
       width: 1,

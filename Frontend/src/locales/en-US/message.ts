@@ -24,7 +24,12 @@ const message: Record<string, string> = {
   'message.reset-password.reset.success': 'Successfully reset password, Please log in',
 
   // Permission
-  'message.permission.denied': 'Permission denied'
+  'message.permission.denied': 'Permission denied',
+
+  // Admin
+  // Users
+  'message.users.user.missing': `User doesn't exist`,
+  'message.users.user.updated': `User has been updated`
 }
 
 export default message

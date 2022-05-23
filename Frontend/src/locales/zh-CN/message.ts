@@ -24,7 +24,12 @@ const message: Record<string, string> = {
   'message.reset-password.reset.success': '重置密码成功, 请登录',
 
   // Permission
-  'message.permission.denied': '没有权限'
+  'message.permission.denied': '没有权限',
+
+  // Admin
+  // Users
+  'message.users.user.missing': `用户不存在`,
+  'message.users.user.updated': `更新用户成功`
 }
 
 export default message

@@ -30,6 +30,7 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.table.actions.add-users': 'Add user',
   'pages.admin.user-list.table.actions.import-users': 'Import users',
   'pages.admin.user-list.table.actions.export-users': 'Export users',
+  'pages.admin.user-list.user.state.updated': 'User state has been updated',
 
   // Role List
   'pages.admin.role-list.title': 'Role List',

@@ -114,10 +114,8 @@ export interface UserResponse {
 }
 
 export interface UserQueryData {
-  role: string
-  origin: '' | 'github' | 'local'
-  type: '' | 'email' | 'username'
-  keyword: string
+  username?: string
+  email?: string
   current?: string
   pageSize?: string
 }
