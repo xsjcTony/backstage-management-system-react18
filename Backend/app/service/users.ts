@@ -79,12 +79,17 @@ export default class UsersService extends Service {
 
     let whereOptions: IWhereOptions<unknown> = {}
 
-    if (username || email) {
+    if (username) {
       whereOptions = {
-        [Op.or]: [
-          { username: { [Op.substring]: username } },
-          { email: { [Op.substring]: email } }
-        ]
+        ...whereOptions,
+        username: { [Op.substring]: username }
+      }
+    }
+
+    if (email) {
+      whereOptions = {
+        ...whereOptions,
+        email: { [Op.substring]: email }
       }
     }
 

@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import {
   DeleteOutlined,
   EditOutlined, ExportOutlined,
@@ -9,8 +7,9 @@ import {
   UserOutlined
 } from '@ant-design/icons'
 import ProTable from '@ant-design/pro-table'
-import { useTitle } from 'ahooks'
+import { useRequest, useTitle } from 'ahooks'
 import { Avatar, Button, message, PageHeader, Switch, Tag } from 'antd'
+import { useRef } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -21,7 +20,7 @@ import { breadcrumbItemRender } from '../../utils'
 import type { ResponseData } from '../../services/types'
 import type { RootState } from '../../store'
 import type { User, UserQueryResponse } from '../../types'
-import type { ProColumns, ProTableProps } from '@ant-design/pro-table'
+import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
 import type { PageHeaderProps } from 'antd'
 
 
@@ -31,6 +30,8 @@ import type { PageHeaderProps } from 'antd'
 export interface UserQueryData {
   username?: string
   email?: string
+  current?: number
+  pageSize?: number
 }
 
 
@@ -108,7 +109,7 @@ const Users = (): JSX.Element => {
 
 
   /**
-   * Query
+   * Methods
    */
   const request: ProTableProps<User, UserQueryData>['request'] = async (params) => {
     let data: ResponseData<UserQueryResponse>
@@ -140,25 +141,30 @@ const Users = (): JSX.Element => {
     }
   }
 
-  const changeUserState = async (user: User, checked: boolean): Promise<void> => {
+  const _changeUserState = async (user: User, checked: boolean): Promise<void> => new Promise(async (resolve, reject) => {
     let res: ResponseData<User>
 
     try {
       res = await updateUserState(user.id, checked)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
-      return
+      return void reject()
     }
 
     if (res.code !== 200) {
       void message.error(intl.formatMessage({ id: res.msg }), 3)
-      return
+      return void reject()
     }
 
+    await tableRef.current?.reload()
     void message.success(intl.formatMessage({ id: 'pages.admin.user-list.user.state.updated' }), 3)
-    user.userState = checked
-    return
-  }
+    return void resolve()
+  })
+
+  const { loading: changingUserState, run: changeUserState } = useRequest(_changeUserState, {
+    manual: true,
+    onError: () => { /* Prevent printing meaningless error in console */ }
+  })
 
 
   /**
@@ -224,6 +230,7 @@ const Users = (): JSX.Element => {
       render: (value, record) => (
         <Switch
           checked={record.userState}
+          loading={changingUserState}
           onChange={checked => void changeUserState(record, checked)}
         />
       )
@@ -277,6 +284,18 @@ const Users = (): JSX.Element => {
     ]
   }
 
+  const pagination: ProTableProps<User, UserQueryData>['pagination'] = {
+    showSizeChanger: true,
+    showQuickJumper: true,
+    pageSizeOptions: [10, 20, 30, 50],
+    defaultPageSize: parseInt(sessionStorage.getItem('userTablePageSize') ?? '10') || 10,
+    onShowSizeChange: (page, size) => {
+      sessionStorage.setItem('userTablePageSize', size.toString(10))
+    }
+  }
+
+  const tableRef = useRef<ActionType>()
+
 
   /**
    * Component
@@ -294,7 +313,9 @@ const Users = (): JSX.Element => {
     >
       <ProTable<User, UserQueryData>
         bordered
+        actionRef={tableRef}
         columns={columns}
+        pagination={pagination}
         request={request}
         rowClassName={record => record.id === currentUser?.id ? 'current-user-row' : ''}
         rowKey={record => record.id}
