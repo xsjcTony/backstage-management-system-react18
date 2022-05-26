@@ -98,7 +98,7 @@ export default class UsersController extends Controller {
 
     try {
       const user = await ctx.service.users.deleteUser(ctx.params.id)
-      ctx.success(200, 'User has been deleted', user)
+      ctx.success(200, 'message.users.user.deleted', user)
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)
@@ -237,7 +237,7 @@ export default class UsersController extends Controller {
     const users = (await ctx.service.users.getAllUsers()).map(user => user.toJSON() as User)
 
     if (users.length === 0) {
-      ctx.error(500, 'No users')
+      ctx.error(500, 'message.users.export.no-user')
       return
     }
 

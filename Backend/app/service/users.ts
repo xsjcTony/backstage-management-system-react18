@@ -157,7 +157,7 @@ export default class UsersService extends Service {
       await user.destroy()
       return user
     } else {
-      throw new Error('User doesn\'t exist.')
+      throw new Error('message.users.user.missing')
     }
   }
 

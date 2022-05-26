@@ -28,8 +28,10 @@ const message: Record<string, string> = {
 
   // Admin
   // Users
-  'message.users.user.missing': `用户不存在`,
-  'message.users.user.updated': `更新用户成功`
+  'message.users.user.missing': '用户不存在',
+  'message.users.user.updated': '更新用户成功',
+  'message.users.user.deleted': '删除用户成功',
+  'message.users.export.no-user': '没有用户'
 }
 
 export default message

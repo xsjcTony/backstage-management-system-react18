@@ -29,7 +29,9 @@ const message: Record<string, string> = {
   // Admin
   // Users
   'message.users.user.missing': `User doesn't exist`,
-  'message.users.user.updated': `User has been updated`
+  'message.users.user.updated': 'User has been updated',
+  'message.users.user.deleted': 'User has been deleted',
+  'message.users.export.no-user': 'No users'
 }
 
 export default message

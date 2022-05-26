@@ -15,8 +15,8 @@ import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import Footer from '../../components/Footer'
 import SubpageContainer from '../../components/SubpageContainer'
-import { getUsersByQuery, updateUserState } from '../../services/users'
-import { breadcrumbItemRender } from '../../utils'
+import { deleteUser, exportAllUsers, getUsersByQuery, updateUserState } from '../../services/users'
+import { breadcrumbItemRender, downloadFile } from '../../utils'
 import type { ResponseData } from '../../services/types'
 import type { RootState } from '../../store'
 import type { User, UserQueryResponse } from '../../types'
@@ -141,11 +141,12 @@ const Users = (): JSX.Element => {
     }
   }
 
-  const _changeUserState = async (user: User, checked: boolean): Promise<void> => new Promise(async (resolve, reject) => {
+  // change user state
+  const _changeUserState = async (id: number, checked: boolean): Promise<void> => new Promise(async (resolve, reject) => {
     let res: ResponseData<User>
 
     try {
-      res = await updateUserState(user.id, checked)
+      res = await updateUserState(id, checked)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return void reject()
@@ -162,6 +163,57 @@ const Users = (): JSX.Element => {
   })
 
   const { loading: changingUserState, run: changeUserState } = useRequest(_changeUserState, {
+    manual: true,
+    onError: () => { /* Prevent printing meaningless error in console */ }
+  })
+
+  // delete user
+  const _removeUser = async (id: number): Promise<void> => new Promise(async (resolve, reject) => {
+    let res: ResponseData<User>
+
+    try {
+      res = await deleteUser(id)
+    } catch (err) {
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+      return void reject()
+    }
+
+    if (res.code !== 200) {
+      void message.error(intl.formatMessage({ id: res.msg }), 3)
+      return void reject()
+    }
+
+    await tableRef.current?.reload()
+    void message.success(intl.formatMessage({ id: res.msg }), 3)
+    return void resolve()
+  })
+
+  const { loading: deletingUser, run: removeUser } = useRequest(_removeUser, {
+    manual: true,
+    onError: () => { /* Prevent printing meaningless error in console */ }
+  })
+
+  // export all users
+  const _exportUsers = async (): Promise<void> => new Promise(async (resolve, reject) => {
+    let res: Blob | ResponseData
+
+    try {
+      res = await exportAllUsers()
+    } catch (err) {
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+      return void reject()
+    }
+
+    if ('code' in res) {
+      void message.error(intl.formatMessage({ id: res.msg }), 3)
+      return void reject()
+    }
+
+    downloadFile(res, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'users.xlsx')
+    return void resolve()
+  })
+
+  const { loading: exportingUsers, run: exportUsers } = useRequest(_exportUsers, {
     manual: true,
     onError: () => { /* Prevent printing meaningless error in console */ }
   })
@@ -231,7 +283,7 @@ const Users = (): JSX.Element => {
         <Switch
           checked={record.userState}
           loading={changingUserState}
-          onChange={checked => void changeUserState(record, checked)}
+          onChange={checked => void changeUserState(record.id, checked)}
         />
       )
     },
@@ -260,8 +312,8 @@ const Users = (): JSX.Element => {
             <SettingOutlined />
           </Button>
           {record.id !== currentUser?.id && (
-            <Button danger type="primary">
-              <DeleteOutlined />
+            <Button danger loading={deletingUser} type="primary">
+              <DeleteOutlined onClick={() => void removeUser(record.id)} />
             </Button>
           )}
         </div>
@@ -278,7 +330,13 @@ const Users = (): JSX.Element => {
       <Button key="importUsers" icon={<ImportOutlined />} type="primary">
         {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.import-users' })}
       </Button>,
-      <Button key="exportUsers" icon={<ExportOutlined />} type="primary">
+      <Button
+        key="exportUsers"
+        icon={<ExportOutlined />}
+        loading={exportingUsers}
+        type="primary"
+        onClick={exportUsers}
+      >
         {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.export-users' })}
       </Button>
     ]
