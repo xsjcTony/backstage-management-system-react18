@@ -42,8 +42,11 @@ export default {
     const data = w[0] ? w[0].data : []
     const keys = data.shift() as string[]
 
-    if (!keys.includes('password') || !keys.includes('username') && !keys.includes('email')) {
-      throw new Error('Invalid user data')
+    if (
+      !keys.includes('password')
+      || !keys.includes('username') && !keys.includes('email')
+    ) {
+      throw new Error('message.users.import.invalid')
     }
 
     const users: ImportUserData[] = []

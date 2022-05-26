@@ -107,20 +107,21 @@ export default class UsersService extends Service {
    * @return {Promise<User>}
    */
   public async createUser(data: AddUserData | ImportUserData, options?: ICreateOptions): Promise<User> {
-    const { username, email } = data
-    data.password = this.ctx.helper.encryptByMd5(data.password)
+    const obj = { ...data }
+    const { username, email } = obj
+    obj.password = this.ctx.helper.encryptByMd5(data.password)
 
     if (username) {
       const user = await this._findUser({ username })
       if (user) {
-        throw new Error(`Username "${username}" already exists`)
+        throw new Error(`message.register.username.exist`)
       }
     }
 
     if (email) {
       const user = await this._findUser({ email })
       if (user) {
-        throw new Error(`Email "${email}" already exists`)
+        throw new Error(`message.register.email.exist`)
       }
     }
 
@@ -128,7 +129,7 @@ export default class UsersService extends Service {
       throw new Error('Require at least one of username and email')
     }
 
-    return this.ctx.model.User.create(data, options)
+    return this.ctx.model.User.create(obj, options)
   }
 
 

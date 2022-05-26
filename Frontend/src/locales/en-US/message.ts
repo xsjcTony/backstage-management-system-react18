@@ -31,7 +31,9 @@ const message: Record<string, string> = {
   'message.users.user.missing': `User doesn't exist`,
   'message.users.user.updated': 'User has been updated',
   'message.users.user.deleted': 'User has been deleted',
-  'message.users.export.no-user': 'No users'
+  'message.users.export.no-user': 'No users',
+  'message.users.import.invalid': 'Invalid user data',
+  'message.users.import.success': 'Users have been imported'
 }
 
 export default message

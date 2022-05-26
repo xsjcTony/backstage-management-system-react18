@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons'
 import ProTable from '@ant-design/pro-table'
 import { useRequest, useTitle } from 'ahooks'
-import { Avatar, Button, message, PageHeader, Switch, Tag } from 'antd'
+import { Avatar, Button, message, PageHeader, Switch, Tag, Upload } from 'antd'
 import { useRef } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
@@ -21,7 +21,9 @@ import type { ResponseData } from '../../services/types'
 import type { RootState } from '../../store'
 import type { User, UserQueryResponse } from '../../types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
-import type { PageHeaderProps } from 'antd'
+import type { PageHeaderProps, UploadProps } from 'antd'
+import type { UploadChangeParam } from 'antd/es/upload'
+import type { UploadFile } from 'antd/es/upload/interface'
 
 
 /**
@@ -82,6 +84,7 @@ const Users = (): JSX.Element => {
   const intl = useIntl()
   const currentUser = useSelector((state: RootState) => state.authentication.currentUser)
   const assetBaseUrl = useSelector((state: RootState) => state.layout.assetBaseUrl)
+  const apiBaseUrl = useSelector((state: RootState) => state.layout.apiBaseUrl)
 
 
   /**
@@ -106,6 +109,14 @@ const Users = (): JSX.Element => {
       }
     ]
   }
+
+  const header = (
+    <PageHeader
+      breadcrumb={breadcrumb}
+      ghost={false}
+      title={intl.formatMessage({ id: 'pages.admin.user-list.title' })}
+    />
+  )
 
 
   /**
@@ -218,6 +229,44 @@ const Users = (): JSX.Element => {
     onError: () => { /* Prevent printing meaningless error in console */ }
   })
 
+  // import users
+  const beforeUpload: UploadProps['beforeUpload'] = (file) => {
+    const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
+    const isLt500KB = file.size / 1024 <= 500 // <= 500kb
+
+    if (!isXLSX) {
+      void message.error(intl.formatMessage({ id: 'pages.admin.user-list.users.import.file.type' }), 3)
+      return false
+    }
+
+    if (!isLt500KB) {
+      void message.error(intl.formatMessage({ id: 'pages.admin.user-list.users.import.file.type' }), 3)
+      return false
+    }
+
+    return true
+  }
+
+  const handleUpload: UploadProps['onChange'] = async (info: UploadChangeParam<UploadFile<ResponseData>>) => {
+    const { file: { status, response } } = info
+
+    if (status === 'error') {
+      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+      return
+    }
+
+    if (status === 'done') {
+      if (response?.code !== 200) {
+        void message.error(intl.formatMessage({ id: response?.msg ?? 'error.network' }), 3)
+        return
+      }
+
+      void tableRef.current?.reloadAndRest?.()
+      void message.success(intl.formatMessage({ id: response.msg }), 3)
+      return
+    }
+  }
+
 
   /**
    * Table
@@ -327,9 +376,21 @@ const Users = (): JSX.Element => {
       <Button key="addUsers" icon={<PlusOutlined />} type="primary">
         {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.add-users' })}
       </Button>,
-      <Button key="importUsers" icon={<ImportOutlined />} type="primary">
-        {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.import-users' })}
-      </Button>,
+      <Upload
+        key="importUsers"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        action={`${apiBaseUrl}/api/v1/import-users`}
+        beforeUpload={beforeUpload}
+        headers={{ Authorization: localStorage.getItem('token') ?? '' }}
+        method="post"
+        name="file"
+        showUploadList={false}
+        onChange={handleUpload}
+      >
+        <Button icon={<ImportOutlined />} type="primary">
+          {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.import-users' })}
+        </Button>
+      </Upload>,
       <Button
         key="exportUsers"
         icon={<ExportOutlined />}
@@ -361,13 +422,7 @@ const Users = (): JSX.Element => {
   return (
     <StyledSubpageContainer
       footer={<Footer />}
-      header={(
-        <PageHeader
-          breadcrumb={breadcrumb}
-          ghost={false}
-          title={intl.formatMessage({ id: 'pages.admin.user-list.title' })}
-        />
-      )}
+      header={header}
     >
       <ProTable<User, UserQueryData>
         bordered

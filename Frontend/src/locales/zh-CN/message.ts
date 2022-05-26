@@ -31,7 +31,9 @@ const message: Record<string, string> = {
   'message.users.user.missing': '用户不存在',
   'message.users.user.updated': '更新用户成功',
   'message.users.user.deleted': '删除用户成功',
-  'message.users.export.no-user': '没有用户'
+  'message.users.export.no-user': '没有用户',
+  'message.users.import.invalid': '用户数据不正确',
+  'message.users.import.success': '导入用户成功'
 }
 
 export default message

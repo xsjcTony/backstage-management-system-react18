@@ -191,7 +191,7 @@ export default class UsersController extends Controller {
   public async importUsers(): Promise<void> {
     const { ctx } = this
 
-    let users: ImportUserData[] = []
+    let users: ImportUserData[]
 
     try {
       users = ctx.helper.excelToUsers(ctx.request.files[0])
@@ -201,23 +201,21 @@ export default class UsersController extends Controller {
       } else {
         ctx.error(400, 'error', err)
       }
+      return
     } finally {
       void ctx.cleanupRequestFiles()
     }
 
     const transaction = await (ctx.model as unknown as Sequelize).transaction()
 
-    const res: User[] = []
-
     try {
       for (const user of users) {
         // @ts-ignore
-        const r = await ctx.service.users.createUser(user, { transaction })
-        res.push(r)
+        await ctx.service.users.createUser(user, { transaction })
       }
 
       await transaction.commit()
-      ctx.success(200, 'Users have been imported', res)
+      ctx.success(200, 'message.users.import.success')
     } catch (err) {
       await transaction.rollback()
 
