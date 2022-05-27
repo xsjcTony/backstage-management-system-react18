@@ -8,7 +8,7 @@ import {
 import ProTable from '@ant-design/pro-table'
 import { useRequest, useTitle } from 'ahooks'
 import { Avatar, Button, message, PageHeader, Switch, Tag, Upload } from 'antd'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
@@ -277,7 +277,7 @@ const Users = (): JSX.Element => {
       align: 'center',
       width: 50,
       search: false,
-      render: (value, record, index) => index + 1
+      render: (value, record, index) => (currentPageNumber - 1) * pageSize + index + 1
     },
     {
       key: 'avatar',
@@ -401,13 +401,18 @@ const Users = (): JSX.Element => {
     ]
   }
 
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(parseInt(sessionStorage.getItem('userTablePageSize') ?? '10') || 10)
+
   const pagination: ProTableProps<User, UserQueryData>['pagination'] = {
     showSizeChanger: true,
     showQuickJumper: true,
     pageSizeOptions: [10, 20, 30, 50],
-    defaultPageSize: parseInt(sessionStorage.getItem('userTablePageSize') ?? '10') || 10,
-    onShowSizeChange: (page, size) => {
-      sessionStorage.setItem('userTablePageSize', size.toString(10))
+    defaultPageSize: pageSize,
+    onChange: (page, pageSize) => {
+      setCurrentPageNumber(page)
+      setPageSize(pageSize)
+      sessionStorage.setItem('userTablePageSize', pageSize.toString(10))
     }
   }
 
