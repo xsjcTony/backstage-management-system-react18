@@ -76,7 +76,7 @@ const EmailInput = ({
     <ProFormText
       fieldProps={register ? registerEmailFieldProps : emailFieldProps}
       initialValue={initialValue}
-      name="username"
+      name="email"
       placeholder={placeholder ?? internalPlaceholder}
       rules={register ? registerEmailRules : emailRules}
     />

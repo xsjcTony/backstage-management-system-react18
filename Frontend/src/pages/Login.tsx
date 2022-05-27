@@ -1,11 +1,11 @@
-import { GithubOutlined, CheckOutlined } from '@ant-design/icons'
-import { LoginForm, ProFormText, ProFormCheckbox, ProForm } from '@ant-design/pro-form'
+import { GithubOutlined } from '@ant-design/icons'
+import { LoginForm, ProFormCheckbox, ProForm } from '@ant-design/pro-form'
 import { useRequest, useTitle } from 'ahooks'
 import { Tabs, Divider, Button, message } from 'antd'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../components/Footer'
@@ -15,13 +15,13 @@ import { getUserById } from '../services/users'
 import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
 import { isPromptInfo } from '../types/locationState'
 import EmailInput from './components/EmailInput'
+import ImageCaptcha from './components/ImageCaptcha'
 import PasswordInput from './components/PasswordInput'
 import UsernameInput from './components/UsernameInput'
 import type { ResponseData } from '../services/types'
 import type { AppDispatch, RootState } from '../store'
 import type { User, UserWithJWT } from '../types'
 import type { LoginFormProps } from '@ant-design/pro-form'
-import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
 import type { TabsProps } from 'antd'
 
 
@@ -90,17 +90,6 @@ const LoginContainer = styled.div`
             margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
-        }
-
-        .captcha-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-
-            .captcha-image {
-                height: 40px;
-                cursor: pointer;
-            }
         }
 
         .ant-pro-form-login-other {
@@ -236,25 +225,7 @@ const Login = (): JSX.Element => {
    */
   const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
 
-  const refreshCaptcha = (): void => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`)
-
-  const captchaFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <CheckOutlined className="prefix-icon" />,
-    maxLength: 4,
-    showCount: true
-  }
-
-  const captchaRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.login.error-message.captcha.missing' })
-    },
-    {
-      pattern: /^[A-Za-z0-9]{4}$/,
-      message: intl.formatMessage({ id: 'pages.login.error-message.captcha.invalid' })
-    }
-  ]
+  const refreshCaptcha = useCallback(() => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`), [apiBaseUrl])
 
 
   /**
@@ -361,27 +332,14 @@ const Login = (): JSX.Element => {
           {loginType === 'account' && <UsernameInput />}
           {loginType === 'email' && <EmailInput />}
           <PasswordInput formInstance={formInstance} />
-          <div className="captcha-container">
-            <ProFormText
-              fieldProps={captchaFieldProps}
-              name="captcha"
-              placeholder={intl.formatMessage({ id: 'pages.login.placeholder.captcha' })}
-              rules={captchaRules}
-            />
-            <img
-              alt="captcha"
-              className="captcha-image"
-              src={captchaSrc}
-              onClick={refreshCaptcha}
-            />
-          </div>
+          <ImageCaptcha refresh={refreshCaptcha} src={captchaSrc} />
           <div className="actions">
             <ProFormCheckbox noStyle name="remember">
               {intl.formatMessage({ id: 'pages.login.actions.remember-me' })}
             </ProFormCheckbox>
-            <a href="/reset_password/verify">
+            <Link replace={false} to="/reset_password/verify">
               {intl.formatMessage({ id: 'pages.login.actions.forgot-password' })}
-            </a>
+            </Link>
           </div>
         </LoginForm>
       </div>

@@ -1,30 +1,25 @@
-import {
-  UserOutlined,
-  MailOutlined,
-  LockOutlined,
-  CheckOutlined,
-  SafetyOutlined
-} from '@ant-design/icons'
-import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
+import { CheckOutlined } from '@ant-design/icons'
+import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox } from '@ant-design/pro-form'
 import { useBoolean, useRequest, useTitle } from 'ahooks'
-import { Button, Form, Popover, message } from 'antd'
+import { Button, Form, message } from 'antd'
 import { useIntl } from 'react-intl'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../../components/Footer'
-import PasswordStrength from '../../components/PasswordStrength'
 import SelectLanguage from '../../locales/components/SelectLanguage'
 import { bindAccount } from '../../services/oauth'
 import { sendVerificationEmail } from '../../services/register'
 import { getUserById } from '../../services/users'
 import { setCurrentUser, setLoggedIn } from '../../store/authentication/authenticationSlice'
+import EmailInput from '../components/EmailInput'
+import PasswordInput from '../components/PasswordInput'
+import UsernameInput from '../components/UsernameInput'
 import type { ResponseData } from '../../services/types'
 import type { AppDispatch } from '../../store'
 import type { UserWithJWT, User } from '../../types'
 import type { LoginFormProps, ProFormCaptchaProps } from '@ant-design/pro-form'
-import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
 import type { InternalFieldProps } from 'rc-field-form/es/Field'
 import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import type { ReactNode } from 'react'
@@ -146,100 +141,9 @@ const Github = (): JSX.Element => {
 
 
   /**
-   * Username
-   */
-  const usernameFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <UserOutlined className="prefix-icon" />,
-    maxLength: 20,
-    showCount: true
-  }
-
-  const usernameRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.register.error-message.username.missing' })
-    },
-    {
-      pattern: /^[A-Za-z0-9]{6,20}$/,
-      message: intl.formatMessage({ id: 'pages.register.error-message.username.rule' })
-    }
-  ]
-
-
-  /**
    * Email
    */
   const email = useWatch<string | undefined>('email', formInstance)
-
-  const emailFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <MailOutlined className="prefix-icon" />
-  }
-
-  const emailRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.register.error-message.email.missing' })
-    },
-    {
-      pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
-      message: intl.formatMessage({ id: 'pages.register.error-message.email.invalid' })
-    }
-  ]
-
-
-  /**
-   * Password
-   */
-  const password = useWatch<string | undefined>('password', formInstance)
-  const [passwordPopoverVisible, { setTrue: showPopover, setFalse: hidePopover }] = useBoolean(false)
-
-  // validate methods
-  const checkPassword = async (_: unknown, value: string): Promise<void> => {
-    const regex = /^((?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[,.#%'+*\-:;^_`].*))[,.#%'+*\-:;^_`0-9A-Za-z]{8,20}$/
-
-    if (!value) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password.missing' }))
-    }
-
-    void formInstance.validateFields(['password-check'])
-
-    if (!regex.test(value)) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password.rule' }))
-    }
-
-    return Promise.resolve()
-  }
-
-  const checkConfirmPassword = async (_: unknown, value: string): Promise<void> => {
-    if (value && value !== password) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password-check.invalid' }))
-    }
-    return Promise.resolve()
-  }
-
-  // props
-  const passwordFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <LockOutlined className="prefix-icon" />,
-    onFocus: showPopover,
-    onBlur: hidePopover
-  }
-
-  const passwordCheckFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <SafetyOutlined className="prefix-icon" />
-  }
-
-  // rules
-  const passwordCheckRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.register.error-message.password-check.missing' })
-    },
-    { validator: checkConfirmPassword }
-  ]
 
 
   /**
@@ -391,30 +295,6 @@ const Github = (): JSX.Element => {
   /**
    * Component
    */
-  const passwordForm = (
-    <>
-      <Popover
-        content={<PasswordStrength password={password} />}
-        overlayStyle={{ width: 240 }}
-        placement="right"
-        visible={passwordPopoverVisible}
-      >
-        <ProFormText.Password
-          fieldProps={passwordFieldProps}
-          name="password"
-          placeholder={intl.formatMessage({ id: 'pages.register.placeholder.password' })}
-          rules={[{ validator: checkPassword }]}
-        />
-      </Popover>
-      <ProFormText.Password
-        fieldProps={passwordCheckFieldProps}
-        name="password-check"
-        placeholder={intl.formatMessage({ id: 'pages.register.placeholder.password' })}
-        rules={passwordCheckRules}
-      />
-    </>
-  )
-
   return (
     <RegisterContainer>
       <div className="header">
@@ -436,19 +316,9 @@ const Github = (): JSX.Element => {
           title={intl.formatMessage({ id: 'pages.oauth.title' })}
           onFinishFailed={err => void register(err)}
         >
-          <ProFormText
-            fieldProps={usernameFieldProps}
-            name="username"
-            placeholder={intl.formatMessage({ id: 'pages.register.placeholder.username' })}
-            rules={usernameRules}
-          />
-          <ProFormText
-            fieldProps={emailFieldProps}
-            name="email"
-            placeholder={intl.formatMessage({ id: 'pages.register.placeholder.email' })}
-            rules={emailRules}
-          />
-          {passwordForm}
+          <UsernameInput register />
+          <EmailInput register />
+          <PasswordInput register formInstance={formInstance} />
           <ProFormCaptcha
             captchaProps={{ size: 'large' }}
             captchaTextRender={captchaTextRender}

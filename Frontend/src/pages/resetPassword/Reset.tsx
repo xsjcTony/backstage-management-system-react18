@@ -1,17 +1,19 @@
-import { MailOutlined, LockOutlined, SafetyOutlined } from '@ant-design/icons'
+/* eslint-disable react-hooks/exhaustive-deps */
+
+import { MailOutlined } from '@ant-design/icons'
 import { LoginForm, ProForm, ProFormText } from '@ant-design/pro-form'
-import { useBoolean, useRequest, useTitle } from 'ahooks'
-import { Button, Form, Popover, message } from 'antd'
+import { useRequest, useTitle } from 'ahooks'
+import { Button, message } from 'antd'
 import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../../components/Footer'
-import PasswordStrength from '../../components/PasswordStrength'
 import SelectLanguage from '../../locales/components/SelectLanguage'
 import { resetPassword as resetPasswordRequest } from '../../services/resetPassword'
 import { isResetPasswordInfo, ResetPasswordInfo } from '../../types/locationState'
+import PasswordInput from '../components/PasswordInput'
 import type { ResponseData } from '../../services/types'
 import type { LoginFormProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
@@ -84,7 +86,6 @@ const ResetPasswordContainer = styled.div`
  * Constants
  */
 const { useForm } = ProForm
-const { useWatch } = Form
 
 
 /**
@@ -108,7 +109,7 @@ const Reset = (): JSX.Element => {
       void message.error(intl.formatMessage({ id: 'pages.reset-password.reset.email.not-verified' }))
       navigate('/reset_password/verify', { replace: true })
     }
-  })
+  }, [])
 
 
   /**
@@ -144,59 +145,6 @@ const Reset = (): JSX.Element => {
     size: 'large',
     prefix: <MailOutlined className="prefix-icon" />
   }
-
-
-  /**
-   * Password
-   */
-  const password = useWatch<string | undefined>('password', formInstance)
-  const [passwordPopoverVisible, { setTrue: showPopover, setFalse: hidePopover }] = useBoolean(false)
-
-  // validate methods
-  const checkPassword = async (_: unknown, value: string): Promise<void> => {
-    const regex = /^((?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[,.#%'+*\-:;^_`].*))[,.#%'+*\-:;^_`0-9A-Za-z]{8,20}$/
-
-    if (!value) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password.missing' }))
-    }
-
-    void formInstance.validateFields(['password-check'])
-
-    if (!regex.test(value)) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password.rule' }))
-    }
-
-    return Promise.resolve()
-  }
-
-  const checkConfirmPassword = async (_: unknown, value: string): Promise<void> => {
-    if (value && value !== password) {
-      return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password-check.invalid' }))
-    }
-    return Promise.resolve()
-  }
-
-  // props
-  const passwordFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <LockOutlined className="prefix-icon" />,
-    onFocus: showPopover,
-    onBlur: hidePopover
-  }
-
-  const passwordCheckFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <SafetyOutlined className="prefix-icon" />
-  }
-
-  // rules
-  const passwordCheckRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.register.error-message.password-check.missing' })
-    },
-    { validator: checkConfirmPassword }
-  ]
 
 
   /**
@@ -262,28 +210,11 @@ const Reset = (): JSX.Element => {
           <ProFormText
             disabled
             fieldProps={emailFieldProps}
-            initialValue={(locationState as ResetPasswordInfo).email}
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            initialValue={(locationState as ResetPasswordInfo)?.email}
             name="email"
           />
-          <Popover
-            content={<PasswordStrength password={password} />}
-            overlayStyle={{ width: 240 }}
-            placement="right"
-            visible={passwordPopoverVisible}
-          >
-            <ProFormText.Password
-              fieldProps={passwordFieldProps}
-              name="password"
-              placeholder={intl.formatMessage({ id: 'pages.register.placeholder.password' })}
-              rules={[{ validator: checkPassword }]}
-            />
-          </Popover>
-          <ProFormText.Password
-            fieldProps={passwordCheckFieldProps}
-            name="password-check"
-            placeholder={intl.formatMessage({ id: 'pages.register.placeholder.password-check' })}
-            rules={passwordCheckRules}
-          />
+          <PasswordInput register formInstance={formInstance} />
         </LoginForm>
       </div>
       <Footer iconSize="18" textSize="16" />

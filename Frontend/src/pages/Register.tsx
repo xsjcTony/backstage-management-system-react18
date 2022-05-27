@@ -1,8 +1,7 @@
-import { CheckOutlined } from '@ant-design/icons'
-import { LoginForm, ProForm, ProFormCaptcha, ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
-import { useBoolean, useRequest, useTitle } from 'ahooks'
+import { LoginForm, ProForm, ProFormCheckbox } from '@ant-design/pro-form'
+import { useRequest, useTitle } from 'ahooks'
 import { Tabs, Divider, Button, Form, message } from 'antd'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -10,18 +9,18 @@ import styled from 'styled-components'
 import logo from '/src/assets/images/logo.png'
 import Footer from '../components/Footer'
 import SelectLanguage from '../locales/components/SelectLanguage'
-import { registerUser, sendVerificationEmail } from '../services/register'
+import { registerUser } from '../services/register'
+import EmailCaptcha from './components/EmailCaptcha'
 import EmailInput from './components/EmailInput'
+import ImageCaptcha from './components/ImageCaptcha'
 import PasswordInput from './components/PasswordInput'
 import UsernameInput from './components/UsernameInput'
 import type { ResponseData } from '../services/types'
 import type { RootState } from '../store'
-import type { LoginFormProps, ProFormCaptchaProps } from '@ant-design/pro-form'
-import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
+import type { LoginFormProps } from '@ant-design/pro-form'
 import type { TabsProps } from 'antd'
 import type { InternalFieldProps } from 'rc-field-form/es/Field'
 import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
-import type { ReactNode } from 'react'
 
 
 /**
@@ -85,17 +84,6 @@ const RegisterContainer = styled.div`
     .register-form-container {
         flex: 1;
         padding: 30px 0;
-
-        .captcha-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-
-            .captcha-image {
-                height: 40px;
-                cursor: pointer;
-            }
-        }
 
         .ant-pro-form-login-other {
             .divider {
@@ -196,89 +184,11 @@ const Register = (): JSX.Element => {
 
 
   /**
-   * Verification code
-   */
-  const [emailSent, { setTrue: setEmailSent }] = useBoolean(false)
-
-  const getCaptcha: ProFormCaptchaProps['onGetCaptcha'] = async (): Promise<void> => {
-    try {
-      await formInstance.validateFields(['email'])
-    } catch (err) {
-      void message.error((err as ValidateErrorEntity).errorFields[0].errors[0], 3)
-      throw new Error()
-    }
-
-    if (!email) {
-      void message.error('Invalid E-mail address')
-      throw new Error()
-    }
-
-    let data: ResponseData
-
-    try {
-      data = await sendVerificationEmail({ email })
-    } catch (err) {
-      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
-      throw new Error()
-    }
-
-    if (data.code !== 200) {
-      void message.error(intl.formatMessage({ id: 'pages.register.message.send-captcha.error' }), 3)
-      throw new Error()
-    }
-
-    void message.success(intl.formatMessage({ id: 'pages.register.message.send-captcha.success' }), 3)
-    setEmailSent()
-  }
-
-  const captchaTextRender: ProFormCaptchaProps['captchaTextRender'] = (timing: boolean, count: number): ReactNode =>
-    timing ? `${count}s` : emailSent
-      ? intl.formatMessage({ id: 'pages.register.captcha.button.resend' })
-      : intl.formatMessage({ id: 'pages.register.captcha.button.send' })
-
-  const verificationCodeFieldProps: ProFormCaptchaProps['fieldProps'] = {
-    size: 'large',
-    prefix: <CheckOutlined className="prefix-icon" />,
-    showCount: true,
-    maxLength: 4
-  }
-
-  const verificationCodeRules: ProFormCaptchaProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.missing' })
-    },
-    {
-      pattern: /^[A-Za-z0-9]{4}$/,
-      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.invalid' })
-    }
-  ]
-
-
-  /**
    * Captcha
    */
   const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
 
-  const refreshCaptcha = (): void => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`)
-
-  const captchaRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.missing' })
-    },
-    {
-      pattern: /^[A-Za-z0-9]{4}$/,
-      message: intl.formatMessage({ id: 'pages.register.error-message.captcha.invalid' })
-    }
-  ]
-
-  const captchaFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <CheckOutlined className="prefix-icon" />,
-    maxLength: 4,
-    showCount: true
-  }
+  const refreshCaptcha = useCallback(() => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`), [apiBaseUrl])
 
 
   /**
@@ -372,36 +282,14 @@ const Register = (): JSX.Element => {
             <>
               <UsernameInput register />
               <PasswordInput register formInstance={formInstance} />
-              <div className="captcha-container">
-                <ProFormText
-                  fieldProps={captchaFieldProps}
-                  name="captcha"
-                  placeholder={intl.formatMessage({ id: 'pages.register.placeholder.captcha' })}
-                  rules={captchaRules}
-                />
-                <img
-                  alt="captcha"
-                  className="captcha-image"
-                  src={captchaSrc}
-                  onClick={refreshCaptcha}
-                />
-              </div>
+              <ImageCaptcha refresh={refreshCaptcha} src={captchaSrc} />
             </>
           )}
           {registerType === 'email' && (
             <>
               <EmailInput register />
               <PasswordInput register formInstance={formInstance} />
-              <ProFormCaptcha
-                captchaProps={{ size: 'large' }}
-                captchaTextRender={captchaTextRender}
-                countDown={60}
-                fieldProps={verificationCodeFieldProps}
-                name="captcha"
-                placeholder={intl.formatMessage({ id: 'pages.register.placeholder.captcha' })}
-                rules={verificationCodeRules}
-                onGetCaptcha={getCaptcha}
-              />
+              <EmailCaptcha email={email} formInstance={formInstance} />
             </>
           )}
           <ProFormCheckbox
