@@ -2,7 +2,6 @@ import {
   DeleteOutlined,
   EditOutlined, ExportOutlined,
   ImportOutlined,
-  PlusOutlined,
   SettingOutlined,
   UserOutlined
 } from '@ant-design/icons'
@@ -17,6 +16,7 @@ import Footer from '../../components/Footer'
 import SubpageContainer from '../../components/SubpageContainer'
 import { deleteUser, exportAllUsers, getUsersByQuery, updateUserState } from '../../services/users'
 import { breadcrumbItemRender, downloadFile } from '../../utils'
+import AddUserForm from './Users/components/AddUserForm'
 import type { ResponseData } from '../../services/types'
 import type { RootState } from '../../store'
 import type { User, UserQueryResponse } from '../../types'
@@ -373,9 +373,7 @@ const Users = (): JSX.Element => {
   const toolbar: ProTableProps<User, UserQueryData>['toolbar'] = {
     title: <Tag color="success">You</Tag>,
     actions: [
-      <Button key="addUsers" icon={<PlusOutlined />} type="primary">
-        {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.add-users' })}
-      </Button>,
+      <AddUserForm key="addUser" />,
       <Upload
         key="importUsers"
         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

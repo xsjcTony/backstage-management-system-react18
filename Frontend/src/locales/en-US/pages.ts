@@ -33,6 +33,7 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.user.state.updated': 'User state has been updated',
   'pages.admin.user-list.users.import.file.type': 'User data must be ".xlsx" file',
   'pages.admin.user-list.users.import.file.size': 'File size can not exceed 500kb',
+  'pages.admin.user-list.users.add.title': 'Add user',
 
   // Role List
   'pages.admin.role-list.title': 'Role List',

@@ -1,10 +1,4 @@
-import {
-  UserOutlined,
-  MailOutlined,
-  LockOutlined,
-  GithubOutlined,
-  CheckOutlined
-} from '@ant-design/icons'
+import { GithubOutlined, CheckOutlined } from '@ant-design/icons'
 import { LoginForm, ProFormText, ProFormCheckbox, ProForm } from '@ant-design/pro-form'
 import { useRequest, useTitle } from 'ahooks'
 import { Tabs, Divider, Button, message } from 'antd'
@@ -20,6 +14,9 @@ import { loginUser } from '../services/login'
 import { getUserById } from '../services/users'
 import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
 import { isPromptInfo } from '../types/locationState'
+import EmailInput from './components/EmailInput'
+import PasswordInput from './components/PasswordInput'
+import UsernameInput from './components/UsernameInput'
 import type { ResponseData } from '../services/types'
 import type { AppDispatch, RootState } from '../store'
 import type { User, UserWithJWT } from '../types'
@@ -235,59 +232,6 @@ const Login = (): JSX.Element => {
 
 
   /**
-   * Account
-   */
-  const usernameFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <UserOutlined className="prefix-icon" />,
-    maxLength: 20
-  }
-
-  const usernameRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.login.error-message.username.missing' })
-    }
-  ]
-
-
-  /**
-   * Email
-   */
-  const emailFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <MailOutlined className="prefix-icon" />
-  }
-
-  const emailRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.login.error-message.email.missing' })
-    },
-    {
-      pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
-      message: intl.formatMessage({ id: 'pages.login.error-message.email.invalid' })
-    }
-  ]
-
-
-  /**
-   * Password
-   */
-  const passwordFieldProps: ProFormFieldItemProps['fieldProps'] = {
-    size: 'large',
-    prefix: <LockOutlined className="prefix-icon" />
-  }
-
-  const passwordRules: ProFormFieldItemProps['rules'] = [
-    {
-      required: true,
-      message: intl.formatMessage({ id: 'pages.login.error-message.password.missing' })
-    }
-  ]
-
-
-  /**
    * Captcha
    */
   const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
@@ -414,28 +358,9 @@ const Login = (): JSX.Element => {
               tab={intl.formatMessage({ id: 'pages.login.login-type.email' })}
             />
           </Tabs>
-          {loginType === 'account' && (
-            <ProFormText
-              fieldProps={usernameFieldProps}
-              name="username"
-              placeholder={intl.formatMessage({ id: 'pages.login.placeholder.username' })}
-              rules={usernameRules}
-            />
-          )}
-          {loginType === 'email' && (
-            <ProFormText
-              fieldProps={emailFieldProps}
-              name="email"
-              placeholder={intl.formatMessage({ id: 'pages.login.placeholder.email' })}
-              rules={emailRules}
-            />
-          )}
-          <ProFormText.Password
-            fieldProps={passwordFieldProps}
-            name="password"
-            placeholder={intl.formatMessage({ id: 'pages.login.placeholder.password' })}
-            rules={passwordRules}
-          />
+          {loginType === 'account' && <UsernameInput />}
+          {loginType === 'email' && <EmailInput />}
+          <PasswordInput formInstance={formInstance} />
           <div className="captcha-container">
             <ProFormText
               fieldProps={captchaFieldProps}
