@@ -19,6 +19,7 @@ interface AvatarUploadProps {
   initialAvatarUrl?: string
   changeSubmitterDisabled: Dispatch<SetStateAction<boolean>>
   formInstance: FormInstance
+  name: string
 }
 
 
@@ -28,7 +29,8 @@ interface AvatarUploadProps {
 const AvatarUpload = ({
   initialAvatarUrl = undefined,
   changeSubmitterDisabled,
-  formInstance
+  formInstance,
+  name
 }: AvatarUploadProps): JSX.Element => {
 
   /**
@@ -85,7 +87,7 @@ const AvatarUpload = ({
       const url = (response as ResponseData<string>).data
 
       setAvatarUrl(url)
-      formInstance.setFieldsValue({ avatarUrl: url })
+      formInstance.setFieldsValue({ [name]: url })
       void message.success(intl.formatMessage({ id: response.msg }), 3)
       return
     }
@@ -105,7 +107,7 @@ const AvatarUpload = ({
   )
 
   return (
-    <Form.Item name="avatarUrl">
+    <Form.Item name={name}>
       <ImgCrop
         grid
         rotate

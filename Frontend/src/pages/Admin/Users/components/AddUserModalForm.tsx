@@ -148,7 +148,11 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
           placeholder={intl.formatMessage({ id: 'pages.admin.user-list.users.add.username.placeholder' })}
         />
         <PasswordInput register formInstance={formInstance} />
-        <AvatarUpload changeSubmitterDisabled={setSubmitterDisabled} formInstance={formInstance} />
+        <AvatarUpload
+          changeSubmitterDisabled={setSubmitterDisabled}
+          formInstance={formInstance}
+          name="avatarUrl"
+        />
       </ModalForm>
     </>
   )
