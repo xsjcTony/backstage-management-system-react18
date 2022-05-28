@@ -36,6 +36,9 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.users.add.title': '添加用户',
   'pages.admin.user-list.users.add.username.placeholder': '用户名 (可选)',
   'pages.admin.user-list.users.add.submit.text': '添加用户',
+  'pages.admin.user-list.users.avatar.upload.type': '头像必须为".png"或".jpg"的文件',
+  'pages.admin.user-list.users.avatar.upload.size': '图片大小不能超过2MB',
+  'pages.admin.user-list.users.avatar.upload.text': '上传头像',
 
   // Role List
   'pages.admin.role-list.title': '角色列表',

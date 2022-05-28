@@ -36,6 +36,9 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.users.add.title': 'Add user',
   'pages.admin.user-list.users.add.username.placeholder': 'Username (Optional)',
   'pages.admin.user-list.users.add.submit.text': 'Add user',
+  'pages.admin.user-list.users.avatar.upload.type': 'Avatar muse be either ".png" or ".jpg" file',
+  'pages.admin.user-list.users.avatar.upload.size': 'Image size cannot exceed 2MB',
+  'pages.admin.user-list.users.avatar.upload.text': 'Upload avatar',
 
   // Role List
   'pages.admin.role-list.title': 'Role List',

@@ -230,6 +230,8 @@ const Users = (): JSX.Element => {
   })
 
   // import users
+  const [importingUsers, setImportingUsers] = useState<boolean>(false)
+
   const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
     const isLt500KB = file.size / 1024 <= 500 // <= 500kb
@@ -250,12 +252,20 @@ const Users = (): JSX.Element => {
   const handleUpload: UploadProps['onChange'] = async (info: UploadChangeParam<UploadFile<ResponseData>>) => {
     const { file: { status, response } } = info
 
+    if (status === 'uploading') {
+      setImportingUsers(true)
+      return
+    }
+
     if (status === 'error') {
+      setImportingUsers(false)
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return
     }
 
     if (status === 'done') {
+      setImportingUsers(false)
+
       if (response?.code !== 200) {
         void message.error(intl.formatMessage({ id: response?.msg ?? 'error.network' }), 3)
         return
@@ -265,6 +275,9 @@ const Users = (): JSX.Element => {
       void message.success(intl.formatMessage({ id: response.msg }), 3)
       return
     }
+
+    setImportingUsers(false)
+    return
   }
 
 
@@ -390,7 +403,11 @@ const Users = (): JSX.Element => {
         showUploadList={false}
         onChange={handleUpload}
       >
-        <Button icon={<ImportOutlined />} type="primary">
+        <Button
+          icon={<ImportOutlined />}
+          loading={importingUsers}
+          type="primary"
+        >
           {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.import-users' })}
         </Button>
       </Upload>,

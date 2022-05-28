@@ -5,6 +5,7 @@ import { Button, message } from 'antd'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { addUser as addUserAPI } from '../../../../services/users'
+import AvatarUpload from '../../../components/AvatarUpload'
 import EmailInput from '../../../components/EmailInput'
 import PasswordInput from '../../../components/PasswordInput'
 import UsernameInput from '../../../components/UsernameInput'
@@ -103,12 +104,15 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
    */
   const [formInstance] = useForm()
 
+  const [submitterDisabled, setSubmitterDisabled] = useState<boolean>(false)
+
   const formSubmitter: ModalFormProps['submitter'] = {
     searchConfig: {
       submitText: intl.formatMessage({ id: 'pages.admin.user-list.users.add.submit.text' })
     },
     submitButtonProps: {
-      loading: addingUser
+      loading: addingUser,
+      disabled: submitterDisabled
     }
   }
 
@@ -134,6 +138,7 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
         submitTimeout={3000}
         title={intl.formatMessage({ id: 'pages.admin.user-list.users.add.title' })}
         visible={modalVisible}
+        width={400}
         onFinishFailed={err => void addUser(err)}
       >
         <EmailInput register />
@@ -143,6 +148,7 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
           placeholder={intl.formatMessage({ id: 'pages.admin.user-list.users.add.username.placeholder' })}
         />
         <PasswordInput register formInstance={formInstance} />
+        <AvatarUpload changeSubmitterDisabled={setSubmitterDisabled} formInstance={formInstance} />
       </ModalForm>
     </>
   )

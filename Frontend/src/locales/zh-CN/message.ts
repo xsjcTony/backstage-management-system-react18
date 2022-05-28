@@ -34,7 +34,9 @@ const message: Record<string, string> = {
   'message.users.export.no-user': '没有用户',
   'message.users.import.invalid': '用户数据不正确',
   'message.users.import.success': '导入用户成功',
-  'message.users.add.success': '添加用户成功'
+  'message.users.add.success': '添加用户成功',
+  'message.users.avatar.upload.success': '头像上传成功',
+  'message.users.avatar.upload.error': '头像上传失败'
 }
 
 export default message

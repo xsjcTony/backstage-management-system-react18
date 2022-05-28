@@ -165,7 +165,7 @@ export default class UsersController extends Controller {
     const { ctx } = this
     const avatar = ctx.request.files[0]
 
-    const fileName = ctx.helper.encryptByMd5(`${ avatar.filename }${ Date.now() }`) + path.extname(avatar.filename)
+    const fileName = ctx.helper.encryptByMd5(`${avatar.filename}${Date.now()}`) + path.extname(avatar.filename)
     const filePath = path.join('/public/assets/images/avatars', fileName)
       .replace(/\\/g, '/')
     const absoluteFilePath = path.join(this.config.baseDir, 'app', filePath)
@@ -175,12 +175,12 @@ export default class UsersController extends Controller {
       const avatarContent = await fs.readFile(avatar.filepath)
       await fs.writeFile(absoluteFilePath, avatarContent)
     } catch (err) {
-      ctx.error(500, 'error', err)
+      ctx.error(500, 'message.users.avatar.upload.error', err)
     } finally {
       void ctx.cleanupRequestFiles() // clear temp file
     }
 
-    ctx.success(200, 'Avatar has been uploaded', filePath)
+    ctx.success(200, 'message.users.avatar.upload.success', filePath)
   }
 
 

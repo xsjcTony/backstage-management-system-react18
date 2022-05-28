@@ -34,7 +34,9 @@ const message: Record<string, string> = {
   'message.users.export.no-user': 'No users',
   'message.users.import.invalid': 'Invalid user data',
   'message.users.import.success': 'Users have been imported',
-  'message.users.add.success': 'User has been added'
+  'message.users.add.success': 'User has been added',
+  'message.users.avatar.upload.success': 'Avatar has been uploaded',
+  'message.users.avatar.upload.error': 'Failed to upload avatar'
 }
 
 export default message
