@@ -34,6 +34,8 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.users.import.file.type': '用户数据必须为".xlsx"文件',
   'pages.admin.user-list.users.import.file.size': '文件大小不能超过500kb',
   'pages.admin.user-list.users.add.title': '添加用户',
+  'pages.admin.user-list.users.add.username.placeholder': '用户名 (可选)',
+  'pages.admin.user-list.users.add.submit.text': '添加用户',
 
   // Role List
   'pages.admin.role-list.title': '角色列表',

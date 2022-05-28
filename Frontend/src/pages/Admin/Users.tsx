@@ -16,7 +16,7 @@ import Footer from '../../components/Footer'
 import SubpageContainer from '../../components/SubpageContainer'
 import { deleteUser, exportAllUsers, getUsersByQuery, updateUserState } from '../../services/users'
 import { breadcrumbItemRender, downloadFile } from '../../utils'
-import AddUserForm from './Users/components/AddUserForm'
+import AddUserModalForm from './Users/components/AddUserModalForm'
 import type { ResponseData } from '../../services/types'
 import type { RootState } from '../../store'
 import type { User, UserQueryResponse } from '../../types'
@@ -271,6 +271,8 @@ const Users = (): JSX.Element => {
   /**
    * Table
    */
+  const tableRef = useRef<ActionType>()
+
   const columns: ProColumns<User>[] = [
     {
       key: 'index',
@@ -373,7 +375,10 @@ const Users = (): JSX.Element => {
   const toolbar: ProTableProps<User, UserQueryData>['toolbar'] = {
     title: <Tag color="success">You</Tag>,
     actions: [
-      <AddUserForm key="addUser" />,
+      <AddUserModalForm
+        key="addUser"
+        reloadTable={tableRef.current?.reload}
+      />,
       <Upload
         key="importUsers"
         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -415,8 +420,6 @@ const Users = (): JSX.Element => {
       sessionStorage.setItem('userTablePageSize', pageSize.toString(10))
     }
   }
-
-  const tableRef = useRef<ActionType>()
 
 
   /**

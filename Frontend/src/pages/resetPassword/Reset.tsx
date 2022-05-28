@@ -210,8 +210,7 @@ const Reset = (): JSX.Element => {
           <ProFormText
             disabled
             fieldProps={emailFieldProps}
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            initialValue={(locationState as ResetPasswordInfo)?.email}
+            initialValue={(locationState as ResetPasswordInfo | null)?.email}
             name="email"
           />
           <PasswordInput register formInstance={formInstance} />

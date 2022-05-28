@@ -33,7 +33,8 @@ const message: Record<string, string> = {
   'message.users.user.deleted': 'User has been deleted',
   'message.users.export.no-user': 'No users',
   'message.users.import.invalid': 'Invalid user data',
-  'message.users.import.success': 'Users have been imported'
+  'message.users.import.success': 'Users have been imported',
+  'message.users.add.success': 'User has been added'
 }
 
 export default message

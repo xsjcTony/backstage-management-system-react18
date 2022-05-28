@@ -74,8 +74,8 @@ export interface OAuthBindData {
 
 // AddUserData
 export interface AddUserData {
-  username: string
-  email: string | null
+  username?: string
+  email: string
   password: string
   github?: boolean
   userState?: boolean

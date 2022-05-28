@@ -11,6 +11,7 @@ interface UsernameInputProps {
   initialValue?: string
   register?: boolean
   placeholder?: string
+  editUser?: boolean
 }
 
 
@@ -20,7 +21,8 @@ interface UsernameInputProps {
 const UsernameInput = ({
   initialValue = undefined,
   register = false,
-  placeholder = undefined
+  placeholder = undefined,
+  editUser = false
 }: UsernameInputProps): JSX.Element => {
 
   /**
@@ -67,6 +69,16 @@ const UsernameInput = ({
     ? intl.formatMessage({ id: 'pages.register.placeholder.username' })
     : intl.formatMessage({ id: 'pages.login.placeholder.username' })
 
+  const editUsernameRules: ProFormFieldItemProps['rules'] = [
+    {
+      required: false
+    },
+    {
+      pattern: /^[A-Za-z0-9]{6,20}$/,
+      message: intl.formatMessage({ id: 'pages.register.error-message.username.rule' })
+    }
+  ]
+
 
   /**
    * Component
@@ -77,7 +89,7 @@ const UsernameInput = ({
       initialValue={initialValue}
       name="username"
       placeholder={placeholder ?? internalPlaceholder}
-      rules={register ? registerUsernameRules : usernameRules}
+      rules={editUser ? editUsernameRules : register ? registerUsernameRules : usernameRules}
     />
   )
 }

@@ -76,9 +76,9 @@ export default class UsersController extends Controller {
       ctx.validate(AddUserRule, data)
 
       // save into database
-      const user = await ctx.service.users.createUser(data)
+      await ctx.service.users.createUser(data)
 
-      ctx.success(200, 'User has been added', user)
+      ctx.success(200, 'message.users.add.success')
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)
