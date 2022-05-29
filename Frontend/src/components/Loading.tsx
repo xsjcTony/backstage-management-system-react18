@@ -1,6 +1,16 @@
 import { Spin } from 'antd'
 import { memo } from 'react'
+import { useIntl } from 'react-intl'
 import styled from 'styled-components'
+import type { ReactNode } from 'react'
+
+
+/**
+ * Types
+ */
+interface LoadingProps {
+  tip?: ReactNode
+}
 
 
 /**
@@ -20,10 +30,17 @@ const LoadingContainer = styled.div`
 /**
  * Component
  */
-const Loading = (): JSX.Element => (
-  <LoadingContainer>
-    <Spin size="large" tip="Loading..." />
-  </LoadingContainer>
-)
+const Loading = ({ tip = undefined }: LoadingProps): JSX.Element => {
+  const intl = useIntl()
+
+  return (
+    <LoadingContainer>
+      <Spin
+        size="large"
+        tip={tip ? tip : intl.formatMessage({ id: 'loading' })}
+      />
+    </LoadingContainer>
+  )
+}
 
 export default memo(Loading)

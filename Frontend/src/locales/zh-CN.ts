@@ -12,6 +12,7 @@ const zhCN: Record<string, string> = {
   'error.need-login': '请先登录',
   'error.no-privilege': '您没有权限访问',
   'success.logout': '退出成功',
+  loading: '加载中...',
   ...pages,
   ...menu,
   ...message
