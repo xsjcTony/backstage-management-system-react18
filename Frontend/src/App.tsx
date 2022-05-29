@@ -2,9 +2,10 @@
 /* eslint 'react/jsx-sort-props': 'off' */
 /* eslint 'react/no-multi-comp': 'off' */
 /* eslint 'react/display-name': 'off' */
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import Cookies from 'js-cookie'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes, useLocation, Outlet } from 'react-router-dom'
 import Loading from './components/Loading'
@@ -56,7 +57,6 @@ function lazyLoading<P = {}>(LazyComponent: LazyExoticComponent<any>) {
 /**
  * Navigation guard
  */
-let authenticated = false
 const RouteGuard = (): JSX.Element => {
 
   /**
@@ -71,6 +71,7 @@ const RouteGuard = (): JSX.Element => {
    */
   const loggedIn = useSelector((state: RootState) => state.authentication.loggedIn)
   const { pathname } = location
+  const [authenticating, setAuthenticating] = useState<boolean>(true)
 
 
   /**
@@ -78,7 +79,7 @@ const RouteGuard = (): JSX.Element => {
    */
   const t = Cookies.get('token')
   if (t) {
-    authenticated = false
+    setAuthenticating(true)
     localStorage.setItem('token', t)
     Cookies.remove('token')
   }
@@ -87,31 +88,45 @@ const RouteGuard = (): JSX.Element => {
   /**
    * Authentication
    */
-  if (!authenticated) {
-    isLoggedIn()
-      .then(async (data) => {
-        if (data.code === 200) {
-          const userResponse = await getUserById((data.data as User).id)
+  const authenticate = async (): Promise<void> => {
+    try {
+      const res = await isLoggedIn()
 
-          if (userResponse.code !== 200) {
-            localStorage.removeItem('token')
-            dispatch(setLoggedIn(false))
-            return
-          }
+      if (res.code === 200) {
+        const userResponse = await getUserById((res.data as User).id)
 
-          const user = userResponse.data
-
-          // TODO: Privilege tree
-
-          dispatch(setCurrentUser(user))
-          dispatch(setLoggedIn(true))
-        } else {
+        if (userResponse.code !== 200) {
+          localStorage.removeItem('token')
           dispatch(setLoggedIn(false))
+          return
         }
-      })
-      .catch(() => void dispatch(setLoggedIn(false)))
 
-    authenticated = true
+        const user = userResponse.data
+
+        // TODO: Privilege tree
+
+        dispatch(setCurrentUser(user))
+        dispatch(setLoggedIn(true))
+        setAuthenticating(false)
+      } else {
+        dispatch(setLoggedIn(false))
+        setAuthenticating(false)
+      }
+    } catch (err) {
+      dispatch(setLoggedIn(false))
+      setAuthenticating(false)
+    }
+  }
+
+  useEffect(() => {
+    if (authenticating) {
+      void authenticate()
+    }
+  }, [authenticating])
+
+
+  if (authenticating) {
+    return <Loading />
   }
 
 
