@@ -1,15 +1,16 @@
-import { PlusOutlined } from '@ant-design/icons'
+import { EditOutlined } from '@ant-design/icons'
 import ProForm, { ModalForm } from '@ant-design/pro-form'
 import { useRequest } from 'ahooks'
 import { Button, message } from 'antd'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
-import { addUser as addUserAPI } from '../../../../services/users'
+import { addUser as addUserAPI, updateUser } from '../../../../services/users'
 import AvatarUpload from '../../../components/AvatarUpload'
 import EmailInput from '../../../components/EmailInput'
 import PasswordInput from '../../../components/PasswordInput'
 import UsernameInput from '../../../components/UsernameInput'
 import type { ResponseData } from '../../../../services/types'
+import type { User } from '../../../../types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
 
@@ -17,16 +18,17 @@ import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
 /**
  * Types
  */
-export interface AddUserData {
+export interface EditUserData {
   username?: string
   email: string
-  password: string
-  'password-check': string
+  password?: string
+  'password-check'?: string
   avatarUrl?: string
 }
 
-interface AddUserFormProps {
+interface EditUserFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
+  initialValues: User
 }
 
 
@@ -39,7 +41,7 @@ const { useForm } = ProForm
 /**
  * Component
  */
-const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
+const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -61,8 +63,9 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
   /**
    * Add user
    */
-  const _addUser = async (err: ValidateErrorEntity<AddUserData>): Promise<void> => {
+  const _editUser = async (err: ValidateErrorEntity<EditUserData>): Promise<void> => {
     const { errorFields, values } = err
+    console.log(err)
 
     if (errorFields.length !== 0) {
       void message.error(intl.formatMessage({ id: 'pages.admin.user-list.users.add.data.invalid' }))
@@ -76,7 +79,7 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
     let data: ResponseData
 
     try {
-      data = await addUserAPI(values)
+      data = await updateUser(initialValues.id, values)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return Promise.reject()
@@ -94,7 +97,7 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
     return Promise.resolve()
   }
 
-  const { loading: addingUser, run: addUser } = useRequest(_addUser, {
+  const { loading: editingUser, run: editUser } = useRequest(_editUser, {
     manual: true,
     onError: () => { /* Prevent printing meaningless error in console */ }
   })
@@ -109,10 +112,10 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
 
   const formSubmitter: ModalFormProps['submitter'] = {
     searchConfig: {
-      submitText: intl.formatMessage({ id: 'pages.admin.user-list.users.add.submit.text' })
+      submitText: intl.formatMessage({ id: 'pages.admin.user-list.users.edit.submit.text' })
     },
     submitButtonProps: {
-      loading: addingUser,
+      loading: editingUser,
       disabled: submitterDisabled
     }
   }
@@ -124,23 +127,23 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
   return (
     <>
       <Button
-        icon={<PlusOutlined />}
         type="primary"
         onClick={() => void setModalVisible(true)}
       >
-        {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.add-users' })}
+        <EditOutlined />
       </Button>
-      <ModalForm<AddUserData>
+      <ModalForm<EditUserData>
         autoFocusFirstInput
         form={formInstance}
+        initialValues={initialValues}
         modalProps={modalProps}
         preserve={false}
         submitter={formSubmitter}
         submitTimeout={3000}
-        title={intl.formatMessage({ id: 'pages.admin.user-list.users.add.title' })}
+        title={intl.formatMessage({ id: 'pages.admin.user-list.users.edit.title' })}
         visible={modalVisible}
         width={400}
-        onFinishFailed={err => void addUser(err)}
+        onFinishFailed={err => void editUser(err)}
       >
         <EmailInput register />
         <UsernameInput
@@ -148,10 +151,11 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
           register
           placeholder={intl.formatMessage({ id: 'pages.admin.user-list.users.add.username.placeholder' })}
         />
-        <PasswordInput register formInstance={formInstance} />
+        <PasswordInput editUser register formInstance={formInstance} />
         <AvatarUpload
           changeSubmitterDisabled={setSubmitterDisabled}
           formInstance={formInstance}
+          initialAvatarUrl={initialValues.avatarUrl}
           name="avatarUrl"
         />
       </ModalForm>
@@ -159,4 +163,4 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
   )
 }
 
-export default AddUserModalForm
+export default EditUserModalForm

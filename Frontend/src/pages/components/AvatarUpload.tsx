@@ -20,6 +20,7 @@ interface AvatarUploadProps {
   changeSubmitterDisabled: Dispatch<SetStateAction<boolean>>
   formInstance: FormInstance
   name: string
+  initialValue?: string
 }
 
 

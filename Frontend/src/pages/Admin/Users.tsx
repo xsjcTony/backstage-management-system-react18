@@ -17,6 +17,7 @@ import SubpageContainer from '../../components/SubpageContainer'
 import { deleteUser, exportAllUsers, getUsersByQuery, updateUserState } from '../../services/users'
 import { breadcrumbItemRender, downloadFile } from '../../utils'
 import AddUserModalForm from './Users/components/AddUserModalForm'
+import EditUserModalForm from './Users/components/EditUserModalForm'
 import type { ResponseData } from '../../services/types'
 import type { RootState } from '../../store'
 import type { User, UserQueryResponse } from '../../types'
@@ -369,9 +370,10 @@ const Users = (): JSX.Element => {
       ),
       render: (value, record) => (
         <div className="actions-body">
-          <Button type="primary">
-            <EditOutlined />
-          </Button>
+          <EditUserModalForm
+            initialValues={record}
+            reloadTable={tableRef.current?.reload}
+          />
           <Button className="setting" type="primary">
             <SettingOutlined />
           </Button>

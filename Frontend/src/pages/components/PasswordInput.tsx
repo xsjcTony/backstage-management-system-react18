@@ -109,6 +109,13 @@ const PasswordInput = ({
   const editCheckPassword = async (_: unknown, value: string): Promise<void> => {
     const regex = /^((?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[,.#%'+*\-:;^_`].*))[,.#%'+*\-:;^_`0-9A-Za-z]{8,20}$/
 
+    if (value === '') {
+      formInstance.setFieldsValue({
+        password: undefined,
+        'password-check': undefined
+      })
+    }
+
     void formInstance.validateFields(['password-check'])
 
     if (!value) {
@@ -123,6 +130,10 @@ const PasswordInput = ({
   }
 
   const editCheckConfirmPassword = async (_: unknown, value: string): Promise<void> => {
+    if (password === undefined) {
+      return Promise.resolve()
+    }
+
     if (value !== password) {
       return Promise.reject(intl.formatMessage({ id: 'pages.register.error-message.password-check.invalid' }))
     }

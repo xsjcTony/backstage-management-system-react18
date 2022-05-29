@@ -84,9 +84,9 @@ export interface AddUserData {
 
 // EditUserData
 export interface EditUserData {
-  username: string
-  email: string | null
-  password: string | undefined
+  username?: string
+  email: string
+  password?: string
   userState?: boolean
 }
 

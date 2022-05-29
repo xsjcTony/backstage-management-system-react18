@@ -4,14 +4,15 @@ export default {
     trim: true,
     // 只能是数字或字母
     format: /^[A-Za-z0-9]{6,20}$/,
-    message: 'Username must be any of a-z, A-Z or 0-9, and between 6 and 20 (both inclusive) characters long.'
+    message: 'Username must be any of a-z, A-Z or 0-9, and between 6 and 20 (both inclusive) characters long.',
+    required: false
   },
   email: {
     type: 'string',
     trim: true,
     format: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
     message: 'Email address is invalid.',
-    required: false
+    required: true
   },
   password: {
     type: 'string',

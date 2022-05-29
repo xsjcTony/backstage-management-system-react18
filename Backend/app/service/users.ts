@@ -111,17 +111,17 @@ export default class UsersService extends Service {
     const { username, email } = obj
     obj.password = this.ctx.helper.encryptByMd5(data.password)
 
-    if (username) {
-      const user = await this._findUser({ username })
-      if (user) {
-        throw new Error(`message.register.username.exist`)
-      }
-    }
-
     if (email) {
       const user = await this._findUser({ email })
       if (user) {
         throw new Error(`message.register.email.exist`)
+      }
+    }
+
+    if (username) {
+      const user = await this._findUser({ username })
+      if (user) {
+        throw new Error(`message.register.username.exist`)
       }
     }
 
@@ -172,8 +172,27 @@ export default class UsersService extends Service {
   public async updateUser(id: string, data: EditUserData): Promise<User> {
     const user = await this.getUserById(id)
 
+    const { username, email } = data
     if (data.password) {
       data.password = this.ctx.helper.encryptByMd5(data.password)
+    }
+
+    if (email) {
+      const u = await this._findUser({ email })
+      if (u && u.email !== email) {
+        throw new Error(`message.register.email.exist`)
+      }
+    }
+
+    if (username) {
+      const u = await this._findUser({ username })
+      if (u && u.username !== username) {
+        throw new Error(`message.register.username.exist`)
+      }
+    }
+
+    if (!username && !email) {
+      throw new Error('Require at least one of username and email')
     }
 
     await user.update(data)
