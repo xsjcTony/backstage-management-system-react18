@@ -4,7 +4,7 @@ import { useRequest } from 'ahooks'
 import { Button, message } from 'antd'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
-import { addUser as addUserAPI } from '../../../../services/users'
+import { addUser as addUserAPI, deleteTempAvatars } from '../../../../services/users'
 import AvatarUpload from '../../../components/AvatarUpload'
 import EmailInput from '../../../components/EmailInput'
 import PasswordInput from '../../../components/PasswordInput'
@@ -48,13 +48,22 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
 
 
   /**
+   * Avatar
+   */
+  const [tempAvatarUrls, setTempAvatarUrls] = useState<string[]>([])
+
+
+  /**
    * Modal
    */
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   const modalProps: ModalFormProps['modalProps'] = {
     destroyOnClose: true,
-    onCancel: () => void setModalVisible(false)
+    onCancel: () => {
+      void deleteTempAvatars(tempAvatarUrls)
+      setModalVisible(false)
+    }
   }
 
 
@@ -88,7 +97,11 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
     }
 
     void message.success(intl.formatMessage({ id: data.msg }), 3)
+
     await reloadTable?.()
+
+    void deleteTempAvatars(tempAvatarUrls.slice(0, -1))
+
     setModalVisible(false)
 
     return Promise.resolve()
@@ -126,7 +139,10 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
       <Button
         icon={<PlusOutlined />}
         type="primary"
-        onClick={() => void setModalVisible(true)}
+        onClick={() => {
+          setTempAvatarUrls([])
+          setModalVisible(true)
+        }}
       >
         {intl.formatMessage({ id: 'pages.admin.user-list.table.actions.add-users' })}
       </Button>
@@ -153,6 +169,8 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
           changeSubmitterDisabled={setSubmitterDisabled}
           formInstance={formInstance}
           name="avatarUrl"
+          setTempAvatarUrls={setTempAvatarUrls}
+          tempAvatarUrls={tempAvatarUrls}
         />
       </ModalForm>
     </>

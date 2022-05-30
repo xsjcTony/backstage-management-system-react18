@@ -4,7 +4,7 @@ import { useRequest } from 'ahooks'
 import { Button, message } from 'antd'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
-import { addUser as addUserAPI, updateUser } from '../../../../services/users'
+import { deleteTempAvatars, updateUser } from '../../../../services/users'
 import AvatarUpload from '../../../components/AvatarUpload'
 import EmailInput from '../../../components/EmailInput'
 import PasswordInput from '../../../components/PasswordInput'
@@ -50,13 +50,22 @@ const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): J
 
 
   /**
+   * Avatar
+   */
+  const [tempAvatarUrls, setTempAvatarUrls] = useState<string[]>([])
+
+
+  /**
    * Modal
    */
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   const modalProps: ModalFormProps['modalProps'] = {
     destroyOnClose: true,
-    onCancel: () => void setModalVisible(false)
+    onCancel: () => {
+      void deleteTempAvatars(tempAvatarUrls)
+      setModalVisible(false)
+    }
   }
 
 
@@ -65,7 +74,6 @@ const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): J
    */
   const _editUser = async (err: ValidateErrorEntity<EditUserData>): Promise<void> => {
     const { errorFields, values } = err
-    console.log(err)
 
     if (errorFields.length !== 0) {
       void message.error(intl.formatMessage({ id: 'pages.admin.user-list.users.add.data.invalid' }))
@@ -91,7 +99,12 @@ const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): J
     }
 
     void message.success(intl.formatMessage({ id: data.msg }), 3)
+
     await reloadTable?.()
+
+    const modifiedTempUrls = [...tempAvatarUrls.slice(0, -1), initialValues.avatarUrl]
+    void deleteTempAvatars(modifiedTempUrls)
+
     setModalVisible(false)
 
     return Promise.resolve()
@@ -128,7 +141,10 @@ const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): J
     <>
       <Button
         type="primary"
-        onClick={() => void setModalVisible(true)}
+        onClick={() => {
+          setTempAvatarUrls([])
+          setModalVisible(true)
+        }}
       >
         <EditOutlined />
       </Button>
@@ -157,6 +173,8 @@ const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): J
           formInstance={formInstance}
           initialAvatarUrl={initialValues.avatarUrl}
           name="avatarUrl"
+          setTempAvatarUrls={setTempAvatarUrls}
+          tempAvatarUrls={tempAvatarUrls}
         />
       </ModalForm>
     </>

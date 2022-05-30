@@ -24,4 +24,5 @@ export default (app: Application, authenticator: any): void => {
   router.post('/api/v1/upload-user-avatar', authenticator, controller.users.uploadAvatar)
   router.post('/api/v1/import-users', authenticator, controller.users.importUsers)
   router.get('/api/v1/export-all-users', authenticator, controller.users.exportAllUsers)
+  router.post('/api/v1/delete-temp-avatars', authenticator, controller.users.deleteTempAvatars)
 }

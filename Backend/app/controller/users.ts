@@ -170,29 +170,14 @@ export default class UsersController extends Controller {
       .replace(/\\/g, '/')
     const absoluteFilePath = path.join(this.config.baseDir, 'app', filePath)
 
-    let uploaded = false
-
     // copy file
     try {
       const avatarContent = await fs.readFile(avatar.filepath)
       await fs.writeFile(absoluteFilePath, avatarContent)
-      uploaded = true
     } catch (err) {
       ctx.error(500, 'message.users.avatar.upload.error', err)
     } finally {
       void ctx.cleanupRequestFiles() // clear temp file
-    }
-
-    // delete the previous avatar file
-    try {
-      const previousAvatarUrl = ctx.get('currentAvatarUrl')
-
-      if (uploaded && !previousAvatarUrl.endsWith('avatar.jpg')) {
-        const previousAvatarPath = path.join(this.config.baseDir, 'app', previousAvatarUrl)
-        await ctx.helper.removeFile(previousAvatarPath)
-      }
-    } catch (err) {
-      console.error(err)
     }
 
     ctx.success(200, 'message.users.avatar.upload.success', filePath)
@@ -268,5 +253,23 @@ export default class UsersController extends Controller {
     ctx.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     ctx.attachment('users.xlsx')
     ctx.body = buffer
+  }
+
+
+  public async deleteTempAvatars(): Promise<void> {
+    const { ctx } = this
+    const avatarUrls = (ctx.request.body as string[])
+      .filter(avatarUrl => !avatarUrl.endsWith('avatar.jpg'))
+
+    for (const avatarUrl of avatarUrls) {
+      try {
+        const avatarPath = path.join(this.config.baseDir, 'app', avatarUrl)
+        await ctx.helper.removeFile(avatarPath)
+      } catch (err) {
+        ctx.error(500, err instanceof Error ? err.message : 'error', err)
+      }
+    }
+
+    ctx.success(200, 'success')
   }
 }

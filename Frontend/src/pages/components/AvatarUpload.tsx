@@ -20,7 +20,8 @@ interface AvatarUploadProps {
   changeSubmitterDisabled: Dispatch<SetStateAction<boolean>>
   formInstance: FormInstance
   name: string
-  initialValue?: string
+  tempAvatarUrls: string[]
+  setTempAvatarUrls: Dispatch<SetStateAction<string []>>
 }
 
 
@@ -31,7 +32,9 @@ const AvatarUpload = ({
   initialAvatarUrl = undefined,
   changeSubmitterDisabled,
   formInstance,
-  name
+  name,
+  tempAvatarUrls,
+  setTempAvatarUrls
 }: AvatarUploadProps): JSX.Element => {
 
   /**
@@ -88,6 +91,7 @@ const AvatarUpload = ({
       const url = (response as ResponseData<string>).data
 
       setAvatarUrl(url)
+      setTempAvatarUrls([...tempAvatarUrls, url])
       formInstance.setFieldsValue({ [name]: url })
       void message.success(intl.formatMessage({ id: response.msg }), 3)
       return
@@ -118,10 +122,7 @@ const AvatarUpload = ({
         <Upload
           action={`${apiBaseUrl}/api/v1/upload-user-avatar`}
           beforeUpload={beforeUpload}
-          headers={{
-            Authorization: localStorage.getItem('token') ?? '',
-            currentAvatarUrl: formInstance.getFieldValue('avatarUrl')
-          }}
+          headers={{ Authorization: localStorage.getItem('token') ?? '' }}
           listType="picture-card"
           method="post"
           name="file"
