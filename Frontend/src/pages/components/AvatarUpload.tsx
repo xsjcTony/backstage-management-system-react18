@@ -118,7 +118,10 @@ const AvatarUpload = ({
         <Upload
           action={`${apiBaseUrl}/api/v1/upload-user-avatar`}
           beforeUpload={beforeUpload}
-          headers={{ Authorization: localStorage.getItem('token') ?? '' }}
+          headers={{
+            Authorization: localStorage.getItem('token') ?? '',
+            currentAvatarUrl: formInstance.getFieldValue('avatarUrl')
+          }}
           listType="picture-card"
           method="post"
           name="file"

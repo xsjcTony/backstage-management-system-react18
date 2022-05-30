@@ -170,14 +170,29 @@ export default class UsersController extends Controller {
       .replace(/\\/g, '/')
     const absoluteFilePath = path.join(this.config.baseDir, 'app', filePath)
 
+    let uploaded = false
+
     // copy file
     try {
       const avatarContent = await fs.readFile(avatar.filepath)
       await fs.writeFile(absoluteFilePath, avatarContent)
+      uploaded = true
     } catch (err) {
       ctx.error(500, 'message.users.avatar.upload.error', err)
     } finally {
       void ctx.cleanupRequestFiles() // clear temp file
+    }
+
+    // delete the previous avatar file
+    try {
+      const previousAvatarUrl = ctx.get('currentAvatarUrl')
+
+      if (uploaded && !previousAvatarUrl.endsWith('avatar.jpg')) {
+        const previousAvatarPath = path.join(this.config.baseDir, 'app', previousAvatarUrl)
+        await ctx.helper.removeFile(previousAvatarPath)
+      }
+    } catch (err) {
+      console.error(err)
     }
 
     ctx.success(200, 'message.users.avatar.upload.success', filePath)
