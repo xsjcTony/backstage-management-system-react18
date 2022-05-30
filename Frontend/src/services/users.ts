@@ -1,9 +1,9 @@
-import * as Request from '../utils/request'
-import type { UserQueryData } from '../pages/Admin/Users'
-import type { AddUserData } from '../pages/Admin/Users/components/AddUserModalForm'
-import type { EditUserData } from '../pages/Admin/Users/components/EditUserModalForm'
-import type { User, UserQueryResponse } from '../types'
+import * as Request from '@/utils/request'
 import type { ResponseData } from './types'
+import type { UserQueryData } from '@/pages/Admin/Users'
+import type { AddUserData } from '@/pages/Admin/Users/components/AddUserModalForm'
+import type { EditUserData } from '@/pages/Admin/Users/components/EditUserModalForm'
+import type { User, UserQueryResponse } from '@/types'
 
 
 export const getUserById = async (id: number): Promise<ResponseData<User>> => Request.get<ResponseData<User>>(`/api/v1/users/${id}`)

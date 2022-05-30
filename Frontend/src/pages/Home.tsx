@@ -4,10 +4,11 @@ import { useIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import Footer from '../components/Footer'
-import SelectLanguage from '../locales/components/SelectLanguage'
-import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
-import type { AppDispatch, RootState } from '../store'
+import logo from '@/assets/images/logo.png'
+import Footer from '@/components/Footer'
+import SelectLanguage from '@/locales/components/SelectLanguage'
+import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
+import type { AppDispatch, RootState } from '@/store'
 
 
 /**
@@ -124,7 +125,7 @@ const Home = (): JSX.Element => {
       </div>
       <div className="container">
         <div className="title">
-          <img alt="logo" src="/src/assets/images/logo.png" />
+          <img alt="logo" src={logo} />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
         {loggedIn && (

@@ -4,13 +4,13 @@ import { Button, Form, message } from 'antd'
 import { useIntl } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import logo from '/src/assets/images/logo.png'
-import Footer from '../../components/Footer'
-import SelectLanguage from '../../locales/components/SelectLanguage'
-import { verifyEmail } from '../../services/resetPassword'
-import EmailCaptcha from '../components/EmailCaptcha'
-import EmailInput from '../components/EmailInput'
-import type { ResponseData } from '../../services/types'
+import logo from '@/assets/images/logo.png'
+import Footer from '@/components/Footer'
+import SelectLanguage from '@/locales/components/SelectLanguage'
+import EmailCaptcha from '@/pages/components/EmailCaptcha'
+import EmailInput from '@/pages/components/EmailInput'
+import { verifyEmail } from '@/services/resetPassword'
+import type { ResponseData } from '@/services/types'
 import type { LoginFormProps } from '@ant-design/pro-form'
 
 
@@ -171,7 +171,7 @@ const Verify = (): JSX.Element => {
           className="logo"
           onClick={() => void navigate('/', { replace: false })}
         >
-          <img alt="logo" src="/src/assets/images/logo.png" />
+          <img alt="logo" src={logo} />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
         <SelectLanguage size="24" />

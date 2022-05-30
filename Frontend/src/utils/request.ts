@@ -1,5 +1,5 @@
 import { extend } from 'umi-request'
-import store from '../store'
+import store from '@/store'
 
 
 const request = extend({

@@ -4,7 +4,7 @@ import { ConfigProvider } from 'antd'
 import enUS from 'antd/es/locale/en_US'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import type { RootState } from '../store'
+import type { RootState } from '@/store'
 import type { Locale } from 'antd/es/locale-provider'
 import type { PropsWithChildren } from 'react'
 

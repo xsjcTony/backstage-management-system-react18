@@ -4,7 +4,7 @@ import { memo } from 'react'
 import { useIntl } from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import SelectLanguage from '../locales/components/SelectLanguage'
+import SelectLanguage from '@/locales/components/SelectLanguage'
 
 
 /**

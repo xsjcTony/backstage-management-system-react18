@@ -6,19 +6,19 @@ import { useIntl } from 'react-intl'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-import logo from '/src/assets/images/logo.png'
-import Footer from '../../components/Footer'
-import SelectLanguage from '../../locales/components/SelectLanguage'
-import { bindAccount } from '../../services/oauth'
-import { sendVerificationEmail } from '../../services/register'
-import { getUserById } from '../../services/users'
-import { setCurrentUser, setLoggedIn } from '../../store/authentication/authenticationSlice'
-import EmailInput from '../components/EmailInput'
-import PasswordInput from '../components/PasswordInput'
-import UsernameInput from '../components/UsernameInput'
-import type { ResponseData } from '../../services/types'
-import type { AppDispatch } from '../../store'
-import type { UserWithJWT, User } from '../../types'
+import logo from '@/assets/images/logo.png'
+import Footer from '@/components/Footer'
+import SelectLanguage from '@/locales/components/SelectLanguage'
+import EmailInput from '@/pages/components/EmailInput'
+import PasswordInput from '@/pages/components/PasswordInput'
+import UsernameInput from '@/pages/components/UsernameInput'
+import { bindAccount } from '@/services/oauth'
+import { sendVerificationEmail } from '@/services/register'
+import { getUserById } from '@/services/users'
+import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
+import type { ResponseData } from '@/services/types'
+import type { AppDispatch } from '@/store'
+import type { UserWithJWT, User } from '@/types'
 import type { LoginFormProps, ProFormCaptchaProps } from '@ant-design/pro-form'
 import type { InternalFieldProps } from 'rc-field-form/es/Field'
 import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
@@ -302,7 +302,7 @@ const Github = (): JSX.Element => {
           className="logo"
           onClick={() => void navigate('/', { replace: false })}
         >
-          <img alt="logo" src="/src/assets/images/logo.png" />
+          <img alt="logo" src={logo} />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
         <SelectLanguage size="24" />

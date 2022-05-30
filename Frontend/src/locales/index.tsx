@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { IntlProvider as ReactIntlProvider } from 'react-intl'
 import { useSelector } from 'react-redux'
 import enUS from './en-US'
-import type { RootState } from '../store'
+import type { RootState } from '@/store'
 import type { PropsWithChildren } from 'react'
 
 

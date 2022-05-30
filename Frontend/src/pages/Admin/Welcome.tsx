@@ -1,6 +1,7 @@
 import { useTitle } from 'ahooks'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
+import logo from '@/assets/images/logo.png'
 
 
 /**
@@ -43,7 +44,7 @@ const Welcome = (): JSX.Element => {
    */
   return (
     <WelcomeContainer>
-      <img alt="Logo" src="/src/assets/images/logo.png" />
+      <img alt="Logo" src={logo} />
       <h1>{intl.formatMessage({ id: 'pages.admin.welcome.title' })}</h1>
     </WelcomeContainer>
   )

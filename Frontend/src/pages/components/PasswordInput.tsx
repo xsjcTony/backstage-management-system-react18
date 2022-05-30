@@ -3,7 +3,7 @@ import { ProFormText } from '@ant-design/pro-form'
 import { useBoolean } from 'ahooks'
 import { Form, Popover } from 'antd'
 import { useIntl } from 'react-intl'
-import PasswordStrength from '../../components/PasswordStrength'
+import PasswordStrength from '@/components/PasswordStrength'
 import type { FormInstance } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps } from '@ant-design/pro-form/es/interface'
 

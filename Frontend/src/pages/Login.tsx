@@ -7,20 +7,20 @@ import { useIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import styled from 'styled-components'
-import logo from '/src/assets/images/logo.png'
-import Footer from '../components/Footer'
-import SelectLanguage from '../locales/components/SelectLanguage'
-import { loginUser } from '../services/login'
-import { getUserById } from '../services/users'
-import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
-import { isPromptInfo } from '../types/locationState'
+import logo from '@/assets/images/logo.png'
+import Footer from '@/components/Footer'
+import SelectLanguage from '@/locales/components/SelectLanguage'
+import { loginUser } from '@/services/login'
+import { getUserById } from '@/services/users'
+import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
+import { isPromptInfo } from '@/types/locationState'
 import EmailInput from './components/EmailInput'
 import ImageCaptcha from './components/ImageCaptcha'
 import PasswordInput from './components/PasswordInput'
 import UsernameInput from './components/UsernameInput'
-import type { ResponseData } from '../services/types'
-import type { AppDispatch, RootState } from '../store'
-import type { User, UserWithJWT } from '../types'
+import type { ResponseData } from '@/services/types'
+import type { AppDispatch, RootState } from '@/store'
+import type { User, UserWithJWT } from '@/types'
 import type { LoginFormProps } from '@ant-design/pro-form'
 import type { TabsProps } from 'antd'
 
@@ -300,7 +300,7 @@ const Login = (): JSX.Element => {
           className="logo"
           onClick={() => void navigate('/', { replace: false })}
         >
-          <img alt="logo" src="/src/assets/images/logo.png" />
+          <img alt="logo" src={logo} />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
         <SelectLanguage size="24" />

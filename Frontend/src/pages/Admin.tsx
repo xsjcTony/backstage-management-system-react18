@@ -16,10 +16,11 @@ import { useIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import SelectLanguage from '../locales/components/SelectLanguage'
-import { setCurrentUser, setLoggedIn } from '../store/authentication/authenticationSlice'
-import { isPromptInfo } from '../types/locationState'
-import type { AppDispatch, RootState } from '../store'
+import logo from '@/assets/images/logo.png'
+import SelectLanguage from '@/locales/components/SelectLanguage'
+import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
+import { isPromptInfo } from '@/types/locationState'
+import type { AppDispatch, RootState } from '@/store'
 import type { ItemType } from 'antd/es/menu/hooks/useItems'
 import type { ReactNode, Key } from 'react'
 
@@ -291,7 +292,7 @@ const Admin = (): JSX.Element => {
           className="header-left"
           onClick={() => void navigate('/', { replace: false })}
         >
-          <img alt="logo" src="/src/assets/images/logo.png" />
+          <img alt="logo" src={logo} />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
         <div className="header-right">

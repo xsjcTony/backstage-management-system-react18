@@ -6,17 +6,17 @@ import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import logo from '/src/assets/images/logo.png'
-import Footer from '../components/Footer'
-import SelectLanguage from '../locales/components/SelectLanguage'
-import { registerUser } from '../services/register'
+import logo from '@/assets/images/logo.png'
+import Footer from '@/components/Footer'
+import SelectLanguage from '@/locales/components/SelectLanguage'
+import { registerUser } from '@/services/register'
 import EmailCaptcha from './components/EmailCaptcha'
 import EmailInput from './components/EmailInput'
 import ImageCaptcha from './components/ImageCaptcha'
 import PasswordInput from './components/PasswordInput'
 import UsernameInput from './components/UsernameInput'
-import type { ResponseData } from '../services/types'
-import type { RootState } from '../store'
+import type { ResponseData } from '@/services/types'
+import type { RootState } from '@/store'
 import type { LoginFormProps } from '@ant-design/pro-form'
 import type { TabsProps } from 'antd'
 import type { InternalFieldProps } from 'rc-field-form/es/Field'
@@ -250,7 +250,7 @@ const Register = (): JSX.Element => {
           className="logo"
           onClick={() => void navigate('/', { replace: false })}
         >
-          <img alt="logo" src="/src/assets/images/logo.png" />
+          <img alt="logo" src={logo} />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
         <SelectLanguage size="24" />
