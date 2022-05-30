@@ -1,12 +1,15 @@
 /* eslint '@typescript-eslint/no-unsafe-assignment': 'off' */
 
 import { createHash } from 'node:crypto'
+import { existsSync } from 'node:fs'
+import { unlink } from 'node:fs/promises'
 import xlsx from 'node-xlsx'
 import { generateCaptcha, verifyCaptcha } from '../util/captcha'
 import { sendVerificationEmail, verifyEmail } from '../util/verificationEmail'
 import type { ExcelUserData, ImportUserData, UserResponse } from '../types'
 import type { IHelper } from 'egg'
 import type { EggFile } from 'egg-multipart'
+import type { PathLike } from 'node:fs'
 import type SMTPTransport from 'nodemailer/lib/smtp-transport'
 
 
@@ -82,6 +85,13 @@ export default {
     }
 
     return res
+  },
+
+
+  async removeFile(path: PathLike): Promise<void> {
+    if (existsSync(path)) {
+      await unlink(path)
+    }
   },
 
 

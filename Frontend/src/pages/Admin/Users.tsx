@@ -1,6 +1,6 @@
 import {
   DeleteOutlined,
-  EditOutlined, ExportOutlined,
+  ExportOutlined,
   ImportOutlined,
   SettingOutlined,
   UserOutlined

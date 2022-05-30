@@ -126,7 +126,7 @@ const RouteGuard = (): JSX.Element => {
 
 
   if (authenticating) {
-    return <Loading />
+    return <Loading tip="Authenticating..." />
   }
 
 

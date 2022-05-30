@@ -1,5 +1,6 @@
 /* eslint '@typescript-eslint/no-unsafe-assignment': 'off' */
 
+import path from 'node:path'
 import { Service } from 'egg'
 import { Op } from 'sequelize'
 import { Privilege } from '../model/Privilege'
@@ -156,6 +157,12 @@ export default class UsersService extends Service {
 
     if (user) {
       await user.destroy()
+
+      if (!user.avatarUrl.endsWith('avatar.jpg')) {
+        const avatarFile = path.join(this.config.baseDir, 'app', user.avatarUrl)
+        await this.ctx.helper.removeFile(avatarFile)
+      }
+
       return user
     } else {
       throw new Error('message.users.user.missing')
