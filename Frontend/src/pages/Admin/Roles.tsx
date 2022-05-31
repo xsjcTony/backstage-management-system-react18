@@ -44,7 +44,7 @@ const StyledSubpageContainer = styled(SubpageContainer)`
     .actions-body {
         display: flex;
         gap: 10px;
-        margin: 0 10px;
+        justify-content: center;
         
         .setting {
             background-color: #faad14;

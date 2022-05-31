@@ -55,7 +55,7 @@ const StyledSubpageContainer = styled(SubpageContainer)`
     .actions-body {
         display: flex;
         gap: 10px;
-        margin: 0 10px;
+        justify-content: center;
         
         .setting {
             background-color: #faad14;
@@ -370,10 +370,12 @@ const Users = (): JSX.Element => {
       ),
       render: (value, record) => (
         <div className="actions-body">
-          <EditUserModalForm
-            initialValues={record}
-            reloadTable={tableRef.current?.reload}
-          />
+          {record.id !== currentUser?.id && (
+            <EditUserModalForm
+              initialValues={record}
+              reloadTable={tableRef.current?.reload}
+            />
+          )}
           <Button className="setting" type="primary">
             <SettingOutlined />
           </Button>
