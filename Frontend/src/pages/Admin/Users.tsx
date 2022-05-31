@@ -91,7 +91,7 @@ const Users = (): JSX.Element => {
   /**
    * Title
    */
-  useTitle(`${intl.formatMessage({ id: 'pages.admin.welcome.title' })} - ${intl.formatMessage({ id: 'title' })}`)
+  useTitle(`${intl.formatMessage({ id: 'pages.admin.user-list.title' })} - ${intl.formatMessage({ id: 'title' })}`)
 
 
   /**

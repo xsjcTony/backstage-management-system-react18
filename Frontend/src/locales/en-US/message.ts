@@ -36,7 +36,15 @@ const message: Record<string, string> = {
   'message.users.import.success': 'Users have been imported',
   'message.users.add.success': 'User has been added',
   'message.users.avatar.upload.success': 'Avatar has been uploaded',
-  'message.users.avatar.upload.error': 'Failed to upload avatar'
+  'message.users.avatar.upload.error': 'Failed to upload avatar',
+
+  // Roles
+  'message.roles.role.updated': 'Role has been updated',
+  'message.roles.role.missing': `Role doesn't exist`,
+  'message.roles.role.deleted': 'Role has been deleted',
+  'message.roles.add.success': 'Role has been added',
+  'message.roles.role-name.exist': 'Role name already exists',
+  'message.roles.role-description.exist': 'Role description already exists'
 }
 
 export default message

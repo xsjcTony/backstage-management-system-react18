@@ -45,6 +45,23 @@ const pages: Record<string, string> = {
 
   // Role List
   'pages.admin.role-list.title': '角色列表',
+  'pages.admin.role-list.table.header.role-name': '角色名称',
+  'pages.admin.role-list.table.header.role-description': '角色描述',
+  'pages.admin.role-list.table.header.state': '状态',
+  'pages.admin.role-list.table.header.actions.edit': '编辑',
+  'pages.admin.role-list.table.header.actions.assign-privileges': '分配权限',
+  'pages.admin.role-list.table.header.actions.delete': '删除',
+  'pages.admin.role-list.table.actions.add-roles': '添加角色',
+  'pages.admin.role-list.role.state.updated': '角色状态更新成功',
+  'pages.admin.role-list.roles.add.title': '添加角色',
+  'pages.admin.role-list.roles.add.submit.text': '添加角色',
+  'pages.admin.role-list.roles.add.data.invalid': '角色信息不正确',
+  'pages.admin.role-list.placeholder.role-name': '角色名称',
+  'pages.admin.role-list.placeholder.role-description': '角色描述',
+  'pages.admin.role-list.error-message.role-name.missing': '请输入角色名称',
+  'pages.admin.role-list.error-message.role-description.missing': '请输入角色描述',
+  'pages.admin.role-list.roles.edit.title': '编辑角色',
+  'pages.admin.role-list.roles.edit.submit.text': '编辑角色',
 
   // Privilege List
   'pages.admin.privilege-list.title': '权限列表',

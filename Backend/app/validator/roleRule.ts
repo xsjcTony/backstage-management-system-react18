@@ -3,7 +3,8 @@ export default {
     type: 'string',
     trim: true,
     format: /^(?!\s*$).+/,
-    message: 'Role name cannot be empty'
+    message: 'Role name cannot be empty',
+    required: true
   },
   roleDescription: {
     type: 'string',

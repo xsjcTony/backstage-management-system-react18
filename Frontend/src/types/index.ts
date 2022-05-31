@@ -31,6 +31,11 @@ export interface Role {
   privilegeTree?: PrivilegeNode[]
 }
 
+export interface RoleQueryResponse {
+  rows: Role[]
+  count: number
+}
+
 
 /**
  * Privilege

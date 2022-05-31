@@ -69,9 +69,9 @@ export default class RolesController extends Controller {
       ctx.validate(RoleRule, data)
 
       // save into database
-      const role = await ctx.service.roles.createRole(data)
+      await ctx.service.roles.createRole(data)
 
-      ctx.success(200, 'Role has been added', role)
+      ctx.success(200, 'message.roles.add.success')
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)
@@ -91,7 +91,7 @@ export default class RolesController extends Controller {
 
     try {
       const role = await ctx.service.roles.deleteRole(ctx.params.id)
-      ctx.success(200, 'Role has been deleted', role)
+      ctx.success(200, 'message.roles.role.deleted', role)
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)
@@ -119,7 +119,7 @@ export default class RolesController extends Controller {
       // save into database
       const role = await ctx.service.roles.updateRole(ctx.params.id, data)
 
-      ctx.success(200, 'Role has been updated', role)
+      ctx.success(200, 'message.roles.role.updated', role)
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)

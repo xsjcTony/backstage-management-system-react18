@@ -40,9 +40,28 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.users.avatar.upload.type': 'Avatar muse be either ".png" or ".jpg" file',
   'pages.admin.user-list.users.avatar.upload.size': 'Image size cannot exceed 2MB',
   'pages.admin.user-list.users.avatar.upload.text': 'Upload avatar',
+  'pages.admin.user-list.users.edit.title': 'Edit user',
+  'pages.admin.user-list.users.edit.submit.text': 'Edit user',
 
   // Role List
   'pages.admin.role-list.title': 'Role List',
+  'pages.admin.role-list.table.header.role-name': 'Role name',
+  'pages.admin.role-list.table.header.role-description': 'Role description',
+  'pages.admin.role-list.table.header.state': 'State',
+  'pages.admin.role-list.table.header.actions.edit': 'Edit',
+  'pages.admin.role-list.table.header.actions.assign-privileges': 'Assign privileges',
+  'pages.admin.role-list.table.header.actions.delete': 'Delete',
+  'pages.admin.role-list.table.actions.add-roles': 'Add role',
+  'pages.admin.role-list.role.state.updated': 'Role state has been updated',
+  'pages.admin.role-list.roles.add.title': 'Add role',
+  'pages.admin.role-list.roles.add.submit.text': 'Add role',
+  'pages.admin.role-list.roles.add.data.invalid': 'Invalid role data',
+  'pages.admin.role-list.placeholder.role-name': 'Role name',
+  'pages.admin.role-list.placeholder.role-description': 'Role description',
+  'pages.admin.role-list.error-message.role-name.missing': 'Please fill in role name',
+  'pages.admin.role-list.error-message.role-description.missing': 'Please fill in role description',
+  'pages.admin.role-list.roles.edit.title': 'Edit role',
+  'pages.admin.role-list.roles.edit.submit.text': 'Edit role',
 
   // Privilege List
   'pages.admin.privilege-list.title': 'Privilege List',

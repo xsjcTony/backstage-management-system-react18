@@ -2,6 +2,7 @@
 
 import { Service } from 'egg'
 import { Op } from 'sequelize'
+import { IWhereOptions } from 'sequelize-typescript/lib/interfaces/IWhereOptions'
 import { Privilege } from '../model/Privilege'
 import type { Role } from '../model/Role'
 import type {
@@ -22,7 +23,7 @@ export default class RolesService extends Service {
     rows: Role[]
     count: number
   }> {
-    let options: IFindOptions<Role> = {
+    let baseOptions: IFindOptions<Role> = {
       attributes: {
         exclude: ['createdAt', 'updatedAt']
       },
@@ -37,22 +38,29 @@ export default class RolesService extends Service {
       }]
     }
 
-    if (query.currentPageNumber && query.pageSize) {
-      const currentPageNumber = parseInt(query.currentPageNumber) || 1
+    if (query.current && query.pageSize) {
+      const currentPageNumber = parseInt(query.current) || 1
       const pageSize = parseInt(query.pageSize) || 5
 
-      options = {
-        ...options,
+      baseOptions = {
+        ...baseOptions,
         limit: pageSize,
         offset: (currentPageNumber - 1) * pageSize
       }
     }
 
-    return this.ctx.model.Role.findAndCountAll({
-      ...options,
-      where: {
-        roleName: { [Op.substring]: query.keyword }
+    let whereOptions: IWhereOptions<unknown> = {}
+
+    if (query.roleName) {
+      whereOptions = {
+        ...whereOptions,
+        roleName: { [Op.substring]: query.roleName }
       }
+    }
+
+    return this.ctx.model.Role.findAndCountAll({
+      ...baseOptions,
+      where: whereOptions
     })
   }
 
@@ -67,12 +75,12 @@ export default class RolesService extends Service {
 
     const r1 = await this._findRole({ roleName })
     if (r1) {
-      throw new Error(`Role "${ roleName }" already exists`)
+      throw new Error('message.roles.role-name.exist')
     }
 
     const r2 = await this._findRole({ roleDescription })
     if (r2) {
-      throw new Error(`Role description must be unique`)
+      throw new Error('message.roles.role-description.exist')
     }
 
     return this.ctx.model.Role.create(data)
@@ -100,6 +108,18 @@ export default class RolesService extends Service {
    */
   public async updateRole(id: string, data: ModifyRoleData): Promise<Role> {
     const role = await this.getRoleById(id)
+
+    const { roleName, roleDescription } = data
+
+    const r1 = await this._findRole({ roleName })
+    if (r1 && r1.roleName !== roleName) {
+      throw new Error('message.roles.role-name.exist')
+    }
+
+    const r2 = await this._findRole({ roleDescription })
+    if (r2 && r2.roleDescription !== roleDescription) {
+      throw new Error('message.roles.role-description.exist')
+    }
 
     await role.update(data)
 
@@ -134,7 +154,7 @@ export default class RolesService extends Service {
     if (role) {
       return role
     } else {
-      throw new Error('Role doesn\'t exist.')
+      throw new Error('message.roles.role.missing')
     }
   }
 

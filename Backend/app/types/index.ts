@@ -125,8 +125,8 @@ export interface UserQueryData {
  * Role
  */
 export interface RoleQueryData {
-  keyword: string
-  currentPageNumber?: string
+  roleName: string
+  current?: string
   pageSize?: string
 }
 

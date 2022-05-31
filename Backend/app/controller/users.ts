@@ -24,26 +24,6 @@ import type { Sequelize } from 'sequelize'
 export default class UsersController extends Controller {
 
   /**
-   * Get all users from database (REST API - GET)
-   * @return {Promise<void>}
-   */
-  public async getAllUsers(): Promise<void> {
-    const { ctx } = this
-
-    try {
-      const users = await ctx.service.users.getAllUsers()
-      ctx.success(200, 'success', users)
-    } catch (err) {
-      if (err instanceof Error) {
-        ctx.error(500, err.message, err)
-      } else {
-        ctx.error(500, 'Error', err)
-      }
-    }
-  }
-
-
-  /**
    * Get users by query info (REST API - GET)
    * @return {Promise<void>}
    */
