@@ -37,6 +37,9 @@ const message: Record<string, string> = {
   'message.users.add.success': 'User has been added',
   'message.users.avatar.upload.success': 'Avatar has been uploaded',
   'message.users.avatar.upload.error': 'Failed to upload avatar',
+  'message.users.assign-roles.already-assigned': 'Role has already been assigned to user',
+  'message.users.assign-roles.not-assigned': `Role has not assigned to user`,
+  'message.users.assign-roles.success': 'Roles have been assigned',
 
   // Roles
   'message.roles.role.updated': 'Role has been updated',
@@ -44,7 +47,8 @@ const message: Record<string, string> = {
   'message.roles.role.deleted': 'Role has been deleted',
   'message.roles.add.success': 'Role has been added',
   'message.roles.role-name.exist': 'Role name already exists',
-  'message.roles.role-description.exist': 'Role description already exists'
+  'message.roles.role-description.exist': 'Role description already exists',
+  'message.roles.delete.assigned': 'Cannot delete the role because it has been assigned to at least one user'
 }
 
 export default message

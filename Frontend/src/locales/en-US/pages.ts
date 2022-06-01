@@ -42,6 +42,8 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.users.avatar.upload.text': 'Upload avatar',
   'pages.admin.user-list.users.edit.title': 'Edit user',
   'pages.admin.user-list.users.edit.submit.text': 'Edit user',
+  'pages.admin.user-list.users.assign-roles.title': 'Assign roles',
+  'pages.admin.user-list.users.assign-roles.submit.text': 'Assign roles',
 
   // Role List
   'pages.admin.role-list.title': 'Role List',

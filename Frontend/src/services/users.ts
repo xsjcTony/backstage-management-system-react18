@@ -2,6 +2,7 @@ import * as Request from '@/utils/request'
 import type { ResponseData } from './types'
 import type { UserQueryData } from '@/pages/Admin/Users'
 import type { AddUserData } from '@/pages/Admin/Users/components/AddUserModalForm'
+import type { AssignRolesData } from '@/pages/Admin/Users/components/AssignRolesModalForm'
 import type { EditUserData } from '@/pages/Admin/Users/components/EditUserModalForm'
 import type { User, UserQueryResponse } from '@/types'
 
@@ -21,3 +22,5 @@ export const addUser = async (data: AddUserData): Promise<ResponseData> => Reque
 export const updateUser = async (id: number, data: EditUserData): Promise<ResponseData<User>> => Request.put<ResponseData<User>>(`/api/v1/users/${id}`, data)
 
 export const deleteTempAvatars = async (data: string[]): Promise<ResponseData> => Request.post<ResponseData>(`/api/v1/delete-temp-avatars`, data)
+
+export const assignRoles = async (data: AssignRolesData): Promise<ResponseData<number[]>> => Request.post<ResponseData<number[]>>('/api/v1/user-role', data)

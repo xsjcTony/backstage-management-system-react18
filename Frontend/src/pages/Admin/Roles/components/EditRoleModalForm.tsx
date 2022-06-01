@@ -1,5 +1,5 @@
 import { EditOutlined, EyeOutlined, TagsOutlined } from '@ant-design/icons'
-import ProForm, { ModalForm } from '@ant-design/pro-form'
+import { ModalForm } from '@ant-design/pro-form'
 import { useRequest } from 'ahooks'
 import { Button, message } from 'antd'
 import { useState } from 'react'
@@ -23,12 +23,6 @@ interface EditRoleFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
   initialValues: Role
 }
-
-
-/**
- * Constants
- */
-const { useForm } = ProForm
 
 
 /**
@@ -89,8 +83,6 @@ const EditRoleModalForm = ({ reloadTable, initialValues }: EditRoleFormProps): J
   /**
    * Form
    */
-  const [formInstance] = useForm()
-
   const formSubmitter: ModalFormProps['submitter'] = {
     searchConfig: {
       submitText: intl.formatMessage({ id: 'pages.admin.role-list.roles.edit.submit.text' })
@@ -114,7 +106,6 @@ const EditRoleModalForm = ({ reloadTable, initialValues }: EditRoleFormProps): J
       </Button>
       <ModalForm<EditRoleData>
         autoFocusFirstInput
-        form={formInstance}
         initialValues={initialValues}
         modalProps={modalProps}
         preserve={false}

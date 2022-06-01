@@ -32,7 +32,7 @@ export default class UserRoleController extends Controller {
       const assignedRoleIds = (await ctx.service.userRole.findUserRoles({ userId })).map(userRole => (userRole.toJSON() as UserRole).roleId)
 
       if (assignedRoleIds.length === roleIds.length) {
-        ctx.success(200, 'Roles have been assigned', roleIds)
+        ctx.success(200, 'message.users.assign-roles.success', roleIds)
         return
       }
 
@@ -53,7 +53,7 @@ export default class UserRoleController extends Controller {
 
       await transaction.commit()
 
-      ctx.success(200, 'Roles have been assigned', roleIds)
+      ctx.success(200, 'message.users.assign-roles.success', roleIds)
     } catch (err) {
       await transaction.rollback()
 

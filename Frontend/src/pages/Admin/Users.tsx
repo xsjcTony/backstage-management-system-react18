@@ -2,7 +2,6 @@ import {
   DeleteOutlined,
   ExportOutlined,
   ImportOutlined,
-  SettingOutlined,
   UserOutlined
 } from '@ant-design/icons'
 import ProTable from '@ant-design/pro-table'
@@ -14,6 +13,7 @@ import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
+import AssignRolesModalForm from '@/pages/Admin/Users/components/AssignRolesModalForm'
 import { deleteUser, exportAllUsers, getUsersByQuery, updateUserState } from '@/services/users'
 import { breadcrumbItemRender, downloadFile } from '@/utils'
 import AddUserModalForm from './Users/components/AddUserModalForm'
@@ -42,6 +42,17 @@ export interface UserQueryData {
  * Style
  */
 const StyledSubpageContainer = styled(SubpageContainer)`
+    .roles-body {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        
+        span {
+            margin-right: 0;
+        }
+    }
+    
     .actions-header {
         display: flex;
         gap: 8px;
@@ -56,16 +67,6 @@ const StyledSubpageContainer = styled(SubpageContainer)`
         display: flex;
         gap: 10px;
         justify-content: center;
-        
-        .setting {
-            background-color: #faad14;
-            border-color: #faad14;
-            
-            &:hover {
-                background-color: #ffc53d;
-                border-color: #ffc53d;
-            }
-        }
     }
     
     .current-user-row {
@@ -330,11 +331,15 @@ const Users = (): JSX.Element => {
         if (record.roles.length === 0) {
           return '-'
         } else {
-          return record.roles.map(role => (
-            <Tag key={role.id} color="processing">
-              {role.roleName}
-            </Tag>
-          ))
+          return (
+            <div className="roles-body">
+              {record.roles.map(role => (
+                <Tag key={role.id} color="processing">
+                  {role.roleName}
+                </Tag>
+              ))}
+            </div>
+          )
         }
       }
     },
@@ -368,24 +373,22 @@ const Users = (): JSX.Element => {
           </Tag>
         </div>
       ),
-      render: (value, record) => (
-        <div className="actions-body">
-          {record.id !== currentUser?.id && (
+      render: (value, record) =>
+        record.id !== currentUser?.id && (
+          <div className="actions-body">
             <EditUserModalForm
               initialValues={record}
               reloadTable={tableRef.current?.reload}
             />
-          )}
-          <Button className="setting" type="primary">
-            <SettingOutlined />
-          </Button>
-          {record.id !== currentUser?.id && (
+            <AssignRolesModalForm
+              reloadTable={tableRef.current?.reload}
+              user={record}
+            />
             <Button danger loading={deletingUser} type="primary">
               <DeleteOutlined onClick={() => void removeUser(record.id)} />
             </Button>
-          )}
-        </div>
-      )
+          </div>
+        )
     }
   ]
 

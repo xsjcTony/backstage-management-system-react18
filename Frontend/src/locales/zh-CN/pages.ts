@@ -42,6 +42,8 @@ const pages: Record<string, string> = {
   'pages.admin.user-list.users.avatar.upload.text': '上传头像',
   'pages.admin.user-list.users.edit.title': '编辑用户',
   'pages.admin.user-list.users.edit.submit.text': '编辑用户',
+  'pages.admin.user-list.users.assign-roles.title': '分配角色',
+  'pages.admin.user-list.users.assign-roles.submit.text': '分配角色',
 
   // Role List
   'pages.admin.role-list.title': '角色列表',
