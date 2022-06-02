@@ -28,15 +28,11 @@ module.exports = {
         unique: false,
         defaultValue: true
       },
-      type: {
-        type: ENUM('menu', 'route', 'request'),
-        allowNull: false,
-        unique: false
-      },
       request_method: {
         type: ENUM('get', 'post', 'put', 'delete', 'all'),
-        allowNull: true,
-        unique: false
+        allowNull: false,
+        unique: false,
+        defaultValue: 'all'
       },
       privilege_url: {
         type: STRING,
@@ -44,9 +40,10 @@ module.exports = {
         unique: false
       },
       parent_id: {
-        type: INTEGER.UNSIGNED,
-        allowNull: true,
-        unique: false
+        type: TINYINT.UNSIGNED,
+        allowNull: false,
+        unique: false,
+        defaultValue: 0
       },
       level: {
         type: TINYINT.UNSIGNED,
