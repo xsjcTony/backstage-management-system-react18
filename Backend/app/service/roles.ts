@@ -95,11 +95,6 @@ export default class RolesService extends Service {
   public async deleteRole(id: string): Promise<Role> {
     const role = await this.getRoleById(id)
 
-    const userRole = await this.ctx.service.userRole.findUserRole({ roleId: id })
-    if (userRole) {
-      throw new Error('message.roles.delete.assigned')
-    }
-
     await role.destroy()
     return role
   }

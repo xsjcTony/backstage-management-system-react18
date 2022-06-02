@@ -14,7 +14,9 @@ module.exports = {
         references: {
           model: 'roles',
           key: 'id'
-        }
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       privilege_id: {
         type: INTEGER.UNSIGNED,
@@ -22,7 +24,9 @@ module.exports = {
         references: {
           model: 'privileges',
           key: 'id'
-        }
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       created_at: {
         type: DATE

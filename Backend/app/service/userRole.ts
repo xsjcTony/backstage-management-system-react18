@@ -18,7 +18,7 @@ export default class UserRoleService extends Service {
   public async createUserRole(data: ModifyUserRoleData, options: ICreateOptions): Promise<UserRole> {
     const { userId, roleId } = data
 
-    const userRole = await this.findUserRole({ userId, roleId })
+    const userRole = await this._findUserRole({ userId, roleId })
     if (userRole) {
       throw new Error('message.users.assign-roles.already-assigned')
     }
@@ -30,7 +30,7 @@ export default class UserRoleService extends Service {
   public async deleteUserRole(data: ModifyUserRoleData, options: InstanceDestroyOptions): Promise<UserRole> {
     const { userId, roleId } = data
 
-    const userRole = await this.findUserRole({ userId, roleId })
+    const userRole = await this._findUserRole({ userId, roleId })
     if (!userRole) {
       throw new Error('message.users.assign-roles.not-assigned')
     }
@@ -65,7 +65,7 @@ export default class UserRoleService extends Service {
    * @return {Promise<UserRole|null>}
    * @private
    */
-  public async findUserRole(where: IFindOptions<UserRole>['where']): Promise<UserRole | null> {
+  private async _findUserRole(where: IFindOptions<UserRole>['where']): Promise<UserRole | null> {
     return this.ctx.model.UserRole.findOne({
       where,
       attributes: {

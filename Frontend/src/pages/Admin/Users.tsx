@@ -334,7 +334,7 @@ const Users = (): JSX.Element => {
           return (
             <div className="roles-body">
               {record.roles.map(role => (
-                <Tag key={role.id} color="processing">
+                <Tag key={role.id} color="magenta">
                   {role.roleName}
                 </Tag>
               ))}
