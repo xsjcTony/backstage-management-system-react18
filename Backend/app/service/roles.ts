@@ -111,14 +111,18 @@ export default class RolesService extends Service {
 
     const { roleName, roleDescription } = data
 
-    const r1 = await this._findRole({ roleName })
-    if (r1 && r1.roleName !== roleName) {
-      throw new Error('message.roles.role-name.exist')
+    if (roleName) {
+      const r = await this._findRole({ roleName })
+      if (r && r.roleName !== roleName) {
+        throw new Error('message.roles.role-name.exist')
+      }
     }
 
-    const r2 = await this._findRole({ roleDescription })
-    if (r2 && r2.roleDescription !== roleDescription) {
-      throw new Error('message.roles.role-description.exist')
+    if (roleDescription) {
+      const r = await this._findRole({ roleDescription })
+      if (r && r.roleDescription !== roleDescription) {
+        throw new Error('message.roles.role-description.exist')
+      }
     }
 
     await role.update(data)

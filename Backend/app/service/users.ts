@@ -198,7 +198,7 @@ export default class UsersService extends Service {
       }
     }
 
-    if (!username && !email) {
+    if (data.userState === undefined && !username && !email) {
       throw new Error('Require at least one of username and email')
     }
 
