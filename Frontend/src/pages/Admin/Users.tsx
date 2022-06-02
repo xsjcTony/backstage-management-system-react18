@@ -349,13 +349,14 @@ const Users = (): JSX.Element => {
       search: false,
       title: intl.formatMessage({ id: 'pages.admin.user-list.table.header.state' }),
       dataIndex: 'userState',
-      render: (value, record) => (
-        <Switch
-          checked={record.userState}
-          loading={changingUserState}
-          onChange={checked => void changeUserState(record.id, checked)}
-        />
-      )
+      render: (value, record) =>
+        record.id !== currentUser?.id && (
+          <Switch
+            checked={record.userState}
+            loading={changingUserState}
+            onChange={checked => void changeUserState(record.id, checked)}
+          />
+        )
     },
     {
       width: 1,
