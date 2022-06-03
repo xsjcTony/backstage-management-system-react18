@@ -19,7 +19,8 @@ interface SubpageContainerProps {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    min-height: 100%;
+    height: 100%;
+    overflow: auto;
 
     .subpage-content {
         margin: 24px 24px 0;
