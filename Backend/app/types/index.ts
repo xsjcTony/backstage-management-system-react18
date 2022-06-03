@@ -161,11 +161,10 @@ export interface PrivilegeQueryData {
 export interface ModifyPrivilegeData {
   privilegeName: string
   privilegeDescription: string
-  type: 'menu' | 'request' | 'route'
-  requestMethod: 'all' | 'delete' | 'get' | 'post' | 'put' | null
+  requestMethod: 'delete' | 'get' | 'post' | 'put' | null
   privilegeUrl: string | null
-  parentId: number | null
-  level: 1 | 2 | 3
+  parentId: number
+  level: 1 | 2
   privilegeState?: boolean
 }
 

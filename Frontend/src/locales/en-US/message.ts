@@ -48,7 +48,13 @@ const message: Record<string, string> = {
   'message.roles.add.success': 'Role has been added',
   'message.roles.role-name.exist': 'Role name already exists',
   'message.roles.role-description.exist': 'Role description already exists',
-  'message.roles.delete.assigned': 'Cannot delete the role because it has been assigned to at least one user'
+
+  // Privileges
+  'message.privileges.privilege-name.exist': 'Privilege name already exists',
+  'message.privileges.privilege-description.exist': 'Privilege description already exists',
+  'message.privileges.privilege.updated': 'Privilege has been updated',
+  'message.privileges.privilege.deleted': 'Privilege has been deleted',
+  'message.privileges.privilege.missing': `Privilege doesn't exist`
 }
 
 export default message

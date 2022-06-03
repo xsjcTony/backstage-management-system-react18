@@ -45,7 +45,7 @@ export interface Privilege {
   privilegeName: string
   privilegeDescription: string
   privilegeState: boolean
-  requestMethod: 'all' | 'delete' | 'get' | 'post' | 'put'
+  requestMethod: 'delete' | 'get' | 'post' | 'put' | null
   privilegeUrl: string | null
   parentId: number
   level: 1 | 2

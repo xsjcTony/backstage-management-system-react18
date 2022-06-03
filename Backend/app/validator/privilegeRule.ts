@@ -3,7 +3,8 @@ export default {
     type: 'string',
     trim: true,
     format: /^(?!\s*$).+/,
-    message: 'Privilege name cannot be empty'
+    message: 'Privilege name cannot be empty',
+    required: true
   },
   privilegeDescription: {
     type: 'string',
@@ -14,14 +15,8 @@ export default {
   },
   level: {
     type: 'enum',
-    values: [1, 2, 3],
-    message: 'Privilege level must be one of 1, 2 or 3',
-    required: true
-  },
-  type: {
-    type: 'enum',
-    values: ['menu', 'route', 'request'],
-    message: 'Privilege type must be one of menu, route or request',
+    values: [1, 2],
+    message: 'Privilege level must be either 1 or 2',
     required: true
   },
   privilegeUrl: {
@@ -32,13 +27,13 @@ export default {
   },
   parentId: {
     type: 'number',
-    message: 'Parent\'s id must be a number',
+    message: `Parent's id must be a number`,
     required: false
   },
   requestMethod: {
     type: 'enum',
-    values: ['all', 'get', 'post', 'put', 'delete'],
-    message: 'Request method must be one of get, post, put, delete or all',
+    values: ['get', 'post', 'put', 'delete'],
+    message: 'Request method must be one of get, post, put or delete',
     required: false
   }
 }

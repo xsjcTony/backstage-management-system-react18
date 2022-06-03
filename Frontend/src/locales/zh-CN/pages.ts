@@ -77,6 +77,7 @@ const pages: Record<string, string> = {
   'pages.admin.privilege-list.table.header.actions.delete': '删除',
   'pages.admin.privilege-list.table.header.parentId': '父权限',
   'pages.admin.privilege-list.table.level.level': '等级',
+  'pages.admin.privilege-list.privilege.state.updated': '权限状态更新成功',
 
   // Login
   'pages.login.title': '登录',

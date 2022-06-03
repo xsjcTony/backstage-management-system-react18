@@ -48,7 +48,13 @@ const message: Record<string, string> = {
   'message.roles.add.success': '添加角色成功',
   'message.roles.role-name.exist': '角色名称已存在',
   'message.roles.role-description.exist': '角色描述已存在',
-  'message.roles.delete.assigned': '无法删除该角色, 因为它被分配给了至少一位用户'
+
+  // Privileges
+  'message.privileges.privilege-name.exist': '权限名称已存在',
+  'message.privileges.privilege-description.exist': '权限描述已存在',
+  'message.privileges.privilege.updated': '更新权限成功',
+  'message.privileges.privilege.deleted': '删除权限成功',
+  'message.privileges.privilege.missing': '权限不存在'
 }
 
 export default message

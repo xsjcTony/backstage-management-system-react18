@@ -77,6 +77,7 @@ const pages: Record<string, string> = {
   'pages.admin.privilege-list.table.header.actions.delete': 'Delete',
   'pages.admin.privilege-list.table.header.parentId': 'Parent privilege',
   'pages.admin.privilege-list.table.level.level': 'Level',
+  'pages.admin.privilege-list.privilege.state.updated': 'Privilege state has been updated',
 
   // Login
   'pages.login.title': 'Login',

@@ -15,7 +15,7 @@ export default class PrivilegesService extends Service {
   /**
    * Get roles by query info (REST API - GET)
    * @param {RoleQueryData} query
-   * @return {Promise<{rows: Role[], count: number}>}
+   * @return {Promise<{rows: Privilege[], count: number}>}
    */
   public async getPrivilegesByQuery(query: PrivilegeQueryData): Promise<{
     rows: Privilege[]
@@ -85,7 +85,7 @@ export default class PrivilegesService extends Service {
 
     const p1 = await this._findPrivilege({ privilegeName })
     if (p1) {
-      throw new Error(`Privilege "${ privilegeName }" already exists`)
+      throw new Error(`Privilege "${privilegeName}" already exists`)
     }
 
     const p2 = await this._findPrivilege({ privilegeDescription })
@@ -104,23 +104,31 @@ export default class PrivilegesService extends Service {
     const privilege = await this._getPrivilegeById(id)
     const { privilegeName, privilegeDescription } = data
 
-    if (!('privilegeState' in data)) {
+    if (data.privilegeState === undefined) {
+      // modifying details
       if (privilegeName !== privilege.privilegeName) {
         const p = await this._findPrivilege({ privilegeName })
         if (p) {
-          throw new Error(`Privilege "${ privilegeName }" already exists`)
+          throw new Error('message.privileges.privilege-name.exist')
         }
       }
 
       if (privilegeDescription !== privilege.privilegeDescription) {
         const p = await this._findPrivilege({ privilegeDescription })
         if (p) {
-          throw new Error(`Privilege description must be unique`)
+          throw new Error('message.privileges.privilege-description.exist')
         }
       }
-    }
 
-    await privilege.update(data)
+      await privilege.update(data)
+    } else {
+      // modifying state
+      if (privilege.parentId === 0) {
+        await this.ctx.model.Privilege.update({ privilegeState: data.privilegeState }, { where: { parentId: privilege.id } })
+      }
+
+      await privilege.update(data)
+    }
 
     const res = privilege.toJSON() as Privilege
     delete res.updatedAt
@@ -131,13 +139,17 @@ export default class PrivilegesService extends Service {
   /**
    * Delete privilege in database (REST API - DELETE)
    * @param {string} id
-   * @return {Promise<Role>}
+   * @return {Promise<Privilege>}
    */
   public async deletePrivilege(id: string): Promise<Privilege> {
-    const role = await this._getPrivilegeById(id)
+    const privilege = await this._getPrivilegeById(id)
 
-    await role.destroy()
-    return role
+    if (privilege.parentId === 0) {
+      await this.ctx.model.Privilege.destroy({ where: { parentId: privilege.id } })
+    }
+
+    await privilege.destroy()
+    return privilege
   }
 
 
@@ -172,7 +184,7 @@ export default class PrivilegesService extends Service {
     if (privilege) {
       return privilege
     } else {
-      throw new Error('Privilege doesn\'t exist.')
+      throw new Error('message.privileges.privilege.missing')
     }
   }
 }

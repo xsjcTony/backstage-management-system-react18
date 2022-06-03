@@ -29,10 +29,9 @@ module.exports = {
         defaultValue: true
       },
       request_method: {
-        type: ENUM('get', 'post', 'put', 'delete', 'all'),
-        allowNull: false,
-        unique: false,
-        defaultValue: 'all'
+        type: ENUM('get', 'post', 'put', 'delete'),
+        allowNull: true,
+        unique: false
       },
       privilege_url: {
         type: STRING,

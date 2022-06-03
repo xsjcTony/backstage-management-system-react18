@@ -10,7 +10,7 @@ import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
 import AddRoleModalForm from '@/pages/Admin/Roles/components/AddRoleModalForm'
 import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
-import { getPrivilegesByQuery } from '@/services/privileges'
+import { deletePrivilege, getPrivilegesByQuery, updatePrivilegeState } from '@/services/privileges'
 import { deleteRole, updateRoleState } from '@/services/roles'
 import { breadcrumbItemRender } from '@/utils'
 import type { ResponseData } from '@/services/types'
@@ -133,11 +133,11 @@ const Privileges = (): JSX.Element => {
   }
 
   // change privilege state
-  const _changeRoleState = async (id: number, checked: boolean): Promise<void> => {
-    let res: ResponseData<Role>
+  const _changePrivilegeState = async (id: number, checked: boolean): Promise<void> => {
+    let res: ResponseData<Privilege>
 
     try {
-      res = await updateRoleState(id, checked)
+      res = await updatePrivilegeState(id, checked)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return Promise.reject()
@@ -149,21 +149,21 @@ const Privileges = (): JSX.Element => {
     }
 
     await tableRef.current?.reload()
-    void message.success(intl.formatMessage({ id: 'pages.admin.role-list.role.state.updated' }), 3)
+    void message.success(intl.formatMessage({ id: 'pages.admin.privilege-list.privilege.state.updated' }), 3)
     return Promise.resolve()
   }
 
-  const { loading: changingRoleState, run: changeRoleState } = useRequest(_changeRoleState, {
+  const { loading: changingPrivilegeState, run: changePrivilegeState } = useRequest(_changePrivilegeState, {
     manual: true,
     onError: () => { /* Prevent printing meaningless error in console */ }
   })
 
   // delete role
-  const _removeRole = async (id: number): Promise<void> => {
-    let res: ResponseData<Role>
+  const _removePrivilege = async (id: number): Promise<void> => {
+    let res: ResponseData<Privilege>
 
     try {
-      res = await deleteRole(id)
+      res = await deletePrivilege(id)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return Promise.reject()
@@ -179,7 +179,7 @@ const Privileges = (): JSX.Element => {
     return Promise.resolve()
   }
 
-  const { loading: deletingRole, run: removeRole } = useRequest(_removeRole, {
+  const { loading: deletingPrivilege, run: removePrivilege } = useRequest(_removePrivilege, {
     manual: true,
     onError: () => { /* Prevent printing meaningless error in console */ }
   })
@@ -232,10 +232,7 @@ const Privileges = (): JSX.Element => {
       },
       title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.request-method' }),
       dataIndex: 'requestMethod',
-      render: (value, record) =>
-        record.requestMethod === 'all'
-          ? '-'
-          : record.requestMethod.toUpperCase()
+      render: (value, record) => record.requestMethod?.toUpperCase() ?? '-'
     },
     {
       align: 'center',
@@ -252,8 +249,8 @@ const Privileges = (): JSX.Element => {
       render: (value, record) => (
         <Switch
           checked={record.privilegeState}
-          loading={changingRoleState}
-          onChange={checked => void changeRoleState(record.id, checked)}
+          loading={changingPrivilegeState}
+          onChange={checked => void changePrivilegeState(record.id, checked)}
         />
       )
     },
@@ -276,8 +273,8 @@ const Privileges = (): JSX.Element => {
             initialValues={record}
             reloadTable={tableRef.current?.reload}
           />
-          <Button danger loading={deletingRole} type="primary">
-            <DeleteOutlined onClick={() => void removeRole(record.id)} />
+          <Button danger loading={deletingPrivilege} type="primary">
+            <DeleteOutlined onClick={() => void removePrivilege(record.id)} />
           </Button>
         </div>
       )
@@ -338,7 +335,7 @@ const Privileges = (): JSX.Element => {
 
   const search: SearchConfig = {
     defaultCollapsed: false,
-    labelWidth: 120
+    labelWidth: 'auto'
   }
 
 

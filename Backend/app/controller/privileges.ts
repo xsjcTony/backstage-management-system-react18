@@ -80,7 +80,7 @@ export default class PrivilegesController extends Controller {
       // save into database
       const privilege = await ctx.service.privileges.updatePrivilege(ctx.params.id, data)
 
-      ctx.success(200, 'Privilege has been updated', privilege)
+      ctx.success(200, 'message.privileges.privilege.updated', privilege)
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)
@@ -100,7 +100,7 @@ export default class PrivilegesController extends Controller {
 
     try {
       const privilege = await ctx.service.privileges.deletePrivilege(ctx.params.id)
-      ctx.success(200, 'Privilege has been deleted', privilege)
+      ctx.success(200, 'message.privileges.privilege.deleted', privilege)
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)

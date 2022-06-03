@@ -53,11 +53,10 @@ export class Privilege extends Model<Privilege> {
   @Column(BOOLEAN)
   public privilegeState!: boolean
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Unique(false)
-  @Default('all')
-  @Column(ENUM('get', 'post', 'put', 'delete', 'all'))
-  public requestMethod!: 'all' | 'delete' | 'get' | 'post' | 'put'
+  @Column(ENUM('get', 'post', 'put', 'delete'))
+  public requestMethod!: 'delete' | 'get' | 'post' | 'put'
 
   @AllowNull(true)
   @Unique(false)
