@@ -40,10 +40,9 @@ module.exports = {
         unique: false
       },
       parent_id: {
-        type: TINYINT.UNSIGNED,
+        type: INTEGER.UNSIGNED,
         allowNull: false,
-        unique: false,
-        defaultValue: 0
+        unique: false
       },
       level: {
         type: TINYINT.UNSIGNED,

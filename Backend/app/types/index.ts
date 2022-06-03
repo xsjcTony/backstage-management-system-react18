@@ -150,9 +150,11 @@ export interface ModifyUserRoleData {
  * Privilege
  */
 export interface PrivilegeQueryData {
-  type: '' | 'menu' | 'request' | 'route'
-  keyword: string
-  currentPageNumber?: string
+  privilegeName?: string
+  parentId?: string
+  requestMethod?: string
+  level?: string
+  current?: string
   pageSize?: string
 }
 

@@ -45,13 +45,17 @@ export interface Privilege {
   privilegeName: string
   privilegeDescription: string
   privilegeState: boolean
-  type: 'menu' | 'request' | 'route'
-  requestMethod: 'all' | 'delete' | 'get' | 'post' | 'put' | null
+  requestMethod: 'all' | 'delete' | 'get' | 'post' | 'put'
   privilegeUrl: string | null
-  parentId: number | null
-  level: 1 | 2 | 3
+  parentId: number
+  level: 1 | 2
 }
 
 export interface PrivilegeNode extends Privilege {
   children?: PrivilegeNode[]
+}
+
+export interface PrivilegeQueryResponse {
+  rows: Privilege[]
+  count: number
 }

@@ -27,9 +27,9 @@ export default class PrivilegesService extends Service {
       }
     }
 
-    if (query.currentPageNumber && query.pageSize) {
-      const currentPageNumber = parseInt(query.currentPageNumber) || 1
-      const pageSize = parseInt(query.pageSize) || 10
+    if (query.current && query.pageSize) {
+      const currentPageNumber = parseInt(query.current) || 1
+      const pageSize = parseInt(query.pageSize) || 5
 
       baseOptions = {
         ...baseOptions,
@@ -40,20 +40,37 @@ export default class PrivilegesService extends Service {
 
     let whereOptions: IFindOptions<Privilege>['where'] = {}
 
-    if (query.type) {
+    if (query.privilegeName) {
       whereOptions = {
         ...whereOptions,
-        type: query.type
+        privilegeName: { [Op.substring]: query.privilegeName }
       }
     }
 
+    if (query.parentId) {
+      whereOptions = {
+        ...whereOptions,
+        parentId: query.parentId
+      }
+    }
+
+    if (query.requestMethod) {
+      whereOptions = {
+        ...whereOptions,
+        requestMethod: query.requestMethod
+      }
+    }
+
+    if (query.level) {
+      whereOptions = {
+        ...whereOptions,
+        level: query.level
+      }
+    }
 
     return this.ctx.model.Privilege.findAndCountAll({
       ...baseOptions,
-      where: {
-        ...whereOptions,
-        privilegeName: { [Op.substring]: query.keyword }
-      }
+      where: whereOptions
     })
   }
 

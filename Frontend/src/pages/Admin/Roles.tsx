@@ -269,12 +269,12 @@ const Roles = (): JSX.Element => {
   }
 
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1)
-  const [pageSize, setPageSize] = useState<number>(parseInt(sessionStorage.getItem('roleTablePageSize') ?? '10') || 10)
+  const [pageSize, setPageSize] = useState<number>(parseInt(sessionStorage.getItem('roleTablePageSize') ?? '5') || 5)
 
   const pagination: ProTableProps<Role, RoleQueryData>['pagination'] = {
     showSizeChanger: true,
     showQuickJumper: true,
-    pageSizeOptions: [10, 20, 30, 50],
+    pageSizeOptions: [5, 10, 15, 30],
     defaultPageSize: pageSize,
     onChange: (page, pageSize) => {
       setCurrentPageNumber(page)

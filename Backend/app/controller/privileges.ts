@@ -24,8 +24,8 @@ export default class PrivilegesController extends Controller {
     const { ctx } = this
 
     try {
-      const roles = await ctx.service.privileges.getPrivilegesByQuery(ctx.query as unknown as PrivilegeQueryData)
-      ctx.success(200, 'success', roles)
+      const privileges = await ctx.service.privileges.getPrivilegesByQuery(ctx.query as unknown as PrivilegeQueryData)
+      ctx.success(200, 'success', privileges)
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(500, err.message, err)

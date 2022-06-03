@@ -55,11 +55,7 @@ export class Privilege extends Model<Privilege> {
 
   @AllowNull(false)
   @Unique(false)
-  @Column(ENUM('menu', 'route', 'request'))
-  public type!: 'menu' | 'request' | 'route'
-
-  @AllowNull(true)
-  @Unique(false)
+  @Default('all')
   @Column(ENUM('get', 'post', 'put', 'delete', 'all'))
   public requestMethod!: 'all' | 'delete' | 'get' | 'post' | 'put'
 
@@ -69,7 +65,7 @@ export class Privilege extends Model<Privilege> {
   @Column(STRING)
   public privilegeUrl!: string
 
-  @AllowNull(true)
+  @AllowNull(false)
   @Unique(false)
   @Column(INTEGER.UNSIGNED)
   public parentId!: number
@@ -77,7 +73,7 @@ export class Privilege extends Model<Privilege> {
   @AllowNull(false)
   @Unique(false)
   @Column(TINYINT.UNSIGNED)
-  public level!: 1 | 2 | 3
+  public level!: 1 | 2
 
   @BelongsToMany(() => Role, () => RolePrivilege)
   public roles!: (Role & { RolePrivilege: RolePrivilege })[]

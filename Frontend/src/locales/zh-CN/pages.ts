@@ -67,6 +67,16 @@ const pages: Record<string, string> = {
 
   // Privilege List
   'pages.admin.privilege-list.title': '权限列表',
+  'pages.admin.privilege-list.table.header.level': '等级',
+  'pages.admin.privilege-list.table.header.privilege-name': '权限名称',
+  'pages.admin.privilege-list.table.header.privilege-description': '权限描述',
+  'pages.admin.privilege-list.table.header.request-method': '请求方法',
+  'pages.admin.privilege-list.table.header.privilege-url': '请求地址',
+  'pages.admin.privilege-list.table.header.state': '状态',
+  'pages.admin.privilege-list.table.header.actions.edit': '编辑',
+  'pages.admin.privilege-list.table.header.actions.delete': '删除',
+  'pages.admin.privilege-list.table.header.parentId': '父权限',
+  'pages.admin.privilege-list.table.level.level': '等级',
 
   // Login
   'pages.login.title': '登录',

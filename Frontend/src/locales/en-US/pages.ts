@@ -67,6 +67,16 @@ const pages: Record<string, string> = {
 
   // Privilege List
   'pages.admin.privilege-list.title': 'Privilege List',
+  'pages.admin.privilege-list.table.header.level': 'Level',
+  'pages.admin.privilege-list.table.header.privilege-name': 'Privilege name',
+  'pages.admin.privilege-list.table.header.privilege-description': 'Privilege description',
+  'pages.admin.privilege-list.table.header.request-method': 'Request method',
+  'pages.admin.privilege-list.table.header.privilege-url': 'Request URL',
+  'pages.admin.privilege-list.table.header.state': 'State',
+  'pages.admin.privilege-list.table.header.actions.edit': 'Edit',
+  'pages.admin.privilege-list.table.header.actions.delete': 'Delete',
+  'pages.admin.privilege-list.table.header.parentId': 'Parent privilege',
+  'pages.admin.privilege-list.table.level.level': 'Level',
 
   // Login
   'pages.login.title': 'Login',
