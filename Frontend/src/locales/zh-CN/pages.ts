@@ -81,6 +81,8 @@ const pages: Record<string, string> = {
   'pages.admin.privilege-list.privilege.state.updated': '权限状态更新成功',
   'pages.admin.privilege-list.privileges.add.submit.text': '添加权限',
   'pages.admin.privilege-list.privileges.add.title': '添加权限',
+  'pages.admin.privilege-list.privileges.edit.submit.text': '编辑权限',
+  'pages.admin.privilege-list.privileges.edit.title': '编辑权限',
   'pages.admin.privilege-list.privileges.add.data.invalid': '权限信息不正确',
   'pages.admin.privilege-list.placeholder.privilege-name': '权限名称',
   'pages.admin.privilege-list.placeholder.privilege-description': '权限描述',

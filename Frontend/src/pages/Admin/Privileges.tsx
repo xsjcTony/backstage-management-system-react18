@@ -8,6 +8,7 @@ import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
 import AddPrivilegeModalForm from '@/pages/Admin/Privileges/components/AddPrivilegeModalForm'
+import EditPrivilegeModalForm from '@/pages/Admin/Privileges/components/EditPrivilegeModalForm'
 import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
 import { deletePrivilege, getPrivilegesByQuery, updatePrivilegeState } from '@/services/privileges'
 import { breadcrumbItemRender } from '@/utils'
@@ -274,7 +275,7 @@ const Privileges = (): JSX.Element => {
       ),
       render: (value, record) => (
         <div className="actions-body">
-          <EditRoleModalForm
+          <EditPrivilegeModalForm
             initialValues={record}
             reloadTable={tableRef.current?.reload}
           />

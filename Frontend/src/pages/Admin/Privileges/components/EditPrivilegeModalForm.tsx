@@ -1,7 +1,7 @@
-import { PlusOutlined, SafetyCertificateOutlined, TagsOutlined } from '@ant-design/icons'
+import { EditOutlined, SafetyCertificateOutlined, TagsOutlined } from '@ant-design/icons'
 import ProForm, { ModalForm } from '@ant-design/pro-form'
 import { useRequest } from 'ahooks'
-import { Button, Form, message } from 'antd'
+import { Button, Form, message, SelectProps } from 'antd'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import LevelSelect from '@/pages/Admin/Privileges/components/LevelSelect'
@@ -9,25 +9,27 @@ import ParentPrivilegeSelect from '@/pages/Admin/Privileges/components/ParentPri
 import PrivilegeUrlInput from '@/pages/Admin/Privileges/components/PrivilegeUrlInput'
 import RequestMethodSelect from '@/pages/Admin/Privileges/components/RequestMethodSelect'
 import RequiredTextInput from '@/pages/components/RequiredTextInput'
-import { addPrivilege as addPrivilegeAPI } from '@/services/privileges'
+import { updatePrivilege } from '@/services/privileges'
 import type { ResponseData } from '@/services/types'
+import type { Privilege } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 
 
 /**
  * Types
  */
-export interface AddPrivilegeData {
+export interface EditPrivilegeData {
   privilegeName: string
   privilegeDescription: string
   level: 1 | 2
-  requestMethod?: 'delete' | 'get' | 'post' | 'put'
-  privilegeUrl?: string
+  requestMethod: 'delete' | 'get' | 'post' | 'put' | null
+  privilegeUrl: string | null
   parentId: number
 }
 
-interface AddPrivilegeFormProps {
+interface EditPrivilegeFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
+  initialValues: Privilege
 }
 
 
@@ -41,7 +43,7 @@ const { useWatch } = Form
 /**
  * Component
  */
-const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Element => {
+const EditPrivilegeModalForm = ({ reloadTable, initialValues }: EditPrivilegeFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -63,15 +65,17 @@ const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Elem
   /**
    * Add user
    */
-  const _addPrivilege = async (values: AddPrivilegeData): Promise<void> => {
+  const _editPrivilege = async (values: EditPrivilegeData): Promise<void> => {
     if (values.level === 1) {
       values.parentId = 0
+      values.requestMethod = null
+      values.privilegeUrl = null
     }
 
     let data: ResponseData
 
     try {
-      data = await addPrivilegeAPI(values)
+      data = await updatePrivilege(initialValues.id, values)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return Promise.reject()
@@ -91,7 +95,7 @@ const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Elem
     return Promise.resolve()
   }
 
-  const { loading: addingPrivilege, run: addPrivilege } = useRequest(_addPrivilege, {
+  const { loading: editingPrivilege, run: editPrivilege } = useRequest(_editPrivilege, {
     manual: true,
     onError: () => { /* Prevent printing meaningless error in console */ }
   })
@@ -104,10 +108,10 @@ const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Elem
 
   const formSubmitter: ModalFormProps['submitter'] = {
     searchConfig: {
-      submitText: intl.formatMessage({ id: 'pages.admin.privilege-list.privileges.add.submit.text' })
+      submitText: intl.formatMessage({ id: 'pages.admin.privilege-list.privileges.edit.submit.text' })
     },
     submitButtonProps: {
-      loading: addingPrivilege
+      loading: editingPrivilege
     }
   }
 
@@ -115,7 +119,7 @@ const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Elem
   /**
    * Level
    */
-  const level = useWatch<AddPrivilegeData['level']>('level', formInstance)
+  const level = useWatch<EditPrivilegeData['level']>('level', formInstance)
 
 
   /**
@@ -124,23 +128,23 @@ const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Elem
   return (
     <>
       <Button
-        icon={<PlusOutlined />}
         type="primary"
         onClick={() => void setModalVisible(true)}
       >
-        {intl.formatMessage({ id: 'pages.admin.privilege-list.table.actions.add-privilege' })}
+        <EditOutlined />
       </Button>
-      <ModalForm<AddPrivilegeData>
+      <ModalForm<EditPrivilegeData>
         autoFocusFirstInput
         form={formInstance}
+        initialValues={{ ...initialValues, parentId: initialValues.level === 1 ? undefined : initialValues.parentId }}
         modalProps={modalProps}
         preserve={false}
         submitter={formSubmitter}
         submitTimeout={3000}
-        title={intl.formatMessage({ id: 'pages.admin.privilege-list.privileges.add.title' })}
+        title={intl.formatMessage({ id: 'pages.admin.privilege-list.privileges.edit.title' })}
         visible={modalVisible}
         width={400}
-        onFinish={async values => void addPrivilege(values)}
+        onFinish={async values => void editPrivilege(values)}
         onFinishFailed={() => void message.error(intl.formatMessage({ id: 'pages.admin.privilege-list.privileges.add.data.invalid' }), 3)}
       >
         <RequiredTextInput
@@ -158,7 +162,7 @@ const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Elem
         <LevelSelect />
         {level !== 1 && (
           <>
-            <ParentPrivilegeSelect />
+            <ParentPrivilegeSelect currentId={initialValues.id} />
             <RequestMethodSelect />
             <PrivilegeUrlInput />
           </>
@@ -168,4 +172,4 @@ const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Elem
   )
 }
 
-export default AddPrivilegeModalForm
+export default EditPrivilegeModalForm

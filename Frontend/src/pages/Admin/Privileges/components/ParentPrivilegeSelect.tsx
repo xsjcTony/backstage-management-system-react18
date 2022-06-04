@@ -7,7 +7,18 @@ import type { PrivilegeQueryResponse } from '@/types'
 import type { ProFormSelectProps } from '@ant-design/pro-form/es/components/Select'
 
 
-const ParentPrivilegeSelect = (): JSX.Element => {
+/**
+ * Types
+ */
+interface ParentPrivilegeSelectProps {
+  currentId?: number
+}
+
+
+/**
+ * Component
+ */
+const ParentPrivilegeSelect = ({ currentId = undefined }: ParentPrivilegeSelectProps): JSX.Element => {
 
   /**
    * Utils
@@ -33,7 +44,7 @@ const ParentPrivilegeSelect = (): JSX.Element => {
       return []
     }
 
-    return data.data.rows.map((privilege) => {
+    return data.data.rows.filter(privilege => privilege.id !== currentId).map((privilege) => {
       return {
         label: privilege.privilegeName,
         value: privilege.id

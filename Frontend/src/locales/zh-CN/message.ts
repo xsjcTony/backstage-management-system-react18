@@ -55,7 +55,8 @@ const message: Record<string, string> = {
   'message.privileges.privilege.updated': '更新权限成功',
   'message.privileges.privilege.deleted': '删除权限成功',
   'message.privileges.privilege.missing': '权限不存在',
-  'message.privileges.add.success': '权限添加成功'
+  'message.privileges.add.success': '权限添加成功',
+  'message.privileges.delete.associated': '删除失败, 有子权限属于当前权限'
 }
 
 export default message

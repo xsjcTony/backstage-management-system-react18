@@ -55,7 +55,8 @@ const message: Record<string, string> = {
   'message.privileges.privilege.updated': 'Privilege has been updated',
   'message.privileges.privilege.deleted': 'Privilege has been deleted',
   'message.privileges.privilege.missing': `Privilege doesn't exist`,
-  'message.privileges.add.success': 'Privilege has been added'
+  'message.privileges.add.success': 'Privilege has been added',
+  'message.privileges.delete.associated': 'Delete failed, some child privileges are associated with current privilege'
 }
 
 export default message

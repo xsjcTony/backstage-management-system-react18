@@ -153,7 +153,10 @@ export default class PrivilegesService extends Service {
     const privilege = await this._getPrivilegeById(id)
 
     if (privilege.parentId === 0) {
-      await this.ctx.model.Privilege.destroy({ where: { parentId: privilege.id } })
+      const p = await this._findPrivilege({ parentId: privilege.id })
+      if (p) {
+        throw new Error('message.privileges.delete.associated')
+      }
     }
 
     await privilege.destroy()

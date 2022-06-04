@@ -81,6 +81,8 @@ const pages: Record<string, string> = {
   'pages.admin.privilege-list.privilege.state.updated': 'Privilege state has been updated',
   'pages.admin.privilege-list.privileges.add.submit.text': 'Add privilege',
   'pages.admin.privilege-list.privileges.add.title': 'Add privilege',
+  'pages.admin.privilege-list.privileges.edit.submit.text': 'Edit privilege',
+  'pages.admin.privilege-list.privileges.edit.title': 'Edit privilege',
   'pages.admin.privilege-list.privileges.add.data.invalid': 'Invalid privilege data',
   'pages.admin.privilege-list.placeholder.privilege-name': 'Privilege name',
   'pages.admin.privilege-list.placeholder.privilege-description': 'Privilege description',
