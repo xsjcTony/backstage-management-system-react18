@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
-import AddRoleModalForm from '@/pages/Admin/Roles/components/AddRoleModalForm'
+import AddPrivilegeModalForm from '@/pages/Admin/Privileges/components/AddPrivilegeModalForm'
 import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
 import { deletePrivilege, getPrivilegesByQuery, updatePrivilegeState } from '@/services/privileges'
 import { breadcrumbItemRender } from '@/utils'
@@ -16,7 +16,6 @@ import type { Privilege, PrivilegeQueryResponse, Role } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
 import type { SearchConfig } from '@ant-design/pro-table/es/components/Form/FormRender'
 import type { PageHeaderProps } from 'antd'
-import AddPrivilegeModalForm from '@/pages/Admin/Privileges/components/AddPrivilegeModalForm'
 
 
 /**
@@ -29,6 +28,7 @@ export interface PrivilegeQueryData {
   level?: 1 | 2
   current?: number
   pageSize?: number
+  levelSorting?: 'asc' | 'desc'
 }
 
 
@@ -102,7 +102,11 @@ const Privileges = (): JSX.Element => {
   /**
    * Methods
    */
-  const request: ProTableProps<Privilege, PrivilegeQueryData>['request'] = async (params) => {
+  const request: ProTableProps<Privilege, PrivilegeQueryData>['request'] = async (params, sort) => {
+    if (sort.level) {
+      params.levelSorting = sort.level === 'ascend' ? 'asc' : 'desc'
+    }
+
     let data: ResponseData<PrivilegeQueryResponse>
 
     try {
@@ -202,7 +206,7 @@ const Privileges = (): JSX.Element => {
       align: 'center',
       width: 90,
       search: false,
-      sorter: (a, b) => a.level - b.level,
+      sorter: true,
       title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.level' }),
       dataIndex: 'level',
       render: (value, record) => (

@@ -39,6 +39,13 @@ export default class PrivilegesService extends Service {
       }
     }
 
+    if (query.levelSorting) {
+      baseOptions = {
+        ...baseOptions,
+        order: [['level', query.levelSorting], ['id', 'asc']]
+      }
+    }
+
     let whereOptions: IFindOptions<Privilege>['where'] = {}
 
     if (query.privilegeName) {

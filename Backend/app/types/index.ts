@@ -156,6 +156,7 @@ export interface PrivilegeQueryData {
   level?: string
   current?: string
   pageSize?: string
+  levelSorting?: 'asc' | 'desc'
 }
 
 export interface AddPrivilegeData {
