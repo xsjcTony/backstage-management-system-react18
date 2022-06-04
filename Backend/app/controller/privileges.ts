@@ -49,9 +49,9 @@ export default class PrivilegesController extends Controller {
       ctx.validate(PrivilegeRule, data)
 
       // save into database
-      const privilege = await ctx.service.privileges.createPrivilege(data)
+      await ctx.service.privileges.createPrivilege(data)
 
-      ctx.success(200, 'Privilege has been added', privilege)
+      ctx.success(200, 'message.privileges.add.success')
     } catch (err) {
       if (err instanceof Error) {
         ctx.error(400, err.message, err)

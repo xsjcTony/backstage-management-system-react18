@@ -54,7 +54,8 @@ const message: Record<string, string> = {
   'message.privileges.privilege-description.exist': '权限描述已存在',
   'message.privileges.privilege.updated': '更新权限成功',
   'message.privileges.privilege.deleted': '删除权限成功',
-  'message.privileges.privilege.missing': '权限不存在'
+  'message.privileges.privilege.missing': '权限不存在',
+  'message.privileges.add.success': '权限添加成功'
 }
 
 export default message

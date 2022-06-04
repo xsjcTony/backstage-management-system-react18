@@ -1,6 +1,5 @@
-import { DeleteOutlined, SettingOutlined } from '@ant-design/icons'
+import { DeleteOutlined } from '@ant-design/icons'
 import ProTable from '@ant-design/pro-table'
-import { SearchConfig } from '@ant-design/pro-table/es/components/Form/FormRender'
 import { useRequest, useTitle } from 'ahooks'
 import { Button, message, PageHeader, Switch, Tag } from 'antd'
 import { useRef, useState } from 'react'
@@ -11,12 +10,13 @@ import SubpageContainer from '@/components/SubpageContainer'
 import AddRoleModalForm from '@/pages/Admin/Roles/components/AddRoleModalForm'
 import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
 import { deletePrivilege, getPrivilegesByQuery, updatePrivilegeState } from '@/services/privileges'
-import { deleteRole, updateRoleState } from '@/services/roles'
 import { breadcrumbItemRender } from '@/utils'
 import type { ResponseData } from '@/services/types'
 import type { Privilege, PrivilegeQueryResponse, Role } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
+import type { SearchConfig } from '@ant-design/pro-table/es/components/Form/FormRender'
 import type { PageHeaderProps } from 'antd'
+import AddPrivilegeModalForm from '@/pages/Admin/Privileges/components/AddPrivilegeModalForm'
 
 
 /**
@@ -25,7 +25,7 @@ import type { PageHeaderProps } from 'antd'
 export interface PrivilegeQueryData {
   privilegeName?: string
   parentId?: number
-  requestMethod?: 'all' | 'delete' | 'get' | 'post' | 'put'
+  requestMethod?: 'delete' | 'get' | 'post' | 'put'
   level?: 1 | 2
   current?: number
   pageSize?: number
@@ -202,6 +202,7 @@ const Privileges = (): JSX.Element => {
       align: 'center',
       width: 90,
       search: false,
+      sorter: (a, b) => a.level - b.level,
       title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.level' }),
       dataIndex: 'level',
       render: (value, record) => (
@@ -311,8 +312,8 @@ const Privileges = (): JSX.Element => {
 
   const toolbar: ProTableProps<Privilege, PrivilegeQueryData>['toolbar'] = {
     actions: [
-      <AddRoleModalForm
-        key="addRole"
+      <AddPrivilegeModalForm
+        key="addPrivilege"
         reloadTable={tableRef.current?.reload}
       />
     ]

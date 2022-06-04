@@ -4,6 +4,7 @@ import { Service } from 'egg'
 import { Op } from 'sequelize'
 import type { Privilege } from '../model/Privilege'
 import type {
+  AddPrivilegeData,
   ModifyPrivilegeData,
   PrivilegeQueryData
 } from '../types'
@@ -80,17 +81,17 @@ export default class PrivilegesService extends Service {
    * @param {ModifyPrivilegeData} data
    * @return {Promise<Privilege>}
    */
-  public async createPrivilege(data: ModifyPrivilegeData): Promise<Privilege> {
+  public async createPrivilege(data: AddPrivilegeData): Promise<Privilege> {
     const { privilegeName, privilegeDescription } = data
 
     const p1 = await this._findPrivilege({ privilegeName })
     if (p1) {
-      throw new Error(`Privilege "${privilegeName}" already exists`)
+      throw new Error('message.privileges.privilege-name.exist')
     }
 
     const p2 = await this._findPrivilege({ privilegeDescription })
     if (p2) {
-      throw new Error(`Privilege description must be unique`)
+      throw new Error('message.privileges.privilege-description.exist')
     }
 
     return this.ctx.model.Privilege.create(data)

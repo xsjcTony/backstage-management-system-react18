@@ -158,6 +158,15 @@ export interface PrivilegeQueryData {
   pageSize?: string
 }
 
+export interface AddPrivilegeData {
+  privilegeName: string
+  privilegeDescription: string
+  level: 1 | 2
+  requestMethod?: 'delete' | 'get' | 'post' | 'put'
+  privilegeUrl?: string
+  parentId: number
+}
+
 export interface ModifyPrivilegeData {
   privilegeName: string
   privilegeDescription: string
