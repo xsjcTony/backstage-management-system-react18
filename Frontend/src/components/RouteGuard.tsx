@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import Cookies from 'js-cookie'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'

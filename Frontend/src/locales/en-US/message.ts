@@ -48,6 +48,7 @@ const message: Record<string, string> = {
   'message.roles.add.success': 'Role has been added',
   'message.roles.role-name.exist': 'Role name already exists',
   'message.roles.role-description.exist': 'Role description already exists',
+  'message.roles.assign-privileges.success': 'Privileges have been assigned',
 
   // Privileges
   'message.privileges.privilege-name.exist': 'Privilege name already exists',

@@ -58,10 +58,19 @@ export default class RolesService extends Service {
       }
     }
 
-    return this.ctx.model.Role.findAndCountAll({
+    const rows = await this.ctx.model.Role.findAll({
       ...baseOptions,
       where: whereOptions
     })
+
+    const count = await this.ctx.model.Role.count({
+      where: whereOptions
+    })
+
+    return {
+      rows,
+      count
+    }
   }
 
 

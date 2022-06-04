@@ -32,7 +32,7 @@ export default class RolePrivilegeController extends Controller {
       const assignedPrivilegeIds = (await ctx.service.rolePrivilege.findRolePrivileges({ roleId })).map(rolePrivilege => (rolePrivilege.toJSON() as RolePrivilege).privilegeId)
 
       if (assignedPrivilegeIds.length === privilegeIds.length) {
-        ctx.success(200, 'Privileges have been assigned', privilegeIds)
+        ctx.success(200, 'message.roles.assign-privileges.success', privilegeIds)
         return
       }
 
@@ -53,7 +53,7 @@ export default class RolePrivilegeController extends Controller {
 
       await transaction.commit()
 
-      ctx.success(200, 'Privileges have been assigned', privilegeIds)
+      ctx.success(200, 'message.roles.assign-privileges.success', privilegeIds)
     } catch (err) {
       await transaction.rollback()
 

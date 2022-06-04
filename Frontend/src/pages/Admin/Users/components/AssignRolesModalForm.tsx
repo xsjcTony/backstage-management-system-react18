@@ -23,7 +23,7 @@ export interface AssignRolesData {
   roleIds: number[]
 }
 
-interface AddUserFormProps {
+interface AssignRolesFormProps {
   user: User
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
 }
@@ -53,7 +53,7 @@ const { useForm } = ProForm
 /**
  * Component
  */
-const AssignRolesModalForm = ({ user, reloadTable }: AddUserFormProps): JSX.Element => {
+const AssignRolesModalForm = ({ user, reloadTable }: AssignRolesFormProps): JSX.Element => {
 
   /**
    * Utils

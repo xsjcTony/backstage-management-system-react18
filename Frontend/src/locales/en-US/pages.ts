@@ -64,6 +64,8 @@ const pages: Record<string, string> = {
   'pages.admin.role-list.error-message.role-description.missing': 'Please fill in role description',
   'pages.admin.role-list.roles.edit.title': 'Edit role',
   'pages.admin.role-list.roles.edit.submit.text': 'Edit role',
+  'pages.admin.role-list.roles.assign-privileges.title': 'Assign privileges',
+  'pages.admin.role-list.roles.assign-privileges.submit.text': 'Assign privileges',
 
   // Privilege List
   'pages.admin.privilege-list.title': 'Privilege List',

@@ -8,6 +8,7 @@ import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
 import AddRoleModalForm from '@/pages/Admin/Roles/components/AddRoleModalForm'
+import AssignPrivilegesModalForm from '@/pages/Admin/Roles/components/AssignPrivilegesModalForm'
 import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
 import { deleteRole, getRolesByQuery, updateRoleState } from '@/services/roles'
 import { breadcrumbItemRender } from '@/utils'
@@ -127,6 +128,7 @@ const Roles = (): JSX.Element => {
         total: 0
       }
     }
+    console.log(data.data)
 
     return {
       data: data.data.rows,
@@ -248,9 +250,10 @@ const Roles = (): JSX.Element => {
             initialValues={record}
             reloadTable={tableRef.current?.reload}
           />
-          <Button className="setting" type="primary">
-            <SettingOutlined />
-          </Button>
+          <AssignPrivilegesModalForm
+            reloadTable={tableRef.current?.reload}
+            role={record}
+          />
           <Button danger loading={deletingRole} type="primary">
             <DeleteOutlined onClick={() => void removeRole(record.id)} />
           </Button>

@@ -64,6 +64,8 @@ const pages: Record<string, string> = {
   'pages.admin.role-list.error-message.role-description.missing': '请输入角色描述',
   'pages.admin.role-list.roles.edit.title': '编辑角色',
   'pages.admin.role-list.roles.edit.submit.text': '编辑角色',
+  'pages.admin.role-list.roles.assign-privileges.title': '分配权限',
+  'pages.admin.role-list.roles.assign-privileges.submit.text': '分配权限',
 
   // Privilege List
   'pages.admin.privilege-list.title': '权限列表',

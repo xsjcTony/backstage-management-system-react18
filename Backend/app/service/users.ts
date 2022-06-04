@@ -94,10 +94,19 @@ export default class UsersService extends Service {
       }
     }
 
-    return this.ctx.model.User.findAndCountAll({
+    const rows = await this.ctx.model.User.findAll({
       ...baseOptions,
       where: whereOptions
     })
+
+    const count = await this.ctx.model.User.count({
+      where: whereOptions
+    })
+
+    return {
+      rows,
+      count
+    }
   }
 
 
