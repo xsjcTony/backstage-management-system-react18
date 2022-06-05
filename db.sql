@@ -27,3 +27,13 @@ INSERT INTO `privileges` (id, privilege_name, privilege_description, privilege_s
 INSERT INTO `privileges` (id, privilege_name, privilege_description, privilege_state, request_method, privilege_url, parent_id, level) VALUES (24, 'DELETE_MENU', 'Delete menu', 1, 'delete', '/api/v1/menus', 22, 2);
 INSERT INTO `privileges` (id, privilege_name, privilege_description, privilege_state, request_method, privilege_url, parent_id, level) VALUES (25, 'UPDATE_MENU', 'Update menu\'s details', 1, 'put', '/api/v1/menus', 22, 2);
 INSERT INTO `privileges` (id, privilege_name, privilege_description, privilege_state, request_method, privilege_url, parent_id, level) VALUES (26, 'GET_MENU', 'Get menu\'s details', 1, 'get', '/api/v1/menus', 22, 2);
+
+-- ----------------------------
+-- Records of menus
+-- ----------------------------
+INSERT INTO `menus` (id, menu_name, menu_description, menu_state, menu_key, menu_icon, parent_id, level) VALUES (1, 'menu.user-management', 'User management', 1, 'user-management', 'SettingOutlined', 0, 1);
+INSERT INTO `menus` (id, menu_name, menu_description, menu_state, menu_key, menu_icon, parent_id, level) VALUES (2, 'menu.user-management.user-list', 'User list', 1, '/admin/users', 'UserOutlined', 1, 2);
+INSERT INTO `menus` (id, menu_name, menu_description, menu_state, menu_key, menu_icon, parent_id, level) VALUES (3, 'menu.privilege-management', 'Privilege management', 1, 'privilege-management', 'UnlockOutlined', 0, 1);
+INSERT INTO `menus` (id, menu_name, menu_description, menu_state, menu_key, menu_icon, parent_id, level) VALUES (4, 'menu.privilege-management.role-list', 'Role list', 1, '/admin/roles', 'EyeOutlined', 3, 2);
+INSERT INTO `menus` (id, menu_name, menu_description, menu_state, menu_key, menu_icon, parent_id, level) VALUES (5, 'menu.privilege-management.privilege-list', 'Privilege list', 1, '/admin/privileges', 'SafetyCertificateOutlined', 3, 2);
+INSERT INTO `menus` (id, menu_name, menu_description, menu_state, menu_key, menu_icon, parent_id, level) VALUES (6, 'menu.privilege-management.menu-list', 'Menu list', 1, '/admin/menus', 'MenuOutlined', 3, 2);

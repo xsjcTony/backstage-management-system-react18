@@ -33,7 +33,7 @@ export default {
       menu_key: {
         type: STRING,
         allowNull: false,
-        unique: false
+        unique: true
       },
       menu_icon: {
         type: STRING,
