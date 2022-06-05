@@ -66,6 +66,7 @@ const pages: Record<string, string> = {
   'pages.admin.role-list.roles.edit.submit.text': '编辑角色',
   'pages.admin.role-list.roles.assign-privileges.title': '分配权限',
   'pages.admin.role-list.roles.assign-privileges.submit.text': '分配权限',
+  'pages.admin.role-list.table.tooltip': '点击 "+" 按钮以查看角色拥有的权限',
 
   // Privilege List
   'pages.admin.privilege-list.title': '权限列表',

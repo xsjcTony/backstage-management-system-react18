@@ -167,6 +167,15 @@ const Roles = (): JSX.Element => {
             continue
           }
 
+          if (d.code !== 200) {
+            void message.error(intl.formatMessage({ id: data.msg }), 3)
+            return {
+              data: undefined,
+              success: false,
+              total: 0
+            }
+          }
+
           t.push(d.data)
         }
       }
@@ -313,7 +322,18 @@ const Roles = (): JSX.Element => {
         key="addRole"
         reloadTable={tableRef.current?.reload}
       />
-    ]
+    ],
+    title: (
+      <>
+        <Tag color="volcano" style={{ marginRight: 8 }}>
+          {`${intl.formatMessage({ id: 'pages.admin.privilege-list.table.level.level' })} 1`}
+        </Tag>
+        <Tag color="green" style={{ marginRight: 8 }}>
+          {`${intl.formatMessage({ id: 'pages.admin.privilege-list.table.level.level' })} 2`}
+        </Tag>
+      </>
+    ),
+    tooltip: intl.formatMessage({ id: 'pages.admin.role-list.table.tooltip' })
   }
 
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1)
@@ -337,7 +357,7 @@ const Roles = (): JSX.Element => {
         {record.privilegeTree?.map(privilege => (
           <Fragment key={privilege.id}>
             <div>
-              <Tag color="red">{privilege.privilegeName}</Tag>
+              <Tag color="volcano">{privilege.privilegeName}</Tag>
             </div>
             <div>
               {privilege.children?.map(childPrivilege =>

@@ -66,6 +66,7 @@ const pages: Record<string, string> = {
   'pages.admin.role-list.roles.edit.submit.text': 'Edit role',
   'pages.admin.role-list.roles.assign-privileges.title': 'Assign privileges',
   'pages.admin.role-list.roles.assign-privileges.submit.text': 'Assign privileges',
+  'pages.admin.role-list.table.tooltip': 'Click on "+" to show all privileges assigned to the role',
 
   // Privilege List
   'pages.admin.privilege-list.title': 'Privilege List',
