@@ -7,7 +7,7 @@ import {
   UnlockOutlined,
   EyeOutlined,
   LogoutOutlined,
-  SafetyCertificateOutlined
+  SafetyCertificateOutlined, MenuOutlined
 } from '@ant-design/icons'
 import { useBoolean } from 'ahooks'
 import { Layout, Menu, Avatar, Dropdown, message } from 'antd'
@@ -240,6 +240,11 @@ const Admin = (): JSX.Element => {
           intl.formatMessage({ id: 'menu.privilege-management.privilege-list' }),
           '/admin/privileges',
           <SafetyCertificateOutlined />
+        ),
+        createItem(
+          intl.formatMessage({ id: 'menu.privilege-management.menu-list' }),
+          '/admin/menus',
+          <MenuOutlined />
         )
       ]
     )
