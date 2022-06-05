@@ -61,6 +61,7 @@ const StyledSubpageContainer = styled(SubpageContainer)`
     
     .privilege-row {
         .privilege-container {
+            padding: 20px 0;
             display: grid;
             grid-template-columns: 1fr 3fr;
             row-gap: 50px;
@@ -151,16 +152,12 @@ const Roles = (): JSX.Element => {
     // Build privilege tree
     for (const role of roles) {
       const t = [...role.privileges]
-      const added: number[] = []
 
       for (const item of t) {
         if (
           item.parentId !== 0
           && t.findIndex(i => i.id === item.parentId) === -1
-          && !added.includes(item.parentId)
         ) {
-          added.push(item.parentId)
-
           let d: ResponseData<Privilege>
 
           try {
@@ -354,10 +351,12 @@ const Roles = (): JSX.Element => {
     columnWidth: 50,
     rowExpandable: record => record.privileges.length !== 0,
     expandedRowClassName: () => 'privilege-row',
-    expandIcon: ({ expanded, onExpand, record }) =>
-      expanded
-        ? <MinusCircleTwoTone style={{ fontSize: 20 }} onClick={e => void onExpand(record, e)} />
-        : <PlusCircleTwoTone style={{ fontSize: 20 }} onClick={e => void onExpand(record, e)} />
+    expandIcon: ({ expanded, onExpand, record, expandable }) =>
+      expandable && (
+        expanded
+          ? <MinusCircleTwoTone style={{ fontSize: 20 }} onClick={e => void onExpand(record, e)} />
+          : <PlusCircleTwoTone style={{ fontSize: 20 }} onClick={e => void onExpand(record, e)} />
+      )
   }
 
 
