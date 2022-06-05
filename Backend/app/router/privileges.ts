@@ -12,6 +12,7 @@ export default (app: Application, authenticator: any): void => {
    * Roles - REST API
    */
   router.get('/api/v1/privileges', authenticator, controller.privileges.getPrivilegesByQuery)
+  router.get('/api/v1/privileges/:id', authenticator, controller.privileges.getPrivilegeById)
   router.post('/api/v1/privileges', authenticator, controller.privileges.createPrivilege)
   router.put('/api/v1/privileges/:id', authenticator, controller.privileges.updatePrivilege)
   router.delete('/api/v1/privileges/:id', authenticator, controller.privileges.deletePrivilege)

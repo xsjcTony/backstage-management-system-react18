@@ -84,6 +84,24 @@ export default class PrivilegesService extends Service {
 
 
   /**
+   * Look for privilege based on given `PRIMARY KEY`
+   */
+  public async getPrivilegeById(id: string): Promise<Privilege> {
+    const privilege = await this.ctx.model.Privilege.findByPk(id, {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    })
+
+    if (privilege) {
+      return privilege
+    } else {
+      throw new Error('message.privileges.privilege.missing')
+    }
+  }
+
+
+  /**
    * Add privilege to database (REST API - POST)
    * @param {ModifyPrivilegeData} data
    * @return {Promise<Privilege>}
@@ -109,7 +127,7 @@ export default class PrivilegesService extends Service {
    * Update privilege in database (REST API - PUT)
    */
   public async updatePrivilege(id: string, data: ModifyPrivilegeData): Promise<Privilege> {
-    const privilege = await this._getPrivilegeById(id)
+    const privilege = await this.getPrivilegeById(id)
     const { privilegeName, privilegeDescription } = data
 
     if (data.privilegeState === undefined) {
@@ -150,7 +168,7 @@ export default class PrivilegesService extends Service {
    * @return {Promise<Privilege>}
    */
   public async deletePrivilege(id: string): Promise<Privilege> {
-    const privilege = await this._getPrivilegeById(id)
+    const privilege = await this.getPrivilegeById(id)
 
     if (privilege.parentId === 0) {
       const p = await this._findPrivilege({ parentId: privilege.id })
@@ -176,26 +194,5 @@ export default class PrivilegesService extends Service {
    */
   private async _findPrivilege(options: IFindOptions<Privilege>['where']): Promise<Privilege | null> {
     return this.ctx.model.Privilege.findOne({ where: options })
-  }
-
-
-  /**
-   * Look for privilege based on given `PRIMARY KEY`
-   * @param {string} id
-   * @return {Promise<Privilege>}
-   * @private
-   */
-  private async _getPrivilegeById(id: string): Promise<Privilege> {
-    const privilege = await this.ctx.model.Privilege.findByPk(id, {
-      attributes: {
-        exclude: ['createdAt', 'updatedAt']
-      }
-    })
-
-    if (privilege) {
-      return privilege
-    } else {
-      throw new Error('message.privileges.privilege.missing')
-    }
   }
 }

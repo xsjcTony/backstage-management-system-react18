@@ -2,9 +2,9 @@ import * as Request from '@/utils/request'
 import type { ResponseData } from './types'
 import type { RoleQueryData } from '@/pages/Admin/Roles'
 import type { AddRoleData } from '@/pages/Admin/Roles/components/AddRoleModalForm'
+import type { AssignPrivilegesData } from '@/pages/Admin/Roles/components/AssignPrivilegesModalForm'
 import type { EditRoleData } from '@/pages/Admin/Roles/components/EditRoleModalForm'
 import type { Role, RoleQueryResponse } from '@/types'
-import { AssignPrivilegesData } from '@/pages/Admin/Roles/components/AssignPrivilegesModalForm'
 
 
 export const getRoleById = async (id: number): Promise<ResponseData<Role>> => Request.get<ResponseData<Role>>(`/api/v1/roles/${id}`)

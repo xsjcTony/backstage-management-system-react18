@@ -37,6 +37,21 @@ export default class PrivilegesController extends Controller {
 
 
   /**
+   * Get privilege by ID (Primary key) (REST API - GET)
+   */
+  public async getPrivilegeById(): Promise<void> {
+    const { ctx } = this
+
+    try {
+      const privilege = await ctx.service.privileges.getPrivilegeById(ctx.params.id)
+      ctx.success(200, 'success', privilege)
+    } catch (err) {
+
+    }
+  }
+
+
+  /**
    * Add privilege to database (REST API - POST)
    * @return {Promise<void>}
    */

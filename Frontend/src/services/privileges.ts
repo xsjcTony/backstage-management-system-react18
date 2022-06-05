@@ -15,3 +15,5 @@ export const deletePrivilege = async (id: number): Promise<ResponseData<Privileg
 export const addPrivilege = async (data: AddPrivilegeData): Promise<ResponseData> => Request.post<ResponseData>('/api/v1/privileges', data)
 
 export const updatePrivilege = async (id: number, data: EditPrivilegeData): Promise<ResponseData<Privilege>> => Request.put<ResponseData<Privilege>>(`/api/v1/privileges/${id}`, data)
+
+export const getPrivilegeById = async (id: number): Promise<ResponseData<Privilege>> => Request.get<ResponseData<Privilege>>(`/api/v1/privileges/${id}`)

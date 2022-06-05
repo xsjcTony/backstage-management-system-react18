@@ -49,24 +49,26 @@ export const flatToAntdTree = <T extends FlatDataStructure<T>>(data: T[], label:
     return { label: item[label], value: item[value], children: r }
   }
 
-  const tree = data.reduce<T[]>((prev, curr) => {
-    if (curr.parentId === 0) {
-      prev.push(curr)
-      return prev
-    }
-
-    data.some((item) => {
-      if (curr.parentId === item.id) {
-        item.children = item.children ?? []
-        item.children.push(curr)
-        return true
-      }
-
-      return false
-    })
-
-    return prev
-  }, [])
+  const tree = flatToTree<T>(data)
 
   return tree.map<RequestOptionsType>(callback)
 }
+
+export const flatToTree = <T extends FlatDataStructure<T>>(data: T[]): T[] => data.reduce<T[]>((prev, curr) => {
+  if (curr.parentId === 0) {
+    prev.push(curr)
+    return prev
+  }
+
+  data.some((item) => {
+    if (curr.parentId === item.id) {
+      item.children = item.children ?? []
+      item.children.push(curr)
+      return true
+    }
+
+    return false
+  })
+
+  return prev
+}, [])

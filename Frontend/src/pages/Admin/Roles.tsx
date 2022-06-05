@@ -1,8 +1,8 @@
-import { DeleteOutlined, SettingOutlined } from '@ant-design/icons'
+import { DeleteOutlined, MinusCircleTwoTone, PlusCircleTwoTone } from '@ant-design/icons'
 import ProTable from '@ant-design/pro-table'
 import { useRequest, useTitle } from 'ahooks'
-import { Button, message, PageHeader, Switch, Tag } from 'antd'
-import { useRef, useState } from 'react'
+import { Button, message, PageHeader, Switch, Table, Tag } from 'antd'
+import { Fragment, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import Footer from '@/components/Footer'
@@ -10,10 +10,11 @@ import SubpageContainer from '@/components/SubpageContainer'
 import AddRoleModalForm from '@/pages/Admin/Roles/components/AddRoleModalForm'
 import AssignPrivilegesModalForm from '@/pages/Admin/Roles/components/AssignPrivilegesModalForm'
 import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
+import { getPrivilegeById } from '@/services/privileges'
 import { deleteRole, getRolesByQuery, updateRoleState } from '@/services/roles'
-import { breadcrumbItemRender } from '@/utils'
+import { breadcrumbItemRender, flatToTree } from '@/utils'
 import type { ResponseData } from '@/services/types'
-import type { Role, RoleQueryResponse } from '@/types'
+import type { Privilege, Role, RoleQueryResponse } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
 import type { PageHeaderProps } from 'antd'
 
@@ -32,14 +33,14 @@ export interface RoleQueryData {
  * Style
  */
 const StyledSubpageContainer = styled(SubpageContainer)`
+    .ant-tag {
+        margin-right: 0;
+    }
+    
     .actions-header {
         display: flex;
         gap: 8px;
         margin: 0 10px;
-        
-        span {
-            margin-right: 0;
-        }
     }
     
     .actions-body {
@@ -54,6 +55,22 @@ const StyledSubpageContainer = styled(SubpageContainer)`
             &:hover {
                 background-color: #ffc53d;
                 border-color: #ffc53d;
+            }
+        }
+    }
+    
+    .privilege-row {
+        .privilege-container {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            row-gap: 50px;
+            
+            & > div {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
             }
         }
     }
@@ -128,10 +145,40 @@ const Roles = (): JSX.Element => {
         total: 0
       }
     }
-    console.log(data.data)
+
+    const roles = data.data.rows
+
+    // Build privilege tree
+    for (const role of roles) {
+      const t = [...role.privileges]
+      const added: number[] = []
+
+      for (const item of t) {
+        if (
+          item.parentId !== 0
+          && t.findIndex(i => i.id === item.parentId) === -1
+          && !added.includes(item.parentId)
+        ) {
+          added.push(item.parentId)
+
+          let d: ResponseData<Privilege>
+
+          try {
+            d = await getPrivilegeById(item.parentId)
+          } catch (err) {
+            void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+            continue
+          }
+
+          t.push(d.data)
+        }
+      }
+
+      role.privilegeTree = flatToTree(t)
+    }
 
     return {
-      data: data.data.rows,
+      data: roles,
       success: true,
       total: data.data.count
     }
@@ -214,6 +261,7 @@ const Roles = (): JSX.Element => {
       title: intl.formatMessage({ id: 'pages.admin.role-list.table.header.role-description' }),
       dataIndex: 'roleDescription'
     },
+    Table.EXPAND_COLUMN,
     {
       align: 'center',
       width: 80,
@@ -286,6 +334,32 @@ const Roles = (): JSX.Element => {
     }
   }
 
+  const expandable: ProTableProps<Role, RoleQueryData>['expandable'] = {
+    expandedRowRender: record => (
+      <div className="privilege-container">
+        {record.privilegeTree?.map(privilege => (
+          <Fragment key={privilege.id}>
+            <div>
+              <Tag color="red">{privilege.privilegeName}</Tag>
+            </div>
+            <div>
+              {privilege.children?.map(childPrivilege =>
+                <Tag key={childPrivilege.id} color="green">{childPrivilege.privilegeName}</Tag>
+              )}
+            </div>
+          </Fragment>
+        ))}
+      </div>
+    ),
+    columnWidth: 50,
+    rowExpandable: record => record.privileges.length !== 0,
+    expandedRowClassName: () => 'privilege-row',
+    expandIcon: ({ expanded, onExpand, record }) =>
+      expanded
+        ? <MinusCircleTwoTone style={{ fontSize: 20 }} onClick={e => void onExpand(record, e)} />
+        : <PlusCircleTwoTone style={{ fontSize: 20 }} onClick={e => void onExpand(record, e)} />
+  }
+
 
   /**
    * Component
@@ -299,6 +373,7 @@ const Roles = (): JSX.Element => {
         bordered
         actionRef={tableRef}
         columns={columns}
+        expandable={expandable}
         pagination={pagination}
         request={request}
         rowKey={record => record.id}

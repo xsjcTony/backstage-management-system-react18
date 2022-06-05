@@ -9,7 +9,7 @@ export interface User {
   userState: boolean
   avatarUrl: string
   roles: Role[]
-  privilegeTree?: PrivilegeNode[]
+  privilegeTree?: Privilege[]
 }
 
 export type UserWithJWT = User & { token: string }
@@ -28,7 +28,7 @@ export interface Role {
   roleDescription: string
   roleState: boolean
   privileges: Privilege[]
-  privilegeTree?: PrivilegeNode[]
+  privilegeTree?: Privilege[]
 }
 
 export interface RoleQueryResponse {
@@ -49,10 +49,7 @@ export interface Privilege {
   privilegeUrl: string | null
   parentId: number
   level: 1 | 2
-}
-
-export interface PrivilegeNode extends Privilege {
-  children?: PrivilegeNode[]
+  children?: Privilege[]
 }
 
 export interface PrivilegeQueryResponse {
