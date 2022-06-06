@@ -55,5 +55,11 @@ export default async (app: Application): Promise<void> => {
   /**
    * Menus - REST API
    */
-  (await import('./router/menus')).default(app, authenticator)
+  (await import('./router/menus')).default(app, authenticator);
+
+
+  /**
+   * Role_Menu - REST API
+   */
+  (await import('./router/roleMenu')).default(app, authenticator)
 }

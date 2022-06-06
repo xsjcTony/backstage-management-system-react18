@@ -27,6 +27,7 @@ const Welcome = lazyLoading(lazy(() => new Promise((resolve) => {
 const Users = lazyLoading(lazy(() => import('./pages/Admin/Users')))
 const Roles = lazyLoading(lazy(() => import('./pages/Admin/Roles')))
 const Privileges = lazyLoading(lazy(() => import('./pages/Admin/Privileges')))
+const Menus = lazyLoading(lazy(() => import('./pages/Admin/Menus')))
 
 const Register = lazyLoading(lazy(() => import('./pages/Register')))
 const Login = lazyLoading(lazy(() => import('./pages/Login')))
@@ -60,6 +61,7 @@ const App = (): JSX.Element => (
         <Route path="users" element={<Users />} />
         <Route path="roles" element={<Roles />} />
         <Route path="privileges" element={<Privileges />} />
+        <Route path="menus" element={<Menus />} />
         <Route path="*" element={<Page404 homePath="/admin" />} />
       </Route>
       <Route path="/login" element={<Login />} />

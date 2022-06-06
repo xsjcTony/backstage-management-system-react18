@@ -49,6 +49,7 @@ const message: Record<string, string> = {
   'message.roles.role-name.exist': '角色名称已存在',
   'message.roles.role-description.exist': '角色描述已存在',
   'message.roles.assign-privileges.success': '权限分配成功',
+  'message.roles.assign-menus.success': '权限菜单成功',
 
   // Privileges
   'message.privileges.privilege-name.exist': '权限名称已存在',

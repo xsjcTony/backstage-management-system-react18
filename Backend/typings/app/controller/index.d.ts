@@ -5,6 +5,7 @@ import 'egg';
 import ExportGithub from '../../../app/controller/github';
 import ExportMenus from '../../../app/controller/menus';
 import ExportPrivileges from '../../../app/controller/privileges';
+import ExportRoleMenu from '../../../app/controller/roleMenu';
 import ExportRolePrivilege from '../../../app/controller/rolePrivilege';
 import ExportRoles from '../../../app/controller/roles';
 import ExportUser from '../../../app/controller/user';
@@ -17,6 +18,7 @@ declare module 'egg' {
     github: ExportGithub;
     menus: ExportMenus;
     privileges: ExportPrivileges;
+    roleMenu: ExportRoleMenu;
     rolePrivilege: ExportRolePrivilege;
     roles: ExportRoles;
     user: ExportUser;

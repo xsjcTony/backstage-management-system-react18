@@ -219,3 +219,12 @@ export interface ModifyMenuData {
   level: 1 | 2
   menuState?: boolean
 }
+
+
+/**
+ * RoleMenu
+ */
+export interface ModifyRoleMenuData {
+  roleId: number
+  menuId: number
+}
