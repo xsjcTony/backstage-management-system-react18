@@ -12,7 +12,7 @@ import EditPrivilegeModalForm from '@/pages/Admin/Privileges/components/EditPriv
 import { deletePrivilege, getPrivilegesByQuery, updatePrivilegeState } from '@/services/privileges'
 import { breadcrumbItemRender } from '@/utils'
 import type { ResponseData } from '@/services/types'
-import type { Privilege, PrivilegeQueryResponse, Role } from '@/types'
+import type { Privilege, PrivilegeQueryResponse } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
 import type { SearchConfig } from '@ant-design/pro-table/es/components/Form/FormRender'
 import type { PageHeaderProps } from 'antd'
@@ -162,7 +162,7 @@ const Privileges = (): JSX.Element => {
     onError: () => { /* Prevent printing meaningless error in console */ }
   })
 
-  // delete role
+  // delete privilege
   const _removePrivilege = async (id: number): Promise<void> => {
     let res: ResponseData<Privilege>
 
@@ -250,7 +250,7 @@ const Privileges = (): JSX.Element => {
       width: 80,
       search: false,
       title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.state' }),
-      dataIndex: 'roleState',
+      dataIndex: 'privilegeState',
       render: (value, record) => (
         <Switch
           checked={record.privilegeState}
@@ -326,7 +326,7 @@ const Privileges = (): JSX.Element => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(parseInt(sessionStorage.getItem('privilegeTablePageSize') ?? '5') || 5)
 
-  const pagination: ProTableProps<Role, PrivilegeQueryData>['pagination'] = {
+  const pagination: ProTableProps<Privilege, PrivilegeQueryData>['pagination'] = {
     showSizeChanger: true,
     showQuickJumper: true,
     pageSizeOptions: [5, 10, 15, 30],

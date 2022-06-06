@@ -56,3 +56,24 @@ export interface PrivilegeQueryResponse {
   rows: Privilege[]
   count: number
 }
+
+
+/**
+ * Menu
+ */
+export interface Menu {
+  id: number
+  menuName: string
+  menuDescription: string
+  menuState: boolean
+  menuKey: string
+  menuIcon: string | null
+  parentId: number
+  level: 1 | 2
+  children?: Menu[]
+}
+
+export interface MenuQueryResponse {
+  rows: Menu[]
+  count: number
+}

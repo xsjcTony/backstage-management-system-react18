@@ -20,3 +20,5 @@ export const addRole = async (data: AddRoleData): Promise<ResponseData> => Reque
 export const updateRole = async (id: number, data: EditRoleData): Promise<ResponseData<Role>> => Request.put<ResponseData<Role>>(`/api/v1/roles/${id}`, data)
 
 export const assignPrivileges = async (data: AssignPrivilegesData): Promise<ResponseData<number[]>> => Request.post<ResponseData<number[]>>('/api/v1/role-privilege', data)
+
+// export const assignRoles

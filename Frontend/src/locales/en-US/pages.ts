@@ -99,6 +99,20 @@ const pages: Record<string, string> = {
   'pages.admin.privilege-list.error-message.privilege-url.missing': 'Please fill in request URL',
   'pages.admin.privilege-list.error-message.privilege-url.invalid': 'Request URL must start with "/" and cannot contain any "space"',
 
+  // Menu List
+  'pages.admin.menu-list.title': 'Menu List',
+  'pages.admin.menu-list.table.header.level': 'Level',
+  'pages.admin.menu-list.table.header.menu-name': 'Menu name',
+  'pages.admin.menu-list.table.header.menu-name.tooltip': `I18n's id`,
+  'pages.admin.menu-list.table.header.menu-description': 'Menu description',
+  'pages.admin.menu-list.table.header.menu-key': 'Menu key',
+  'pages.admin.menu-list.table.header.menu-key.tooltip': '"Key" for level 1 menu, "Path" for level2 menu',
+  'pages.admin.menu-list.table.header.menu-icon': 'Menu icon',
+  'pages.admin.menu-list.table.header.state': 'State',
+  'pages.admin.menu-list.table.header.parentId': 'Parent menu',
+  'pages.admin.menu-list.table.level.level': 'Level',
+  'pages.admin.menu-list.table.menu-icon.invalid': 'Invalid antd-icon',
+
   // Login
   'pages.login.title': 'Login',
   'pages.login.placeholder.username': 'Username',

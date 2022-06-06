@@ -192,7 +192,7 @@ export interface ModifyRolePrivilegeData {
  * Menu
  */
 export interface MenuQueryData {
-  menuName?: string
+  menuDescription?: string
   parentId?: string
   menuKey?: string
   level?: string

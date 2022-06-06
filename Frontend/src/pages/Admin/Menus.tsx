@@ -1,18 +1,16 @@
-import { DeleteOutlined } from '@ant-design/icons'
+import * as AntdIcons from '@ant-design/icons/lib/icons'
 import ProTable from '@ant-design/pro-table'
-import { useRequest, useTitle } from 'ahooks'
-import { Button, message, PageHeader, Switch, Tag } from 'antd'
-import { useRef, useState } from 'react'
+import { useTitle } from 'ahooks'
+import { message, PageHeader, Switch, Tag } from 'antd'
+import { createElement, useRef } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
-import AddPrivilegeModalForm from '@/pages/Admin/Privileges/components/AddPrivilegeModalForm'
-import EditPrivilegeModalForm from '@/pages/Admin/Privileges/components/EditPrivilegeModalForm'
-import { deletePrivilege, getPrivilegesByQuery, updatePrivilegeState } from '@/services/privileges'
+import { getMenusByQuery } from '@/services/menus'
 import { breadcrumbItemRender } from '@/utils'
 import type { ResponseData } from '@/services/types'
-import type { Privilege, PrivilegeQueryResponse, Role } from '@/types'
+import type { Menu, MenuQueryResponse } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
 import type { SearchConfig } from '@ant-design/pro-table/es/components/Form/FormRender'
 import type { PageHeaderProps } from 'antd'
@@ -21,15 +19,18 @@ import type { PageHeaderProps } from 'antd'
 /**
  * Types
  */
-export interface PrivilegeQueryData {
-  privilegeName?: string
+export interface MenuQueryData {
+  menuDescription?: string
   parentId?: number
-  requestMethod?: 'delete' | 'get' | 'post' | 'put'
+  menuKey?: string
   level?: 1 | 2
   current?: number
   pageSize?: number
   levelSorting?: 'asc' | 'desc'
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const isAntdIconName = (iconName: string): iconName is keyof typeof AntdIcons => AntdIcons[iconName as keyof typeof AntdIcons] !== undefined
 
 
 /**
@@ -59,7 +60,7 @@ const StyledSubpageContainer = styled(SubpageContainer)`
 /**
  * Component
  */
-const Privileges = (): JSX.Element => {
+const Menus = (): JSX.Element => {
 
   /**
    * Hooks
@@ -70,7 +71,7 @@ const Privileges = (): JSX.Element => {
   /**
    * Title
    */
-  useTitle(`${intl.formatMessage({ id: 'pages.admin.privilege-list.title' })} - ${intl.formatMessage({ id: 'title' })}`)
+  useTitle(`${intl.formatMessage({ id: 'pages.admin.menu-list.title' })} - ${intl.formatMessage({ id: 'title' })}`)
 
 
   /**
@@ -85,7 +86,7 @@ const Privileges = (): JSX.Element => {
       },
       {
         path: '',
-        breadcrumbName: intl.formatMessage({ id: 'pages.admin.privilege-list.title' })
+        breadcrumbName: intl.formatMessage({ id: 'pages.admin.menu-list.title' })
       }
     ]
   }
@@ -94,7 +95,7 @@ const Privileges = (): JSX.Element => {
     <PageHeader
       breadcrumb={breadcrumb}
       ghost={false}
-      title={intl.formatMessage({ id: 'pages.admin.privilege-list.title' })}
+      title={intl.formatMessage({ id: 'pages.admin.menu-list.title' })}
     />
   )
 
@@ -102,15 +103,15 @@ const Privileges = (): JSX.Element => {
   /**
    * Methods
    */
-  const request: ProTableProps<Privilege, PrivilegeQueryData>['request'] = async (params, sort) => {
+  const request: ProTableProps<Menu, MenuQueryData>['request'] = async (params, sort) => {
     if (sort.level) {
       params.levelSorting = sort.level === 'ascend' ? 'asc' : 'desc'
     }
 
-    let data: ResponseData<PrivilegeQueryResponse>
+    let data: ResponseData<MenuQueryResponse>
 
     try {
-      data = await getPrivilegesByQuery(params)
+      data = await getMenusByQuery(params)
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return {
@@ -136,164 +137,93 @@ const Privileges = (): JSX.Element => {
     }
   }
 
-  // change privilege state
-  const _changePrivilegeState = async (id: number, checked: boolean): Promise<void> => {
-    let res: ResponseData<Privilege>
-
-    try {
-      res = await updatePrivilegeState(id, checked)
-    } catch (err) {
-      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
-      return Promise.reject()
-    }
-
-    if (res.code !== 200) {
-      void message.error(intl.formatMessage({ id: res.msg }), 3)
-      return Promise.reject()
-    }
-
-    await tableRef.current?.reload()
-    void message.success(intl.formatMessage({ id: 'pages.admin.privilege-list.privilege.state.updated' }), 3)
-    return Promise.resolve()
-  }
-
-  const { loading: changingPrivilegeState, run: changePrivilegeState } = useRequest(_changePrivilegeState, {
-    manual: true,
-    onError: () => { /* Prevent printing meaningless error in console */ }
-  })
-
-  // delete role
-  const _removePrivilege = async (id: number): Promise<void> => {
-    let res: ResponseData<Privilege>
-
-    try {
-      res = await deletePrivilege(id)
-    } catch (err) {
-      void message.error(intl.formatMessage({ id: 'error.network' }), 3)
-      return Promise.reject()
-    }
-
-    if (res.code !== 200) {
-      void message.error(intl.formatMessage({ id: res.msg }), 3)
-      return Promise.reject()
-    }
-
-    await tableRef.current?.reload()
-    void message.success(intl.formatMessage({ id: res.msg }), 3)
-    return Promise.resolve()
-  }
-
-  const { loading: deletingPrivilege, run: removePrivilege } = useRequest(_removePrivilege, {
-    manual: true,
-    onError: () => { /* Prevent printing meaningless error in console */ }
-  })
-
 
   /**
    * Table
    */
   const tableRef = useRef<ActionType>()
 
-  const columns: ProColumns<Privilege>[] = [
+  const columns: ProColumns<Menu>[] = [
     {
       key: 'index',
       align: 'center',
       width: 50,
       search: false,
-      render: (value, record, index) => (currentPageNumber - 1) * pageSize + index + 1
+      render: (value, record, index) => (currentPageNumber.current - 1) * pageSize.current + index + 1
     },
     {
       align: 'center',
       width: 90,
-      search: false,
       sorter: true,
-      title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.level' }),
+      title: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.level' }),
       dataIndex: 'level',
       render: (value, record) => (
         <Tag color={record.level === 1 ? 'red' : 'green'}>
-          {`${intl.formatMessage({ id: 'pages.admin.privilege-list.table.level.level' })} ${record.level}`}
+          {`${intl.formatMessage({ id: 'pages.admin.menu-list.table.level.level' })} ${record.level}`}
         </Tag>
-      )
-    },
-    {
-      align: 'center',
-      title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.privilege-name' }),
-      dataIndex: 'privilegeName'
-    },
-    {
-      align: 'center',
-      search: false,
-      title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.privilege-description' }),
-      dataIndex: 'privilegeDescription'
-    },
-    {
-      align: 'center',
+      ),
       valueType: 'select',
-      valueEnum: {
-        get: 'GET',
-        post: 'POST',
-        put: 'PUT',
-        'delete': 'DELETE'
-      },
-      title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.request-method' }),
-      dataIndex: 'requestMethod',
-      render: (value, record) => record.requestMethod?.toUpperCase() ?? '-'
+      request: async () => [
+        { label: 1, value: 1 },
+        { label: 2, value: 2 }
+      ]
+    },
+    {
+      align: 'center',
+      tooltip: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.menu-name.tooltip' }),
+      search: false,
+      title: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.menu-name' }),
+      dataIndex: 'menuName',
+      render: (value, record) => intl.formatMessage({
+        id: record.menuName,
+        defaultMessage: `I18n not found: ${record.menuName}`
+      })
+    },
+    {
+      align: 'center',
+      title: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.menu-description' }),
+      dataIndex: 'menuDescription'
+    },
+    {
+      align: 'center',
+      tooltip: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.menu-key.tooltip' }),
+      title: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.menu-key' }),
+      dataIndex: 'menuKey'
     },
     {
       align: 'center',
       search: false,
-      title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.privilege-url' }),
-      dataIndex: 'privilegeUrl'
+      title: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.menu-icon' }),
+      dataIndex: 'menuIcon',
+      render: (value, record) => record.menuIcon
+        ? isAntdIconName(record.menuIcon)
+          ? createElement(AntdIcons[record.menuIcon])
+          : `${intl.formatMessage({ id: 'pages.admin.menu-list.table.menu-icon.invalid' })}: ${record.menuIcon}`
+        : '-'
     },
     {
       align: 'center',
       width: 80,
       search: false,
-      title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.state' }),
-      dataIndex: 'roleState',
+      title: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.state' }),
+      dataIndex: 'menuState',
       render: (value, record) => (
         <Switch
-          checked={record.privilegeState}
-          loading={changingPrivilegeState}
-          onChange={checked => void changePrivilegeState(record.id, checked)}
+          disabled
+          checked={record.menuState}
         />
-      )
-    },
-    {
-      width: 1,
-      search: false,
-      title: (
-        <div className="actions-header">
-          <Tag color="blue">
-            {intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.actions.edit' })}
-          </Tag>
-          <Tag color="red">
-            {intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.actions.delete' })}
-          </Tag>
-        </div>
-      ),
-      render: (value, record) => (
-        <div className="actions-body">
-          <EditPrivilegeModalForm
-            initialValues={record}
-            reloadTable={tableRef.current?.reload}
-          />
-          <Button danger loading={deletingPrivilege} type="primary">
-            <DeleteOutlined onClick={() => void removePrivilege(record.id)} />
-          </Button>
-        </div>
       )
     },
     {
       hideInTable: true,
       key: 'parentId',
-      title: intl.formatMessage({ id: 'pages.admin.privilege-list.table.header.parentId' }),
+      title: intl.formatMessage({ id: 'pages.admin.menu-list.table.header.parentId' }),
       valueType: 'select',
       request: async () => {
-        let data: ResponseData<PrivilegeQueryResponse>
+        let data: ResponseData<MenuQueryResponse>
 
         try {
-          data = await getPrivilegesByQuery({ level: 1 })
+          data = await getMenusByQuery({ level: 1 })
         } catch (err) {
           void message.error(intl.formatMessage({ id: 'error.network' }), 3)
           return []
@@ -304,37 +234,31 @@ const Privileges = (): JSX.Element => {
           return []
         }
 
-        return data.data.rows.map((privilege) => {
+        return data.data.rows.map((menu) => {
           return {
-            label: privilege.privilegeName,
-            value: privilege.id
+            label: intl.formatMessage({
+              id: menu.menuName,
+              defaultMessage: `I18n not found: ${menu.menuName}`
+            }),
+            value: menu.id
           }
         })
       }
     }
   ]
 
-  const toolbar: ProTableProps<Privilege, PrivilegeQueryData>['toolbar'] = {
-    actions: [
-      <AddPrivilegeModalForm
-        key="addPrivilege"
-        reloadTable={tableRef.current?.reload}
-      />
-    ]
-  }
+  const currentPageNumber = useRef<number>(1)
+  const pageSize = useRef<number>(parseInt(sessionStorage.getItem('menuTablePageSize') ?? '5') || 5)
 
-  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1)
-  const [pageSize, setPageSize] = useState<number>(parseInt(sessionStorage.getItem('privilegeTablePageSize') ?? '5') || 5)
-
-  const pagination: ProTableProps<Role, PrivilegeQueryData>['pagination'] = {
+  const pagination: ProTableProps<Menu, MenuQueryData>['pagination'] = {
     showSizeChanger: true,
     showQuickJumper: true,
     pageSizeOptions: [5, 10, 15, 30],
-    defaultPageSize: pageSize,
-    onChange: (page, pageSize) => {
-      setCurrentPageNumber(page)
-      setPageSize(pageSize)
-      sessionStorage.setItem('privilegeTablePageSize', pageSize.toString(10))
+    defaultPageSize: pageSize.current,
+    onChange: (page, size) => {
+      currentPageNumber.current = page
+      pageSize.current = size
+      sessionStorage.setItem('menuTablePageSize', size.toString(10))
     }
   }
 
@@ -352,7 +276,7 @@ const Privileges = (): JSX.Element => {
       footer={<Footer />}
       header={header}
     >
-      <ProTable<Privilege, PrivilegeQueryData>
+      <ProTable<Menu, MenuQueryData>
         bordered
         actionRef={tableRef}
         columns={columns}
@@ -360,10 +284,9 @@ const Privileges = (): JSX.Element => {
         request={request}
         rowKey={record => record.id}
         search={search}
-        toolbar={toolbar}
       />
     </StyledSubpageContainer>
   )
 }
 
-export default Privileges
+export default Menus

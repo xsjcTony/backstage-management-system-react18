@@ -99,6 +99,20 @@ const pages: Record<string, string> = {
   'pages.admin.privilege-list.error-message.privilege-url.missing': '请输入请求地址 (URL)',
   'pages.admin.privilege-list.error-message.privilege-url.invalid': '请求地址必须由"/"打头, 并且不能包含"空格"',
 
+  // Menu List
+  'pages.admin.menu-list.title': '菜单列表',
+  'pages.admin.menu-list.table.header.level': '等级',
+  'pages.admin.menu-list.table.header.menu-name': '菜单名称',
+  'pages.admin.menu-list.table.header.menu-name.tooltip': '国际化 (i18b) 的 id',
+  'pages.admin.menu-list.table.header.menu-description': '菜单描述',
+  'pages.admin.menu-list.table.header.menu-key': '菜单键',
+  'pages.admin.menu-list.table.header.menu-key.tooltip': '一级菜单为 "键", 二级菜单为 "路径"',
+  'pages.admin.menu-list.table.header.menu-icon': '菜单图标',
+  'pages.admin.menu-list.table.header.state': '状态',
+  'pages.admin.menu-list.table.header.parentId': '父菜单',
+  'pages.admin.menu-list.table.level.level': '等级',
+  'pages.admin.menu-list.table.menu-icon.invalid': '非antd-icon图标',
+
   // Login
   'pages.login.title': '登录',
   'pages.login.placeholder.username': '用户名',

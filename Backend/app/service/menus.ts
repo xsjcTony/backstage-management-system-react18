@@ -42,10 +42,10 @@ export default class MenusService extends Service {
 
     let whereOptions: IFindOptions<Menu>['where'] = {}
 
-    if (query.menuName) {
+    if (query.menuDescription) {
       whereOptions = {
         ...whereOptions,
-        menuName: { [Op.substring]: query.menuName }
+        menuDescription: { [Op.substring]: query.menuDescription }
       }
     }
 
