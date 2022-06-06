@@ -18,7 +18,9 @@ import {
   BelongsToMany,
   Is
 } from 'sequelize-typescript'
+import { Menu } from './Menu'
 import { Privilege } from './Privilege'
+import { RoleMenu } from './RoleMenu'
 import { RolePrivilege } from './RolePrivilege'
 import { User } from './User'
 import { UserRole } from './UserRole'
@@ -59,6 +61,9 @@ export class Role extends Model<Role> {
 
   @BelongsToMany(() => Privilege, () => RolePrivilege)
   public privileges!: (Privilege & { RolePrivilege: RolePrivilege })[]
+
+  @BelongsToMany(() => Menu, () => RoleMenu)
+  public menus!: (Menu & { RoleMenu: RoleMenu })[]
 
   @CreatedAt
   public createdAt?: Date

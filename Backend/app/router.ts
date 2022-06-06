@@ -49,5 +49,11 @@ export default async (app: Application): Promise<void> => {
   /**
    * Role_Privilege - REST API
    */
-  (await import('./router/rolePrivilege')).default(app, authenticator)
+  (await import('./router/rolePrivilege')).default(app, authenticator);
+
+
+  /**
+   * Menus - REST API
+   */
+  (await import('./router/menus')).default(app, authenticator)
 }

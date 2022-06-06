@@ -1,7 +1,7 @@
 import { EditOutlined, SafetyCertificateOutlined, TagsOutlined } from '@ant-design/icons'
 import ProForm, { ModalForm } from '@ant-design/pro-form'
 import { useRequest } from 'ahooks'
-import { Button, Form, message, SelectProps } from 'antd'
+import { Button, Form, message } from 'antd'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import LevelSelect from '@/pages/Admin/Privileges/components/LevelSelect'

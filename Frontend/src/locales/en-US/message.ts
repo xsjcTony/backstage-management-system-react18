@@ -57,7 +57,17 @@ const message: Record<string, string> = {
   'message.privileges.privilege.deleted': 'Privilege has been deleted',
   'message.privileges.privilege.missing': `Privilege doesn't exist`,
   'message.privileges.add.success': 'Privilege has been added',
-  'message.privileges.delete.associated': 'Delete failed, some child privileges are associated with current privilege'
+  'message.privileges.delete.associated': 'Delete failed, some child privileges are associated with current privilege',
+
+  // Menus
+  'message.menus.menu.missing': `Menu doesn't exist`,
+  'message.menus.menu-name.exist': 'Menu name already exists',
+  'message.menus.menu-description.exist': 'Menu description already exists',
+  'message.menus.menu-key.exist': 'Menu key already exists',
+  'message.menus.add.success': 'Menu has been added',
+  'message.menus.menu.updated': 'Menu has been updated',
+  'message.menus.menu.deleted': 'Menu has been deleted',
+  'message.menus.delete.associated': 'Delete failed, some child menus are associated with current menu'
 }
 
 export default message

@@ -57,7 +57,17 @@ const message: Record<string, string> = {
   'message.privileges.privilege.deleted': '删除权限成功',
   'message.privileges.privilege.missing': '权限不存在',
   'message.privileges.add.success': '权限添加成功',
-  'message.privileges.delete.associated': '删除失败, 有子权限属于当前权限'
+  'message.privileges.delete.associated': '删除失败, 有子权限属于当前权限',
+
+  // Menus
+  'message.menus.menu.missing': '菜单不存在',
+  'message.menus.menu-name.exist': '菜单名称已存在',
+  'message.menus.menu-description.exist': '菜单描述已存在',
+  'message.menus.menu-key.exist': '菜单键已存在',
+  'message.menus.add.success': '添加菜单成功',
+  'message.menus.menu.updated': '更新菜单成功',
+  'message.menus.menu.deleted': '删除菜单成功',
+  'message.menus.delete.associated': '删除失败, 有子菜单属于当前菜单'
 }
 
 export default message

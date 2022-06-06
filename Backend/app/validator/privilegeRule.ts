@@ -28,7 +28,7 @@ export default {
   parentId: {
     type: 'number',
     message: `Parent's id must be a number`,
-    required: false
+    required: true
   },
   requestMethod: {
     type: 'enum',

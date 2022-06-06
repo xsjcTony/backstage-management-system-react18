@@ -6,6 +6,7 @@ type AnyClass = new (...args: any[]) => any;
 type AnyFunc<T = any> = (...args: any[]) => T;
 type CanExportFunc = AnyFunc<Promise<any>> | AnyFunc<IterableIterator<any>>;
 type AutoInstanceType<T, U = T extends CanExportFunc ? T : T extends AnyFunc ? ReturnType<T> : T> = U extends AnyClass ? InstanceType<U> : U;
+import ExportMenus from '../../../app/service/menus';
 import ExportOauth from '../../../app/service/oauth';
 import ExportPrivileges from '../../../app/service/privileges';
 import ExportRolePrivilege from '../../../app/service/rolePrivilege';
@@ -16,6 +17,7 @@ import ExportUsers from '../../../app/service/users';
 
 declare module 'egg' {
   interface IService {
+    menus: AutoInstanceType<typeof ExportMenus>;
     oauth: AutoInstanceType<typeof ExportOauth>;
     privileges: AutoInstanceType<typeof ExportPrivileges>;
     rolePrivilege: AutoInstanceType<typeof ExportRolePrivilege>;

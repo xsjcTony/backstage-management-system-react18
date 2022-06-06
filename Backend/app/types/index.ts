@@ -186,3 +186,36 @@ export interface ModifyRolePrivilegeData {
   roleId: number
   privilegeId: number
 }
+
+
+/**
+ * Menu
+ */
+export interface MenuQueryData {
+  menuName?: string
+  parentId?: string
+  menuKey?: string
+  level?: string
+  current?: string
+  pageSize?: string
+  levelSorting?: 'asc' | 'desc'
+}
+
+export interface AddMenuData {
+  menuName: string
+  menuDescription: string
+  menuKey: string
+  menuIcon?: string
+  parentId: number
+  level: 1 | 2
+}
+
+export interface ModifyMenuData {
+  menuName: string
+  menuDescription: string
+  menuKey: string
+  menuIcon: string | null
+  parentId: number
+  level: 1 | 2
+  menuState?: boolean
+}
