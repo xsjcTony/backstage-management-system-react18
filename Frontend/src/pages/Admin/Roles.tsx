@@ -1,20 +1,22 @@
 import { DeleteOutlined, MinusCircleTwoTone, PlusCircleTwoTone } from '@ant-design/icons'
 import ProTable from '@ant-design/pro-table'
 import { useRequest, useTitle } from 'ahooks'
-import { Button, message, PageHeader, Switch, Table, Tag } from 'antd'
+import { Button, Divider, message, PageHeader, Switch, Table, Tag } from 'antd'
 import { Fragment, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
 import AddRoleModalForm from '@/pages/Admin/Roles/components/AddRoleModalForm'
+import AssignMenusModalForm from '@/pages/Admin/Roles/components/AssignMenusModalForm'
 import AssignPrivilegesModalForm from '@/pages/Admin/Roles/components/AssignPrivilegesModalForm'
 import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
+import { getMenuById } from '@/services/menus'
 import { getPrivilegeById } from '@/services/privileges'
 import { deleteRole, getRolesByQuery, updateRoleState } from '@/services/roles'
 import { breadcrumbItemRender, flatToTree } from '@/utils'
 import type { ResponseData } from '@/services/types'
-import type { Privilege, Role, RoleQueryResponse } from '@/types'
+import type { Menu, Privilege, Role, RoleQueryResponse } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
 import type { PageHeaderProps } from 'antd'
 
@@ -36,42 +38,59 @@ const StyledSubpageContainer = styled(SubpageContainer)`
     .ant-tag {
         margin-right: 0;
     }
-    
+
     .actions-header {
         display: flex;
         gap: 8px;
         margin: 0 10px;
     }
-    
+
     .actions-body {
         display: flex;
         gap: 10px;
         justify-content: center;
-        
+
         .setting {
             background-color: #faad14;
             border-color: #faad14;
-            
+
             &:hover {
                 background-color: #ffc53d;
                 border-color: #ffc53d;
             }
         }
     }
-    
-    .privilege-row {
-        .privilege-container {
-            padding: 20px 0;
+
+    .privilege-and-menu-row {
+        .container {
             display: grid;
-            grid-template-columns: 1fr 3fr;
-            row-gap: 50px;
+            grid-template-columns: minmax(140px, 1fr) 5fr;
+            column-gap: 20px;
             
-            & > div {
+            .divider {
+                grid-column: 1 / span 2;
+                border-color: #d6e4ff;
+            }
+
+            .desc-tag {
                 display: flex;
-                flex-wrap: wrap;
                 justify-content: center;
                 align-items: center;
-                gap: 8px;
+            }
+
+            .data-container {
+                padding: 20px 0;
+                display: grid;
+                grid-template-columns: 1fr 3fr;
+                column-gap: 20px;
+
+                & > div {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 8px;
+                }
             }
         }
     }
@@ -149,14 +168,15 @@ const Roles = (): JSX.Element => {
 
     const roles = data.data.rows
 
-    // Build privilege tree
+    // Build tree
     for (const role of roles) {
-      const t = [...role.privileges]
+      // privilege tree
+      const p = [...role.privileges]
 
-      for (const item of t) {
+      for (const item of p) {
         if (
           item.parentId !== 0
-          && t.findIndex(i => i.id === item.parentId) === -1
+          && p.findIndex(i => i.id === item.parentId) === -1
         ) {
           let d: ResponseData<Privilege>
 
@@ -176,11 +196,43 @@ const Roles = (): JSX.Element => {
             }
           }
 
-          t.push(d.data)
+          p.push(d.data)
         }
       }
 
-      role.privilegeTree = flatToTree(t)
+      role.privilegeTree = flatToTree(p)
+
+      // menu tree
+      const m = [...role.menus]
+
+      for (const item of m) {
+        if (
+          item.parentId !== 0
+          && m.findIndex(i => i.id === item.parentId) === -1
+        ) {
+          let d: ResponseData<Menu>
+
+          try {
+            d = await getMenuById(item.parentId)
+          } catch (err) {
+            void message.error(intl.formatMessage({ id: 'error.network' }), 3)
+            continue
+          }
+
+          if (d.code !== 200) {
+            void message.error(intl.formatMessage({ id: data.msg }), 3)
+            return {
+              data: undefined,
+              success: false,
+              total: 0
+            }
+          }
+
+          m.push(d.data)
+        }
+      }
+
+      role.menuTree = flatToTree(m)
     }
 
     return {
@@ -213,7 +265,8 @@ const Roles = (): JSX.Element => {
 
   const { loading: changingRoleState, run: changeRoleState } = useRequest(_changeRoleState, {
     manual: true,
-    onError: () => { /* Prevent printing meaningless error in console */ }
+    onError: () => { /* Prevent printing meaningless error in console */
+    }
   })
 
   // delete role
@@ -239,7 +292,8 @@ const Roles = (): JSX.Element => {
 
   const { loading: deletingRole, run: removeRole } = useRequest(_removeRole, {
     manual: true,
-    onError: () => { /* Prevent printing meaningless error in console */ }
+    onError: () => { /* Prevent printing meaningless error in console */
+    }
   })
 
 
@@ -287,13 +341,16 @@ const Roles = (): JSX.Element => {
       search: false,
       title: (
         <div className="actions-header">
-          <Tag color="processing">
+          <Tag color="blue">
             {intl.formatMessage({ id: 'pages.admin.role-list.table.header.actions.edit' })}
           </Tag>
-          <Tag color="warning">
+          <Tag color="gold">
             {intl.formatMessage({ id: 'pages.admin.role-list.table.header.actions.assign-privileges' })}
           </Tag>
-          <Tag color="error">
+          <Tag color="green">
+            {intl.formatMessage({ id: 'pages.admin.role-list.table.header.actions.assign-menus' })}
+          </Tag>
+          <Tag color="red">
             {intl.formatMessage({ id: 'pages.admin.role-list.table.header.actions.delete' })}
           </Tag>
         </div>
@@ -305,6 +362,10 @@ const Roles = (): JSX.Element => {
             reloadTable={tableRef.current?.reload}
           />
           <AssignPrivilegesModalForm
+            reloadTable={tableRef.current?.reload}
+            role={record}
+          />
+          <AssignMenusModalForm
             reloadTable={tableRef.current?.reload}
             role={record}
           />
@@ -325,7 +386,7 @@ const Roles = (): JSX.Element => {
     ],
     title: (
       <>
-        <Tag color="volcano" style={{ marginRight: 8 }}>
+        <Tag color="orange" style={{ marginRight: 8 }}>
           {`${intl.formatMessage({ id: 'pages.admin.privilege-list.table.level.level' })} 1`}
         </Tag>
         <Tag color="green" style={{ marginRight: 8 }}>
@@ -351,26 +412,80 @@ const Roles = (): JSX.Element => {
     }
   }
 
+  // show privileges & menus
   const expandable: ProTableProps<Role, RoleQueryData>['expandable'] = {
     expandedRowRender: record => (
-      <div className="privilege-container">
-        {record.privilegeTree?.map(privilege => (
-          <Fragment key={privilege.id}>
-            <div>
-              <Tag color="volcano">{privilege.privilegeName}</Tag>
+      <div className="container">
+
+        {record.privilegeTree?.length !== 0 && (
+          <>
+            <div className="desc-tag">
+              <Tag color="red">
+                {intl.formatMessage({ id: 'pages.admin.role-list.table.assigned-privileges' })}
+              </Tag>
             </div>
-            <div>
-              {privilege.children?.map(childPrivilege =>
-                <Tag key={childPrivilege.id} color="green">{childPrivilege.privilegeName}</Tag>
-              )}
+            <div className="data-container">
+              {record.privilegeTree?.map((privilege, index, arr) => (
+                <Fragment key={privilege.id}>
+                  <div>
+                    <Tag color="orange">{privilege.privilegeName}</Tag>
+                  </div>
+                  <div>
+                    {privilege.children?.map(childPrivilege =>
+                      <Tag key={childPrivilege.id} color="green">{childPrivilege.privilegeName}</Tag>
+                    )}
+                  </div>
+                  {index !== arr.length - 1 && <Divider dashed className="divider" />}
+                </Fragment>
+              ))}
             </div>
-          </Fragment>
-        ))}
+          </>
+        )}
+
+        {record.privilegeTree?.length !== 0
+          && record.menuTree?.length !== 0
+          && <Divider className="divider" />}
+
+        {record.menuTree?.length !== 0 && (
+          <>
+            <div className="desc-tag">
+              <Tag color="red">
+                {intl.formatMessage({ id: 'pages.admin.role-list.table.assigned-menus' })}
+              </Tag>
+            </div>
+            <div className="data-container">
+              {record.menuTree?.map((menu, index, arr) => (
+                <Fragment key={menu.id}>
+                  <div>
+                    <Tag color="orange">
+                      {intl.formatMessage({
+                        id: menu.menuName,
+                        defaultMessage: menu.menuDescription
+                      })}
+                    </Tag>
+                  </div>
+                  <div>
+                    {menu.children?.map(childMenu => (
+                      <Tag key={childMenu.id} color="green">
+                        {intl.formatMessage({
+                          id: childMenu.menuName,
+                          defaultMessage: childMenu.menuDescription
+                        })}
+                      </Tag>
+                    ))}
+                  </div>
+                  {index !== arr.length - 1 && <Divider dashed className="divider" />}
+                </Fragment>
+              ))}
+            </div>
+          </>
+        )}
+
       </div>
     ),
     columnWidth: 50,
-    rowExpandable: record => record.privileges.length !== 0,
-    expandedRowClassName: () => 'privilege-row',
+    rowExpandable: record => record.privileges.length !== 0 || record.menus.length !== 0,
+    expandedRowClassName: () => 'privilege-and-menu-row',
     expandIcon: ({ expanded, onExpand, record, expandable }) =>
       expandable && (
         expanded

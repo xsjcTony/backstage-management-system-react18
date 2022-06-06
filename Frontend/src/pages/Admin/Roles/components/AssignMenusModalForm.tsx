@@ -1,4 +1,4 @@
-import { EyeOutlined, SettingOutlined } from '@ant-design/icons'
+import { EyeOutlined, MenuOutlined } from '@ant-design/icons'
 import ProForm, { ModalForm, ProFormText, ProFormTreeSelect } from '@ant-design/pro-form'
 import { useRequest } from 'ahooks'
 import { Button, message } from 'antd'
@@ -6,11 +6,11 @@ import { SHOW_PARENT } from 'rc-tree-select'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import styled from 'styled-components'
-import { getPrivilegesByQuery } from '@/services/privileges'
-import { assignPrivileges as assignPrivilegesAPI } from '@/services/roles'
+import { getMenusByQuery } from '@/services/menus'
+import { assignMenus as assignMenusAPI } from '@/services/roles'
 import { flatToAntdTree } from '@/utils'
 import type { ResponseData } from '@/services/types'
-import type { Role, PrivilegeQueryResponse, Privilege } from '@/types'
+import type { Role, Menu, MenuQueryResponse } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps, ProFormFieldRemoteProps } from '@ant-design/pro-form/es/interface'
 import type { InputProps, InputRef, TreeSelectProps } from 'antd'
@@ -20,12 +20,12 @@ import type { RefSelectProps } from 'antd/es/select'
 /**
  * Types
  */
-export interface AssignPrivilegesData {
+export interface AssignMenusData {
   roleId: number
-  privilegeIds: number[]
+  menuIds: number[]
 }
 
-interface AssignPrivilegesFormProps {
+interface AssignMenusFormProps {
   role: Role
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
 }
@@ -37,13 +37,13 @@ type ProFormTreeSelectProps = ProFormFieldItemProps<TreeSelectProps, RefSelectPr
  * Style
  */
 const StyledButton = styled(Button)`
-    background-color: #faad14;
-    border-color: #faad14;
+    background-color: #52c41a;
+    border-color: #52c41a;
 
     &:hover,
     &:focus {
-        background-color: #ffc53d;
-        border-color: #ffc53d;
+        background-color: #73d13d;
+        border-color: #73d13d;
     }
 `
 
@@ -57,7 +57,7 @@ const { useForm } = ProForm
 /**
  * Component
  */
-const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps): JSX.Element => {
+const AssignMenusModalForm = ({ role, reloadTable }: AssignMenusFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -77,16 +77,16 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
 
 
   /**
-   * Assign privileges
+   * Assign menus
    */
-  const _assignPrivileges = async (values: AssignPrivilegesData): Promise<void> => {
-    const t = [...values.privilegeIds]
+  const _assignMenus = async (values: AssignMenusData): Promise<void> => {
+    const t = [...values.menuIds]
     t.forEach((p) => {
-      availablePrivileges.some((privilege) => {
-        if (privilege.id === p && privilege.parentId === 0) {
-          availablePrivileges.forEach((item) => {
-            if (item.parentId === p && !values.privilegeIds.includes(item.id)) {
-              values.privilegeIds.push(item.id)
+      availableMenus.some((menu) => {
+        if (menu.id === p && menu.parentId === 0) {
+          availableMenus.forEach((item) => {
+            if (item.parentId === p && !values.menuIds.includes(item.id)) {
+              values.menuIds.push(item.id)
             }
           })
           return true
@@ -98,7 +98,7 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
     let data: ResponseData<number[]>
 
     try {
-      data = await assignPrivilegesAPI({ roleId: role.id, privilegeIds: values.privilegeIds })
+      data = await assignMenusAPI({ roleId: role.id, menuIds: values.menuIds })
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return Promise.reject()
@@ -118,7 +118,7 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
     return Promise.resolve()
   }
 
-  const { loading: assigningPrivileges, run: assignPrivileges } = useRequest(_assignPrivileges, {
+  const { loading: assigningMenus, run: assignMenus } = useRequest(_assignMenus, {
     manual: true,
     onError: () => { /* Prevent printing meaningless error in console */ }
   })
@@ -131,10 +131,10 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
 
   const formSubmitter: ModalFormProps['submitter'] = {
     searchConfig: {
-      submitText: intl.formatMessage({ id: 'pages.admin.role-list.roles.assign-privileges.submit.text' })
+      submitText: intl.formatMessage({ id: 'pages.admin.role-list.roles.assign-menus.submit.text' })
     },
     submitButtonProps: {
-      loading: assigningPrivileges
+      loading: assigningMenus
     }
   }
 
@@ -149,11 +149,11 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
 
 
   /**
-   * Privileges
+   * Menus
    */
-  const [availablePrivileges, setAvailablePrivileges] = useState<Privilege[]>([])
+  const [availableMenus, setAvailableMenus] = useState<Menu[]>([])
 
-  const privilegesFieldProps: ProFormTreeSelectProps['fieldProps'] = {
+  const menusFieldProps: ProFormTreeSelectProps['fieldProps'] = {
     size: 'large',
     multiple: true,
     treeCheckable: true,
@@ -163,11 +163,11 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
     showCheckedStrategy: SHOW_PARENT
   }
 
-  const getPrivileges: ProFormTreeSelectProps['request'] = async () => {
-    let data: ResponseData<PrivilegeQueryResponse>
+  const getMenus: ProFormTreeSelectProps['request'] = async () => {
+    let data: ResponseData<MenuQueryResponse>
 
     try {
-      data = await getPrivilegesByQuery({})
+      data = await getMenusByQuery({})
     } catch (err) {
       void message.error(intl.formatMessage({ id: 'error.network' }), 3)
       return []
@@ -178,9 +178,9 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
       return []
     }
 
-    setAvailablePrivileges(data.data.rows)
+    setAvailableMenus(data.data.rows)
 
-    return flatToAntdTree(data.data.rows, 'privilegeName', 'id')
+    return flatToAntdTree(data.data.rows, 'menuDescription', 'id')
   }
 
 
@@ -193,18 +193,18 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
         type="primary"
         onClick={() => void setModalVisible(true)}
       >
-        <SettingOutlined />
+        <MenuOutlined />
       </StyledButton>
-      <ModalForm<AssignPrivilegesData>
+      <ModalForm<AssignMenusData>
         form={formInstance}
         modalProps={modalProps}
         preserve={false}
         submitter={formSubmitter}
         submitTimeout={3000}
-        title={intl.formatMessage({ id: 'pages.admin.role-list.roles.assign-privileges.title' })}
+        title={intl.formatMessage({ id: 'pages.admin.role-list.roles.assign-menus.title' })}
         visible={modalVisible}
         width={1000}
-        onFinish={async values => void assignPrivileges(values)}
+        onFinish={async values => void assignMenus(values)}
       >
         <ProFormText
           disabled
@@ -213,14 +213,14 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
           name="username"
         />
         <ProFormTreeSelect
-          fieldProps={privilegesFieldProps}
-          initialValue={role.privileges.map(privilege => privilege.id)}
-          name="privilegeIds"
-          request={getPrivileges}
+          fieldProps={menusFieldProps}
+          initialValue={role.menus.map(menu => menu.id)}
+          name="menuIds"
+          request={getMenus}
         />
       </ModalForm>
     </>
   )
 }
 
-export default AssignRolesModalForm
+export default AssignMenusModalForm

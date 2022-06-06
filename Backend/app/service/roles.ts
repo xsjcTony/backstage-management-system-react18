@@ -2,7 +2,7 @@
 
 import { Service } from 'egg'
 import { Op } from 'sequelize'
-import { IWhereOptions } from 'sequelize-typescript/lib/interfaces/IWhereOptions'
+import { Menu } from '../model/Menu'
 import { Privilege } from '../model/Privilege'
 import type { Role } from '../model/Role'
 import type {
@@ -10,6 +10,7 @@ import type {
   ModifyRoleData
 } from '../types'
 import type { IFindOptions } from 'sequelize-typescript'
+import type { IWhereOptions } from 'sequelize-typescript/lib/interfaces/IWhereOptions'
 
 
 export default class RolesService extends Service {
@@ -27,15 +28,26 @@ export default class RolesService extends Service {
       attributes: {
         exclude: ['createdAt', 'updatedAt']
       },
-      include: [{
-        model: Privilege,
-        attributes: {
-          exclude: ['createdAt', 'updatedAt']
+      include: [
+        {
+          model: Privilege,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          },
+          through: {
+            attributes: []
+          }
         },
-        through: {
-          attributes: []
+        {
+          model: Menu,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          },
+          through: {
+            attributes: []
+          }
         }
-      }]
+      ]
     }
 
     if (query.current && query.pageSize) {
@@ -153,15 +165,26 @@ export default class RolesService extends Service {
       attributes: {
         exclude: ['createdAt', 'updatedAt']
       },
-      include: [{
-        model: Privilege,
-        attributes: {
-          exclude: ['createdAt', 'updatedAt']
+      include: [
+        {
+          model: Privilege,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          },
+          through: {
+            attributes: []
+          }
         },
-        through: {
-          attributes: []
+        {
+          model: Menu,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt']
+          },
+          through: {
+            attributes: []
+          }
         }
-      }]
+      ]
     })
 
     if (role) {

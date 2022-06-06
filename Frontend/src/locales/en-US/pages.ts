@@ -52,6 +52,7 @@ const pages: Record<string, string> = {
   'pages.admin.role-list.table.header.state': 'State',
   'pages.admin.role-list.table.header.actions.edit': 'Edit',
   'pages.admin.role-list.table.header.actions.assign-privileges': 'Assign privileges',
+  'pages.admin.role-list.table.header.actions.assign-menus': 'Assign menus',
   'pages.admin.role-list.table.header.actions.delete': 'Delete',
   'pages.admin.role-list.table.actions.add-roles': 'Add role',
   'pages.admin.role-list.role.state.updated': 'Role state has been updated',
@@ -66,7 +67,11 @@ const pages: Record<string, string> = {
   'pages.admin.role-list.roles.edit.submit.text': 'Edit role',
   'pages.admin.role-list.roles.assign-privileges.title': 'Assign privileges',
   'pages.admin.role-list.roles.assign-privileges.submit.text': 'Assign privileges',
-  'pages.admin.role-list.table.tooltip': 'Click on "+" to show all privileges assigned to the role',
+  'pages.admin.role-list.roles.assign-menus.title': 'Assign menus',
+  'pages.admin.role-list.roles.assign-menus.submit.text': 'Assign menus',
+  'pages.admin.role-list.table.tooltip': 'Click on "+" to show all privileges and menus assigned to the role',
+  'pages.admin.role-list.table.assigned-privileges': 'Assigned privileges',
+  'pages.admin.role-list.table.assigned-menus': 'Assigned menus',
 
   // Privilege List
   'pages.admin.privilege-list.title': 'Privilege List',

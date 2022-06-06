@@ -52,6 +52,7 @@ const pages: Record<string, string> = {
   'pages.admin.role-list.table.header.state': '状态',
   'pages.admin.role-list.table.header.actions.edit': '编辑',
   'pages.admin.role-list.table.header.actions.assign-privileges': '分配权限',
+  'pages.admin.role-list.table.header.actions.assign-menus': '分配菜单',
   'pages.admin.role-list.table.header.actions.delete': '删除',
   'pages.admin.role-list.table.actions.add-roles': '添加角色',
   'pages.admin.role-list.role.state.updated': '角色状态更新成功',
@@ -66,7 +67,11 @@ const pages: Record<string, string> = {
   'pages.admin.role-list.roles.edit.submit.text': '编辑角色',
   'pages.admin.role-list.roles.assign-privileges.title': '分配权限',
   'pages.admin.role-list.roles.assign-privileges.submit.text': '分配权限',
-  'pages.admin.role-list.table.tooltip': '点击 "+" 按钮以查看角色拥有的权限',
+  'pages.admin.role-list.roles.assign-menus.title': '分配菜单',
+  'pages.admin.role-list.roles.assign-menus.submit.text': '分配菜单',
+  'pages.admin.role-list.table.tooltip': '点击 "+" 按钮以查看角色拥有的权限和菜单',
+  'pages.admin.role-list.table.assigned-privileges': '分配的权限',
+  'pages.admin.role-list.table.assigned-menus': '分配的菜单',
 
   // Privilege List
   'pages.admin.privilege-list.title': '权限列表',

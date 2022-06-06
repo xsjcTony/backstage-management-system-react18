@@ -29,6 +29,8 @@ export interface Role {
   roleState: boolean
   privileges: Privilege[]
   privilegeTree?: Privilege[]
+  menus: Menu[]
+  menuTree?: Menu[]
 }
 
 export interface RoleQueryResponse {

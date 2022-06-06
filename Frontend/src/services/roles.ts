@@ -2,6 +2,7 @@ import * as Request from '@/utils/request'
 import type { ResponseData } from './types'
 import type { RoleQueryData } from '@/pages/Admin/Roles'
 import type { AddRoleData } from '@/pages/Admin/Roles/components/AddRoleModalForm'
+import type { AssignMenusData } from '@/pages/Admin/Roles/components/AssignMenusModalForm'
 import type { AssignPrivilegesData } from '@/pages/Admin/Roles/components/AssignPrivilegesModalForm'
 import type { EditRoleData } from '@/pages/Admin/Roles/components/EditRoleModalForm'
 import type { Role, RoleQueryResponse } from '@/types'
@@ -21,4 +22,4 @@ export const updateRole = async (id: number, data: EditRoleData): Promise<Respon
 
 export const assignPrivileges = async (data: AssignPrivilegesData): Promise<ResponseData<number[]>> => Request.post<ResponseData<number[]>>('/api/v1/role-privilege', data)
 
-// export const assignRoles
+export const assignMenus = async (data: AssignMenusData): Promise<ResponseData<number[]>> => Request.post<ResponseData<number[]>>(`/api/v1/role-menu`, data)
