@@ -3,6 +3,7 @@
 import path from 'node:path'
 import { Service } from 'egg'
 import { Op } from 'sequelize'
+import { Menu } from '../model/Menu'
 import { Privilege } from '../model/Privilege'
 import { Role } from '../model/Role'
 import type { User } from '../model/User'
@@ -237,15 +238,26 @@ export default class UsersService extends Service {
         through: {
           attributes: []
         },
-        include: [{
-          model: Privilege,
-          attributes: {
-            exclude: ['createdAt', 'updatedAt']
+        include: [
+          {
+            model: Privilege,
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            },
+            through: {
+              attributes: []
+            }
           },
-          through: {
-            attributes: []
+          {
+            model: Menu,
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            },
+            through: {
+              attributes: []
+            }
           }
-        }]
+        ]
       }]
     })
 

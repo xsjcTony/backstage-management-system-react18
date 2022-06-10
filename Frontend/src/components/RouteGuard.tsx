@@ -8,6 +8,7 @@ import Loading from '@/components/Loading'
 import { isLoggedIn } from '@/services/login'
 import { getUserById } from '@/services/users'
 import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
+import { buildMenuTreeByUser, buildPrivilegeTreeByUser } from '@/utils'
 import type { AppDispatch, RootState } from '@/store'
 import type { User } from '@/types'
 
@@ -58,16 +59,24 @@ const RouteGuard = (): JSX.Element => {
 
         const user = userResponse.data
 
-        // TODO: Privilege tree
+        // Privilege tree
+        user.privilegeTree = await buildPrivilegeTreeByUser(user)
+        console.log(user.privilegeTree)
+
+        // Menu tree
+        user.menuTree = await buildMenuTreeByUser(user)
+        console.log(user.menuTree)
 
         dispatch(setCurrentUser(user))
         dispatch(setLoggedIn(true))
         setAuthenticating(false)
       } else {
+        dispatch(setCurrentUser(null))
         dispatch(setLoggedIn(false))
         setAuthenticating(false)
       }
     } catch (err) {
+      dispatch(setCurrentUser(null))
       dispatch(setLoggedIn(false))
       setAuthenticating(false)
     }

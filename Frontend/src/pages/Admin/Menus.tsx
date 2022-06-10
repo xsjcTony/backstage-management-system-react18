@@ -8,6 +8,7 @@ import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
 import { getMenusByQuery } from '@/services/menus'
+import { isAntdIconName } from '@/types'
 import { breadcrumbItemRender } from '@/utils'
 import type { ResponseData } from '@/services/types'
 import type { Menu, MenuQueryResponse } from '@/types'
@@ -28,9 +29,6 @@ export interface MenuQueryData {
   pageSize?: number
   levelSorting?: 'asc' | 'desc'
 }
-
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-const isAntdIconName = (iconName: string): iconName is keyof typeof AntdIcons => AntdIcons[iconName as keyof typeof AntdIcons] !== undefined
 
 
 /**

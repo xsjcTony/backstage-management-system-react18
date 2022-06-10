@@ -108,7 +108,7 @@ const pages: Record<string, string> = {
   'pages.admin.menu-list.title': '菜单列表',
   'pages.admin.menu-list.table.header.level': '等级',
   'pages.admin.menu-list.table.header.menu-name': '菜单名称',
-  'pages.admin.menu-list.table.header.menu-name.tooltip': '国际化 (i18b) 的 id',
+  'pages.admin.menu-list.table.header.menu-name.tooltip': '国际化 (i18n) 的 id',
   'pages.admin.menu-list.table.header.menu-description': '菜单描述',
   'pages.admin.menu-list.table.header.menu-key': '菜单键',
   'pages.admin.menu-list.table.header.menu-key.tooltip': '一级菜单为 "键", 二级菜单为 "路径"',

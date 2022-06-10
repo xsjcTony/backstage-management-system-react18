@@ -11,10 +11,8 @@ import AddRoleModalForm from '@/pages/Admin/Roles/components/AddRoleModalForm'
 import AssignMenusModalForm from '@/pages/Admin/Roles/components/AssignMenusModalForm'
 import AssignPrivilegesModalForm from '@/pages/Admin/Roles/components/AssignPrivilegesModalForm'
 import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
-import { getMenuById } from '@/services/menus'
-import { getPrivilegeById } from '@/services/privileges'
 import { deleteRole, getRolesByQuery, updateRoleState } from '@/services/roles'
-import { breadcrumbItemRender, flatToTree } from '@/utils'
+import { breadcrumbItemRender, buildMenuTreeByRole, buildPrivilegeTreeByRole } from '@/utils'
 import type { ResponseData } from '@/services/types'
 import type { Menu, Privilege, Role, RoleQueryResponse } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
@@ -171,68 +169,36 @@ const Roles = (): JSX.Element => {
     // Build tree
     for (const role of roles) {
       // privilege tree
-      const p = [...role.privileges]
+      let p: Privilege[]
 
-      for (const item of p) {
-        if (
-          item.parentId !== 0
-          && p.findIndex(i => i.id === item.parentId) === -1
-        ) {
-          let d: ResponseData<Privilege>
-
-          try {
-            d = await getPrivilegeById(item.parentId)
-          } catch (err) {
-            void message.error(intl.formatMessage({ id: 'error.network' }), 3)
-            continue
-          }
-
-          if (d.code !== 200) {
-            void message.error(intl.formatMessage({ id: data.msg }), 3)
-            return {
-              data: undefined,
-              success: false,
-              total: 0
-            }
-          }
-
-          p.push(d.data)
+      try {
+        p = await buildPrivilegeTreeByRole(role)
+      } catch (err) {
+        void message.error(intl.formatMessage({ id: err instanceof Error ? err.message : 'error.network' }), 3)
+        return {
+          data: undefined,
+          success: false,
+          total: 0
         }
       }
 
-      role.privilegeTree = flatToTree(p)
+      role.privilegeTree = p
 
       // menu tree
-      const m = [...role.menus]
+      let r: Menu[]
 
-      for (const item of m) {
-        if (
-          item.parentId !== 0
-          && m.findIndex(i => i.id === item.parentId) === -1
-        ) {
-          let d: ResponseData<Menu>
-
-          try {
-            d = await getMenuById(item.parentId)
-          } catch (err) {
-            void message.error(intl.formatMessage({ id: 'error.network' }), 3)
-            continue
-          }
-
-          if (d.code !== 200) {
-            void message.error(intl.formatMessage({ id: data.msg }), 3)
-            return {
-              data: undefined,
-              success: false,
-              total: 0
-            }
-          }
-
-          m.push(d.data)
+      try {
+        r = await buildMenuTreeByRole(role)
+      } catch (err) {
+        void message.error(intl.formatMessage({ id: err instanceof Error ? err.message : 'error.network' }), 3)
+        return {
+          data: undefined,
+          success: false,
+          total: 0
         }
       }
 
-      role.menuTree = flatToTree(m)
+      role.menuTree = r
     }
 
     return {

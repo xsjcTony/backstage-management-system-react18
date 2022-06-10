@@ -1,3 +1,6 @@
+import * as AntdIcons from '@ant-design/icons/lib/icons'
+
+
 /**
  * User
  */
@@ -10,6 +13,7 @@ export interface User {
   avatarUrl: string
   roles: Role[]
   privilegeTree?: Privilege[]
+  menuTree?: Menu[]
 }
 
 export type UserWithJWT = User & { token: string }
@@ -79,3 +83,10 @@ export interface MenuQueryResponse {
   rows: Menu[]
   count: number
 }
+
+
+/**
+ * Others
+ */
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+export const isAntdIconName = (iconName: string): iconName is keyof typeof AntdIcons => AntdIcons[iconName as keyof typeof AntdIcons] !== undefined
