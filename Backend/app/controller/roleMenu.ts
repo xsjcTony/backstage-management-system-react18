@@ -31,11 +31,6 @@ export default class RoleMenuController extends Controller {
     try {
       const assignedMenuIds = (await ctx.service.roleMenu.findRoleMenus({ roleId })).map(roleMenu => (roleMenu.toJSON() as RoleMenu).menuId)
 
-      if (assignedMenuIds.length === menuIds.length) {
-        ctx.success(200, 'message.roles.assign-menus.success', menuIds)
-        return
-      }
-
       // menus' id need to be added and removed
       const addMenuIds = menuIds.filter(menuId => !assignedMenuIds.includes(menuId))
       const removeMenuIds = assignedMenuIds.filter(menuId => !menuIds.includes(menuId))

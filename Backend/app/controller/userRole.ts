@@ -31,11 +31,6 @@ export default class UserRoleController extends Controller {
     try {
       const assignedRoleIds = (await ctx.service.userRole.findUserRoles({ userId })).map(userRole => (userRole.toJSON() as UserRole).roleId)
 
-      if (assignedRoleIds.length === roleIds.length) {
-        ctx.success(200, 'message.users.assign-roles.success', roleIds)
-        return
-      }
-
       // roles' id need to be added and removed
       const addRoleIds = roleIds.filter(roleId => !assignedRoleIds.includes(roleId))
       const removeRoleIds = assignedRoleIds.filter(roleId => !roleIds.includes(roleId))

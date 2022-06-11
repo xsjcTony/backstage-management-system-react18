@@ -31,11 +31,6 @@ export default class RolePrivilegeController extends Controller {
     try {
       const assignedPrivilegeIds = (await ctx.service.rolePrivilege.findRolePrivileges({ roleId })).map(rolePrivilege => (rolePrivilege.toJSON() as RolePrivilege).privilegeId)
 
-      if (assignedPrivilegeIds.length === privilegeIds.length) {
-        ctx.success(200, 'message.roles.assign-privileges.success', privilegeIds)
-        return
-      }
-
       // privileges' id need to be added and removed
       const addPrivilegeIds = privilegeIds.filter(privilegeId => !assignedPrivilegeIds.includes(privilegeId))
       const removePrivilegeIds = assignedPrivilegeIds.filter(privilegeId => !privilegeIds.includes(privilegeId))

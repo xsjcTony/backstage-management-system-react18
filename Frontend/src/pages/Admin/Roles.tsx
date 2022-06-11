@@ -47,16 +47,6 @@ const StyledSubpageContainer = styled(SubpageContainer)`
         display: flex;
         gap: 10px;
         justify-content: center;
-
-        .setting {
-            background-color: #faad14;
-            border-color: #faad14;
-
-            &:hover {
-                background-color: #ffc53d;
-                border-color: #ffc53d;
-            }
-        }
     }
 
     .privilege-and-menu-row {
