@@ -88,5 +88,12 @@ export interface MenuQueryResponse {
 /**
  * Others
  */
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-export const isAntdIconName = (iconName: string): iconName is keyof typeof AntdIcons => AntdIcons[iconName as keyof typeof AntdIcons] !== undefined
+
+export const isAntdIconName = (iconName: string | null): iconName is keyof typeof AntdIcons => {
+  if (iconName === null) {
+    return false
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  return AntdIcons[iconName as keyof typeof AntdIcons] !== undefined
+}

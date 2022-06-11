@@ -61,11 +61,9 @@ const RouteGuard = (): JSX.Element => {
 
         // Privilege tree
         user.privilegeTree = await buildPrivilegeTreeByUser(user)
-        console.log(user.privilegeTree)
 
         // Menu tree
         user.menuTree = await buildMenuTreeByUser(user)
-        console.log(user.menuTree)
 
         dispatch(setCurrentUser(user))
         dispatch(setLoggedIn(true))

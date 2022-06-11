@@ -14,6 +14,7 @@ import { loginUser } from '@/services/login'
 import { getUserById } from '@/services/users'
 import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
 import { isPromptInfo } from '@/types/locationState'
+import { buildMenuTreeByUser, buildPrivilegeTreeByUser } from '@/utils'
 import EmailInput from './components/EmailInput'
 import ImageCaptcha from './components/ImageCaptcha'
 import PasswordInput from './components/PasswordInput'
@@ -273,8 +274,11 @@ const Login = (): JSX.Element => {
 
     const user = userResponse.data
 
-    // build privilege tree
-    // TODO: 处理 Privilege tree
+    // Privilege tree
+    user.privilegeTree = await buildPrivilegeTreeByUser(user)
+
+    // Menu tree
+    user.menuTree = await buildMenuTreeByUser(user)
 
     // Redux
     dispatch(setLoggedIn(true))

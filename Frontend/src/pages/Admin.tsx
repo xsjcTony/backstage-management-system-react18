@@ -1,26 +1,21 @@
-import {
-  UserOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  SmileOutlined,
-  SettingOutlined,
-  UnlockOutlined,
-  EyeOutlined,
-  LogoutOutlined,
-  SafetyCertificateOutlined, MenuOutlined
-} from '@ant-design/icons'
+/* eslint-disable react-hooks/exhaustive-deps */
+
+import { UserOutlined, MenuUnfoldOutlined, MenuFoldOutlined, SmileOutlined, LogoutOutlined } from '@ant-design/icons'
+import * as AntdIcons from '@ant-design/icons/lib/icons'
 import { useBoolean } from 'ahooks'
 import { Layout, Menu, Avatar, Dropdown, message } from 'antd'
-import { useEffect } from 'react'
+import { createElement, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { useDispatch, useSelector } from 'react-redux'
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import logo from '@/assets/images/logo.png'
 import SelectLanguage from '@/locales/components/SelectLanguage'
 import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
+import { isAntdIconName } from '@/types'
 import { isPromptInfo } from '@/types/locationState'
 import type { AppDispatch, RootState } from '@/store'
+import type { Menu as MenuType } from '@/types'
 import type { ItemType } from 'antd/es/menu/hooks/useItems'
 import type { ReactNode, Key } from 'react'
 
@@ -178,18 +173,17 @@ const Admin = (): JSX.Element => {
       const { type, intlId, duration, path, noPrivilege } = location.state.promptInfo
       void message[type](`${intl.formatMessage({ id: intlId })}${noPrivilege ? ` "${path}"` : ''}`, duration)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
 
   /**
    * Header
    */
-  if (!currentUser) {
-    return (
-      <Navigate
-        replace
-        state={{
+  useEffect(() => {
+    if (!currentUser) {
+      void navigate('/login', {
+        replace: true,
+        state: {
           type: 'prompt',
           promptInfo: {
             type: 'error',
@@ -198,57 +192,41 @@ const Admin = (): JSX.Element => {
             path: location.pathname,
             noPrivilege: false
           }
-        }}
-        to="/login"
-      />
-    )
-  }
+        }
+      })
+    }
+  }, [])
 
 
   /**
    * Menu items
    */
-  const items: ItemType[] = [
-    createItem(
-      intl.formatMessage({ id: 'menu.welcome' }),
-      '/admin',
-      <SmileOutlined />
-    ),
-    createItem(
-      intl.formatMessage({ id: 'menu.user-management' }),
-      'user-management',
-      <SettingOutlined />,
-      [
-        createItem(
-          intl.formatMessage({ id: 'menu.user-management.user-list' }),
-          '/admin/users',
-          <UserOutlined />
-        )
-      ]
-    ),
-    createItem(
-      intl.formatMessage({ id: 'menu.privilege-management' }),
-      'privilege-management',
-      <UnlockOutlined />,
-      [
-        createItem(
-          intl.formatMessage({ id: 'menu.privilege-management.role-list' }),
-          '/admin/roles',
-          <EyeOutlined />
-        ),
-        createItem(
-          intl.formatMessage({ id: 'menu.privilege-management.privilege-list' }),
-          '/admin/privileges',
-          <SafetyCertificateOutlined />
-        ),
-        createItem(
-          intl.formatMessage({ id: 'menu.privilege-management.menu-list' }),
-          '/admin/menus',
-          <MenuOutlined />
-        )
-      ]
-    )
-  ]
+  const welcomeMenuItem: ItemType = createItem(
+    intl.formatMessage({ id: 'menu.welcome' }),
+    '/admin',
+    <SmileOutlined />
+  )
+
+  const [menuItems, setMenuItems] = useState<ItemType[]>([])
+
+  const mapCallback = (menu: MenuType): ItemType => createItem(
+    intl.formatMessage({
+      id: menu.menuName,
+      defaultMessage: menu.menuDescription
+    }),
+    menu.menuKey,
+    isAntdIconName(menu.menuIcon) ? createElement(AntdIcons[menu.menuIcon]) : undefined,
+    menu.children ? menu.children.map(mapCallback) : undefined
+  )
+
+  useEffect(() => {
+    if (currentUser?.menuTree) {
+      const { menuTree } = currentUser
+      setMenuItems([welcomeMenuItem, ...menuTree.map(mapCallback)])
+    } else {
+      setMenuItems([welcomeMenuItem])
+    }
+  }, [])
 
 
   /**
@@ -308,9 +286,9 @@ const Admin = (): JSX.Element => {
                 icon={<UserOutlined />}
                 shape="circle"
                 size="default"
-                src={`${assetBaseUrl}${currentUser.avatarUrl}`}
+                src={`${assetBaseUrl}${currentUser?.avatarUrl ?? ''}`}
               />
-              {currentUser.username ?? currentUser.email ?? 'Placeholder'}
+              {currentUser?.username ?? currentUser?.email ?? 'Placeholder'}
             </div>
           </Dropdown>
           <SelectLanguage color="#fff" size="20" />
@@ -331,7 +309,7 @@ const Admin = (): JSX.Element => {
           <Menu
             className="menu"
             defaultOpenKeys={['user-management', 'privilege-management']}
-            items={items}
+            items={menuItems}
             mode="inline"
             selectedKeys={[location.pathname]}
             theme="light"
