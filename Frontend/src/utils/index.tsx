@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom'
 import { getMenuById } from '@/services/menus'
-import { getPrivilegeById } from '@/services/privileges'
 import type { ResponseData } from '@/services/types'
-import type { Menu, Privilege, Role, User } from '@/types'
+import type { Menu, Privilege, PrivilegeMap, Role, User } from '@/types'
 import type { RequestOptionsType } from '@ant-design/pro-utils/es/typing'
 import type { Route } from 'antd/es/breadcrumb/Breadcrumb'
 
@@ -94,32 +93,6 @@ export const uniqueArray = <T extends any>(arr: T[], key?: keyof T): T[] => {
   return [...map.values()]
 }
 
-export const buildPrivilegeTreeByRole = async (role: Role, returnFlat = false): Promise<Privilege[]> => {
-  const p = [...role.privileges]
-
-  for (const item of p) {
-    if (
-      item.parentId !== 0
-      && p.findIndex(i => i.id === item.parentId) === -1
-    ) {
-      let d: ResponseData<Privilege>
-
-      try {
-        d = await getPrivilegeById(item.parentId)
-      } catch (err) {
-        throw new Error('error.network')
-      }
-
-      if (d.code !== 200) {
-        throw new Error(d.msg)
-      }
-
-      p.push(d.data)
-    }
-  }
-
-  return returnFlat ? p : flatToTree(p)
-}
 
 export const buildMenuTreeByRole = async (role: Role, returnFlat = false): Promise<Menu[]> => {
   const m = [...role.menus]
@@ -148,18 +121,28 @@ export const buildMenuTreeByRole = async (role: Role, returnFlat = false): Promi
   return returnFlat ? m : flatToTree(m)
 }
 
-export const buildPrivilegeTreeByUser = async (user: User): Promise<Privilege[]> => {
-  const privileges: Privilege[] = []
-  for (const role of user.roles) {
-    privileges.push(...await buildPrivilegeTreeByRole(role, true))
-  }
-  return flatToTree(uniqueArray(privileges, 'id'))
-}
-
 export const buildMenuTreeByUser = async (user: User): Promise<Menu[]> => {
   const menus: Menu[] = []
   for (const role of user.roles) {
     menus.push(...await buildMenuTreeByRole(role, true))
   }
   return flatToTree(uniqueArray<Menu>(menus, 'id'))
+}
+
+export const buildAllowedRoutePathsByUser = async (user: User): Promise<string[]> => {
+  const menus: Menu[] = []
+  for (const role of user.roles) {
+    menus.push(...await buildMenuTreeByRole(role, true))
+  }
+  return uniqueArray(menus.filter(menu => menu.menuKey.startsWith('/')).map(menu => menu.menuKey))
+}
+
+export const buildPrivilegeMapByUser = (user: User): PrivilegeMap => {
+  const p: Privilege[] = []
+  user.roles.forEach(role => void p.push(...role.privileges))
+  const t = uniqueArray(p.map(privilege => privilege.privilegeName))
+
+  const res: PrivilegeMap = {}
+  t.forEach(privilegeName => void (res[privilegeName] = true))
+  return res
 }

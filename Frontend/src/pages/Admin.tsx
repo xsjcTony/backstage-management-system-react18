@@ -226,7 +226,7 @@ const Admin = (): JSX.Element => {
     } else {
       setMenuItems([welcomeMenuItem])
     }
-  }, [])
+  }, [currentUser])
 
 
   /**

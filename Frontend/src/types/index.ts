@@ -12,8 +12,9 @@ export interface User {
   userState: boolean
   avatarUrl: string
   roles: Role[]
-  privilegeTree?: Privilege[]
+  privilegeMap?: PrivilegeMap
   menuTree?: Menu[]
+  allowedRoutePaths?: string[]
 }
 
 export type UserWithJWT = User & { token: string }
@@ -61,6 +62,10 @@ export interface Privilege {
 export interface PrivilegeQueryResponse {
   rows: Privilege[]
   count: number
+}
+
+export interface PrivilegeMap {
+  [p: string]: boolean
 }
 
 

@@ -14,7 +14,7 @@ import { loginUser } from '@/services/login'
 import { getUserById } from '@/services/users'
 import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
 import { isPromptInfo } from '@/types/locationState'
-import { buildMenuTreeByUser, buildPrivilegeTreeByUser } from '@/utils'
+import { buildAllowedRoutePathsByUser, buildMenuTreeByUser, buildPrivilegeMapByUser } from '@/utils'
 import EmailInput from './components/EmailInput'
 import ImageCaptcha from './components/ImageCaptcha'
 import PasswordInput from './components/PasswordInput'
@@ -274,11 +274,14 @@ const Login = (): JSX.Element => {
 
     const user = userResponse.data
 
-    // Privilege tree
-    user.privilegeTree = await buildPrivilegeTreeByUser(user)
+    // Privilege map
+    user.privilegeMap = buildPrivilegeMapByUser(user)
 
     // Menu tree
     user.menuTree = await buildMenuTreeByUser(user)
+
+    // Allowed route paths
+    user.allowedRoutePaths = await buildAllowedRoutePathsByUser(user)
 
     // Redux
     dispatch(setLoggedIn(true))

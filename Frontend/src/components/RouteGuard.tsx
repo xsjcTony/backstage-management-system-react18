@@ -8,7 +8,7 @@ import Loading from '@/components/Loading'
 import { isLoggedIn } from '@/services/login'
 import { getUserById } from '@/services/users'
 import { setCurrentUser, setLoggedIn } from '@/store/authentication/authenticationSlice'
-import { buildMenuTreeByUser, buildPrivilegeTreeByUser } from '@/utils'
+import { buildAllowedRoutePathsByUser, buildMenuTreeByUser, buildPrivilegeMapByUser } from '@/utils'
 import type { AppDispatch, RootState } from '@/store'
 import type { User } from '@/types'
 
@@ -26,6 +26,7 @@ const RouteGuard = (): JSX.Element => {
    * Data
    */
   const loggedIn = useSelector((state: RootState) => state.authentication.loggedIn)
+  const currentUser = useSelector((state: RootState) => state.authentication.currentUser)
   const { pathname } = location
   const [authenticating, setAuthenticating] = useState<boolean>(true)
 
@@ -59,11 +60,15 @@ const RouteGuard = (): JSX.Element => {
 
         const user = userResponse.data
 
-        // Privilege tree
-        user.privilegeTree = await buildPrivilegeTreeByUser(user)
+        // Privilege map
+        user.privilegeMap = buildPrivilegeMapByUser(user)
 
         // Menu tree
         user.menuTree = await buildMenuTreeByUser(user)
+
+        // Allowed route paths
+        user.allowedRoutePaths = await buildAllowedRoutePathsByUser(user)
+        console.log(user)
 
         dispatch(setCurrentUser(user))
         dispatch(setLoggedIn(true))
@@ -107,7 +112,7 @@ const RouteGuard = (): JSX.Element => {
     return loggedIn ? <Navigate replace to="/admin" /> : <Outlet />
   }
 
-  if (pathname.startsWith('/admin')) {
+  if (pathname.startsWith('/admin/')) {
     if (!loggedIn) {
       return (
         <Navigate
@@ -130,11 +135,9 @@ const RouteGuard = (): JSX.Element => {
     /**
      * Privileges
      */
-    /*
-    if (/!*privileges*!/) {
+    if (!currentUser?.allowedRoutePaths?.includes(pathname)) {
       return (
         <Navigate
-          to="/admin"
           replace
           state={{
             type: 'prompt',
@@ -146,10 +149,10 @@ const RouteGuard = (): JSX.Element => {
               noPrivilege: true
             }
           }}
+          to="/admin"
         />
       )
     }
-    */
   }
 
   return <Outlet />
