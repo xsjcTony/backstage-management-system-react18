@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import { useSelector } from 'react-redux'
 import { ResponseData } from '@/services/types'
 import { RootState } from '@/store'
+import type { User } from '@/types'
 import type { FormInstance } from '@ant-design/pro-form'
 import type { UploadChangeParam } from 'antd/es/upload'
 import type { UploadProps } from 'antd/es/upload/interface'
@@ -22,6 +23,7 @@ interface AvatarUploadProps {
   name: string
   tempAvatarUrls: string[]
   setTempAvatarUrls: Dispatch<SetStateAction<string []>>
+  currentUser: User | null
 }
 
 
@@ -34,7 +36,8 @@ const AvatarUpload = ({
   formInstance,
   name,
   tempAvatarUrls,
-  setTempAvatarUrls
+  setTempAvatarUrls,
+  currentUser
 }: AvatarUploadProps): JSX.Element => {
 
   /**
@@ -122,6 +125,7 @@ const AvatarUpload = ({
         <Upload
           action={`${apiBaseUrl}/api/v1/upload-user-avatar`}
           beforeUpload={beforeUpload}
+          disabled={!currentUser?.privilegeMap?.['UPLOAD_AVATAR']}
           headers={{ Authorization: localStorage.getItem('token') ?? '' }}
           listType="picture-card"
           method="post"

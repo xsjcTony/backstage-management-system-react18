@@ -378,14 +378,21 @@ const Users = (): JSX.Element => {
         record.id !== currentUser?.id && (
           <div className="actions-body">
             <EditUserModalForm
+              currentUser={currentUser}
               initialValues={record}
               reloadTable={tableRef.current?.reload}
             />
             <AssignRolesModalForm
+              currentUser={currentUser}
               reloadTable={tableRef.current?.reload}
               user={record}
             />
-            <Button danger loading={deletingUser} type="primary">
+            <Button
+              danger
+              disabled={!currentUser?.privilegeMap?.['DELETE_USER']}
+              loading={deletingUser}
+              type="primary"
+            >
               <DeleteOutlined onClick={() => void removeUser(record.id)} />
             </Button>
           </div>
@@ -398,6 +405,7 @@ const Users = (): JSX.Element => {
     actions: [
       <AddUserModalForm
         key="addUser"
+        currentUser={currentUser}
         reloadTable={tableRef.current?.reload}
       />,
       <Upload
@@ -405,6 +413,7 @@ const Users = (): JSX.Element => {
         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         action={`${apiBaseUrl}/api/v1/import-users`}
         beforeUpload={beforeUpload}
+        disabled={!currentUser?.privilegeMap?.['IMPORT_USERS']}
         headers={{ Authorization: localStorage.getItem('token') ?? '' }}
         method="post"
         name="file"
@@ -412,6 +421,7 @@ const Users = (): JSX.Element => {
         onChange={handleUpload}
       >
         <Button
+          disabled={!currentUser?.privilegeMap?.['IMPORT_USERS']}
           icon={<ImportOutlined />}
           loading={importingUsers}
           type="primary"
@@ -421,6 +431,7 @@ const Users = (): JSX.Element => {
       </Upload>,
       <Button
         key="exportUsers"
+        disabled={!currentUser?.privilegeMap?.['EXPORT_USERS']}
         icon={<ExportOutlined />}
         loading={exportingUsers}
         type="primary"

@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { getMenuById } from '@/services/menus'
+import { getPrivilegeById } from '@/services/privileges'
 import type { ResponseData } from '@/services/types'
-import type { Menu, Privilege, PrivilegeMap, Role, User } from '@/types'
+import type { Menu, Privilege, Role, User, PrivilegeMap } from '@/types'
 import type { RequestOptionsType } from '@ant-design/pro-utils/es/typing'
 import type { Route } from 'antd/es/breadcrumb/Breadcrumb'
 
@@ -93,6 +94,32 @@ export const uniqueArray = <T extends any>(arr: T[], key?: keyof T): T[] => {
   return [...map.values()]
 }
 
+export const buildPrivilegeTreeByRole = async (role: Role, returnFlat = false): Promise<Privilege[]> => {
+  const p = [...role.privileges]
+
+  for (const item of p) {
+    if (
+      item.parentId !== 0
+      && p.findIndex(i => i.id === item.parentId) === -1
+    ) {
+      let d: ResponseData<Privilege>
+
+      try {
+        d = await getPrivilegeById(item.parentId)
+      } catch (err) {
+        throw new Error('error.network')
+      }
+
+      if (d.code !== 200) {
+        throw new Error(d.msg)
+      }
+
+      p.push(d.data)
+    }
+  }
+
+  return returnFlat ? p : flatToTree(p)
+}
 
 export const buildMenuTreeByRole = async (role: Role, returnFlat = false): Promise<Menu[]> => {
   const m = [...role.menus]
@@ -136,6 +163,7 @@ export const buildAllowedRoutePathsByUser = async (user: User): Promise<string[]
   }
   return uniqueArray(menus.filter(menu => menu.menuKey.startsWith('/')).map(menu => menu.menuKey))
 }
+
 
 export const buildPrivilegeMapByUser = (user: User): PrivilegeMap => {
   const p: Privilege[] = []

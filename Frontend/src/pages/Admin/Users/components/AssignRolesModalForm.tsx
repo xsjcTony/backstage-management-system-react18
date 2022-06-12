@@ -26,6 +26,7 @@ export interface AssignRolesData {
 interface AssignRolesFormProps {
   user: User
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
+  currentUser: User | null
 }
 
 
@@ -53,7 +54,11 @@ const { useForm } = ProForm
 /**
  * Component
  */
-const AssignRolesModalForm = ({ user, reloadTable }: AssignRolesFormProps): JSX.Element => {
+const AssignRolesModalForm = ({
+  user,
+  reloadTable,
+  currentUser
+}: AssignRolesFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -163,6 +168,7 @@ const AssignRolesModalForm = ({ user, reloadTable }: AssignRolesFormProps): JSX.
   return (
     <>
       <StyledButton
+        disabled={!currentUser?.privilegeMap?.['DISPATCH_USER_ROLES']}
         type="primary"
         onClick={() => void setModalVisible(true)}
       >

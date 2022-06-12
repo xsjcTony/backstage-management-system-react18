@@ -29,6 +29,7 @@ export interface EditUserData {
 interface EditUserFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
   initialValues: User
+  currentUser: User | null
 }
 
 
@@ -41,7 +42,11 @@ const { useForm } = ProForm
 /**
  * Component
  */
-const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): JSX.Element => {
+const EditUserModalForm = ({
+  reloadTable,
+  initialValues,
+  currentUser
+}: EditUserFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -140,6 +145,7 @@ const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): J
   return (
     <>
       <Button
+        disabled={!currentUser?.privilegeMap?.['UPDATE_USER']}
         type="primary"
         onClick={() => {
           setTempAvatarUrls([])
@@ -170,6 +176,7 @@ const EditUserModalForm = ({ reloadTable, initialValues }: EditUserFormProps): J
         <PasswordInput editUser register formInstance={formInstance} />
         <AvatarUpload
           changeSubmitterDisabled={setSubmitterDisabled}
+          currentUser={currentUser}
           formInstance={formInstance}
           initialAvatarUrl={initialValues.avatarUrl}
           name="avatarUrl"

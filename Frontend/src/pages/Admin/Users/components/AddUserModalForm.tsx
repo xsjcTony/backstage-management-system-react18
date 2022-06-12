@@ -10,6 +10,7 @@ import PasswordInput from '@/pages/components/PasswordInput'
 import UsernameInput from '@/pages/components/UsernameInput'
 import { addUser as addUserAPI, deleteTempAvatars } from '@/services/users'
 import type { ResponseData } from '@/services/types'
+import type { User } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
 
@@ -27,6 +28,7 @@ export interface AddUserData {
 
 interface AddUserFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
+  currentUser: User | null
 }
 
 
@@ -39,7 +41,7 @@ const { useForm } = ProForm
 /**
  * Component
  */
-const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
+const AddUserModalForm = ({ reloadTable, currentUser }: AddUserFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -137,6 +139,7 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
   return (
     <>
       <Button
+        disabled={!currentUser?.privilegeMap?.['CREATE_USER']}
         icon={<PlusOutlined />}
         type="primary"
         onClick={() => {
@@ -167,6 +170,7 @@ const AddUserModalForm = ({ reloadTable }: AddUserFormProps): JSX.Element => {
         <PasswordInput register formInstance={formInstance} />
         <AvatarUpload
           changeSubmitterDisabled={setSubmitterDisabled}
+          currentUser={currentUser}
           formInstance={formInstance}
           name="avatarUrl"
           setTempAvatarUrls={setTempAvatarUrls}
