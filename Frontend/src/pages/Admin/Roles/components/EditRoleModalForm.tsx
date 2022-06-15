@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import RequiredTextInput from '@/pages/components/RequiredTextInput'
 import { updateRole } from '@/services/roles'
 import type { ResponseData } from '@/services/types'
-import type { Role } from '@/types'
+import type { Role, User } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 
 
@@ -22,13 +22,18 @@ export interface EditRoleData {
 interface EditRoleFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
   initialValues: Role
+  currentUser: User | null
 }
 
 
 /**
  * Component
  */
-const EditRoleModalForm = ({ reloadTable, initialValues }: EditRoleFormProps): JSX.Element => {
+const EditRoleModalForm = ({
+  reloadTable,
+  initialValues,
+  currentUser
+}: EditRoleFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -99,6 +104,7 @@ const EditRoleModalForm = ({ reloadTable, initialValues }: EditRoleFormProps): J
   return (
     <>
       <Button
+        disabled={!currentUser?.privilegeMap?.['UPDATE_ROLE']}
         type="primary"
         onClick={() => void setModalVisible(true)}
       >

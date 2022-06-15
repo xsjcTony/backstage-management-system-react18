@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import RequiredTextInput from '@/pages/components/RequiredTextInput'
 import { addRole as addRoleAPI } from '@/services/roles'
 import type { ResponseData } from '@/services/types'
+import type { User } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 
 
@@ -20,13 +21,14 @@ export interface AddRoleData {
 
 interface AddRoleFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
+  currentUser: User | null
 }
 
 
 /**
  * Component
  */
-const AddRoleModalForm = ({ reloadTable }: AddRoleFormProps): JSX.Element => {
+const AddRoleModalForm = ({ reloadTable, currentUser }: AddRoleFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -97,6 +99,7 @@ const AddRoleModalForm = ({ reloadTable }: AddRoleFormProps): JSX.Element => {
   return (
     <>
       <Button
+        disabled={!currentUser?.privilegeMap?.['CREATE_ROLE']}
         icon={<PlusOutlined />}
         type="primary"
         onClick={() => void setModalVisible(true)}

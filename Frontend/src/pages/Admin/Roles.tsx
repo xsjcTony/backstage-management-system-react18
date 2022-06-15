@@ -4,6 +4,7 @@ import { useRequest, useTitle } from 'ahooks'
 import { Button, Divider, message, PageHeader, Switch, Table, Tag } from 'antd'
 import { Fragment, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
@@ -14,6 +15,7 @@ import EditRoleModalForm from '@/pages/Admin/Roles/components/EditRoleModalForm'
 import { deleteRole, getRolesByQuery, updateRoleState } from '@/services/roles'
 import { breadcrumbItemRender, buildMenuTreeByRole, buildPrivilegeTreeByRole } from '@/utils'
 import type { ResponseData } from '@/services/types'
+import type { RootState } from '@/store'
 import type { Menu, Privilege, Role, RoleQueryResponse } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
 import type { PageHeaderProps } from 'antd'
@@ -94,6 +96,7 @@ const Roles = (): JSX.Element => {
    * Hooks
    */
   const intl = useIntl()
+  const currentUser = useSelector((state: RootState) => state.authentication.currentUser)
 
 
   /**
@@ -314,18 +317,26 @@ const Roles = (): JSX.Element => {
       render: (value, record) => (
         <div className="actions-body">
           <EditRoleModalForm
+            currentUser={currentUser}
             initialValues={record}
             reloadTable={tableRef.current?.reload}
           />
           <AssignPrivilegesModalForm
+            currentUser={currentUser}
             reloadTable={tableRef.current?.reload}
             role={record}
           />
           <AssignMenusModalForm
+            currentUser={currentUser}
             reloadTable={tableRef.current?.reload}
             role={record}
           />
-          <Button danger loading={deletingRole} type="primary">
+          <Button
+            danger
+            disabled={!currentUser?.privilegeMap?.['DELETE_ROLE']}
+            loading={deletingRole}
+            type="primary"
+          >
             <DeleteOutlined onClick={() => void removeRole(record.id)} />
           </Button>
         </div>
@@ -337,6 +348,7 @@ const Roles = (): JSX.Element => {
     actions: [
       <AddRoleModalForm
         key="addRole"
+        currentUser={currentUser}
         reloadTable={tableRef.current?.reload}
       />
     ],

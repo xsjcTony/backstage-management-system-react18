@@ -10,7 +10,7 @@ import { getPrivilegesByQuery } from '@/services/privileges'
 import { assignPrivileges as assignPrivilegesAPI } from '@/services/roles'
 import { flatToAntdTree } from '@/utils'
 import type { ResponseData } from '@/services/types'
-import type { Role, PrivilegeQueryResponse, Privilege } from '@/types'
+import type { Role, PrivilegeQueryResponse, Privilege, User } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps, ProFormFieldRemoteProps } from '@ant-design/pro-form/es/interface'
 import type { InputProps, InputRef, TreeSelectProps } from 'antd'
@@ -28,6 +28,7 @@ export interface AssignPrivilegesData {
 interface AssignPrivilegesFormProps {
   role: Role
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
+  currentUser: User | null
 }
 
 type ProFormTreeSelectProps = ProFormFieldItemProps<TreeSelectProps, RefSelectProps> & ProFormFieldRemoteProps
@@ -57,7 +58,11 @@ const { useForm } = ProForm
 /**
  * Component
  */
-const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps): JSX.Element => {
+const AssignRolesModalForm = ({
+  role,
+  reloadTable,
+  currentUser
+}: AssignPrivilegesFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -190,6 +195,7 @@ const AssignRolesModalForm = ({ role, reloadTable }: AssignPrivilegesFormProps):
   return (
     <>
       <StyledButton
+        disabled={!currentUser?.privilegeMap?.['DISPATCH_ROLE_PRIVILEGES']}
         type="primary"
         onClick={() => void setModalVisible(true)}
       >

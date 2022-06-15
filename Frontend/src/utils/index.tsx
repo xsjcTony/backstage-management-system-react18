@@ -164,7 +164,6 @@ export const buildAllowedRoutePathsByUser = async (user: User): Promise<string[]
   return uniqueArray(menus.filter(menu => menu.menuKey.startsWith('/')).map(menu => menu.menuKey))
 }
 
-
 export const buildPrivilegeMapByUser = (user: User): PrivilegeMap => {
   const p: Privilege[] = []
   user.roles.forEach(role => void p.push(...role.privileges))

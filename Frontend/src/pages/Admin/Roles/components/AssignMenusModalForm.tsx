@@ -10,7 +10,7 @@ import { getMenusByQuery } from '@/services/menus'
 import { assignMenus as assignMenusAPI } from '@/services/roles'
 import { flatToAntdTree } from '@/utils'
 import type { ResponseData } from '@/services/types'
-import type { Role, Menu, MenuQueryResponse } from '@/types'
+import type { Role, Menu, MenuQueryResponse, User } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 import type { ProFormFieldItemProps, ProFormFieldRemoteProps } from '@ant-design/pro-form/es/interface'
 import type { InputProps, InputRef, TreeSelectProps } from 'antd'
@@ -28,6 +28,7 @@ export interface AssignMenusData {
 interface AssignMenusFormProps {
   role: Role
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
+  currentUser: User | null
 }
 
 type ProFormTreeSelectProps = ProFormFieldItemProps<TreeSelectProps, RefSelectProps> & ProFormFieldRemoteProps
@@ -57,7 +58,11 @@ const { useForm } = ProForm
 /**
  * Component
  */
-const AssignMenusModalForm = ({ role, reloadTable }: AssignMenusFormProps): JSX.Element => {
+const AssignMenusModalForm = ({
+  role,
+  reloadTable,
+  currentUser
+}: AssignMenusFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -190,6 +195,7 @@ const AssignMenusModalForm = ({ role, reloadTable }: AssignMenusFormProps): JSX.
   return (
     <>
       <StyledButton
+        disabled={!currentUser?.privilegeMap?.['DISPATCH_ROLE_MENUS']}
         type="primary"
         onClick={() => void setModalVisible(true)}
       >
