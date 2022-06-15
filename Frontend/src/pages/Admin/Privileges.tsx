@@ -4,6 +4,7 @@ import { useRequest, useTitle } from 'ahooks'
 import { Button, message, PageHeader, Switch, Tag } from 'antd'
 import { useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import Footer from '@/components/Footer'
 import SubpageContainer from '@/components/SubpageContainer'
@@ -12,6 +13,7 @@ import EditPrivilegeModalForm from '@/pages/Admin/Privileges/components/EditPriv
 import { deletePrivilege, getPrivilegesByQuery, updatePrivilegeState } from '@/services/privileges'
 import { breadcrumbItemRender } from '@/utils'
 import type { ResponseData } from '@/services/types'
+import type { RootState } from '@/store'
 import type { Privilege, PrivilegeQueryResponse } from '@/types'
 import type { ProColumns, ProTableProps, ActionType } from '@ant-design/pro-table'
 import type { SearchConfig } from '@ant-design/pro-table/es/components/Form/FormRender'
@@ -65,6 +67,7 @@ const Privileges = (): JSX.Element => {
    * Hooks
    */
   const intl = useIntl()
+  const currentUser = useSelector((state: RootState) => state.authentication.currentUser)
 
 
   /**
@@ -275,10 +278,16 @@ const Privileges = (): JSX.Element => {
       render: (value, record) => (
         <div className="actions-body">
           <EditPrivilegeModalForm
+            currentUser={currentUser}
             initialValues={record}
             reloadTable={tableRef.current?.reload}
           />
-          <Button danger loading={deletingPrivilege} type="primary">
+          <Button
+            danger
+            disabled={!currentUser?.privilegeMap?.['DELETE_PRIVILEGE']}
+            loading={deletingPrivilege}
+            type="primary"
+          >
             <DeleteOutlined onClick={() => void removePrivilege(record.id)} />
           </Button>
         </div>
@@ -318,6 +327,7 @@ const Privileges = (): JSX.Element => {
     actions: [
       <AddPrivilegeModalForm
         key="addPrivilege"
+        currentUser={currentUser}
         reloadTable={tableRef.current?.reload}
       />
     ]

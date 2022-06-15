@@ -11,7 +11,7 @@ import RequestMethodSelect from '@/pages/Admin/Privileges/components/RequestMeth
 import RequiredTextInput from '@/pages/components/RequiredTextInput'
 import { updatePrivilege } from '@/services/privileges'
 import type { ResponseData } from '@/services/types'
-import type { Privilege } from '@/types'
+import type { Privilege, User } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 
 
@@ -30,6 +30,7 @@ export interface EditPrivilegeData {
 interface EditPrivilegeFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
   initialValues: Privilege
+  currentUser: User | null
 }
 
 
@@ -43,7 +44,11 @@ const { useWatch } = Form
 /**
  * Component
  */
-const EditPrivilegeModalForm = ({ reloadTable, initialValues }: EditPrivilegeFormProps): JSX.Element => {
+const EditPrivilegeModalForm = ({
+  reloadTable,
+  initialValues,
+  currentUser
+}: EditPrivilegeFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -128,6 +133,7 @@ const EditPrivilegeModalForm = ({ reloadTable, initialValues }: EditPrivilegeFor
   return (
     <>
       <Button
+        disabled={!currentUser?.privilegeMap?.['UPDATE_PRIVILEGE']}
         type="primary"
         onClick={() => void setModalVisible(true)}
       >

@@ -11,6 +11,7 @@ import RequestMethodSelect from '@/pages/Admin/Privileges/components/RequestMeth
 import RequiredTextInput from '@/pages/components/RequiredTextInput'
 import { addPrivilege as addPrivilegeAPI } from '@/services/privileges'
 import type { ResponseData } from '@/services/types'
+import type { User } from '@/types'
 import type { ModalFormProps } from '@ant-design/pro-form'
 
 
@@ -28,6 +29,7 @@ export interface AddPrivilegeData {
 
 interface AddPrivilegeFormProps {
   reloadTable: ((resetPageIndex?: boolean) => Promise<void>) | undefined
+  currentUser: User | null
 }
 
 
@@ -41,7 +43,7 @@ const { useWatch } = Form
 /**
  * Component
  */
-const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Element => {
+const AddPrivilegeModalForm = ({ reloadTable, currentUser }: AddPrivilegeFormProps): JSX.Element => {
 
   /**
    * Utils
@@ -124,6 +126,7 @@ const AddPrivilegeModalForm = ({ reloadTable }: AddPrivilegeFormProps): JSX.Elem
   return (
     <>
       <Button
+        disabled={!currentUser?.privilegeMap?.['CREATE_PRIVILEGE']}
         icon={<PlusOutlined />}
         type="primary"
         onClick={() => void setModalVisible(true)}
