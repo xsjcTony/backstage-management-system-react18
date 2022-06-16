@@ -31,9 +31,6 @@ export default class UserService extends Service {
    * @return {Promise<object>}
    */
   public async loginUser(data: LoginData): Promise<User> {
-    // const usernameRegex = /^[A-Za-z0-9]{6,20}$/
-    // const emailRegex = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
-
     const { password } = data
     const encryptedPassword = this.ctx.helper.encryptByMd5(password)
 

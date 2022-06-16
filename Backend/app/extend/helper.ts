@@ -95,6 +95,23 @@ export default {
   },
 
 
+  uniqueArray<T>(arr: T[], key?: keyof T): T[] {
+    // primitive array
+    if (key === undefined) {
+      return [...new Set(arr)]
+    }
+
+    // object array
+    const map = new Map<T[keyof T], T>()
+    arr.forEach((item) => {
+      if (!map.has(item[key])) {
+        map.set(item[key], item)
+      }
+    })
+    return [...map.values()]
+  },
+
+
   /**
    * Helper Functions
    */
