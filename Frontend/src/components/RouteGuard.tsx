@@ -68,7 +68,6 @@ const RouteGuard = (): JSX.Element => {
 
         // Allowed route paths
         user.allowedRoutePaths = await buildAllowedRoutePathsByUser(user)
-        console.log(user)
 
         dispatch(setCurrentUser(user))
         dispatch(setLoggedIn(true))

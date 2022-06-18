@@ -19,8 +19,45 @@ import type { RegisterData, LoginData, OAuthBindData, VerifyEmailData, ResetPass
 export default class UserController extends Controller {
 
   /**
-   * Register user and create corresponding row in database.
-   * @return {Promise<void>} - Result.
+   * @api {post} /register Register
+   * @apiVersion 1.0.0
+   * @apiName register
+   * @apiGroup Account
+   *
+   * @apiBody {string{length: 6~20}} [username] Username
+   * @apiBody {string} [email] E-mail address
+   * @apiBody {string{length: 8~20}} password Password
+   * @apiBody {boolean} [github] Whether creating user by GitHub OAuth or not
+   * @apiBody {string{length: 4}} captcha The text in image captcha or the code in verification email
+   *
+   * @apiDescription Register user.
+   * One of username or email must be provided.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {User} data Info of the register user (with roles)
+   *
+   * @apiError (Error 400) UsernameExists Username already exists in the database
+   * @apiError (Error 400) EmailExists E-mail address already exists in the database
+   *
+   * @apiSuccessExample {json} Success response
+   * {
+   *   code: 200,
+   *   msg: "Register succeed",
+   *   data: {
+   *     id: 1,
+   *     username: "abc",
+   *     email: null,
+   *     // ...
+   *   }
+   * }
+   *
+   * @apiErrorExample {json} Error response
+   * {
+   *   code: 400,
+   *   msg: "Username already exists",
+   *   data: {}
+   * }
    */
   public async create(): Promise<void> {
     const { ctx } = this
@@ -44,8 +81,45 @@ export default class UserController extends Controller {
 
 
   /**
-   * Login user and save login status
-   * @return {Promise<void>}
+   * @api {post} /login Login
+   * @apiVersion 1.0.0
+   * @apiName login
+   * @apiGroup Account
+   *
+   * @apiBody {string{length: 6~20}} [username] Username
+   * @apiBody {string} [email] E-mail address
+   * @apiBody {string} password Password
+   * @apiBody {boolean} [remember] Token expires in 7(false) or 30(true) days
+   * @apiBody {string{length: 4}} captcha The text in image captcha
+   *
+   * @apiDescription Login user.
+   * One of username or email must be provided.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {User} data Info of the logged-in user (without roles) with JWT token
+   *
+   * @apiError (Error 400) InvalidLoginCredential Either username or email
+   *
+   * @apiSuccessExample {json} Success response
+   * {
+   *   code: 200,
+   *   msg: "Login succeed",
+   *   data: {
+   *     id: 1,
+   *     username: "abc",
+   *     email: null,
+   *     // ...
+   *     token: // JWT Token
+   *   }
+   * }
+   *
+   * @apiErrorExample {json} Error response
+   * {
+   *   code: 400,
+   *   msg: "Invalid login credential",
+   *   data: {}
+   * }
    */
   public async login(): Promise<void> {
     const { ctx } = this
@@ -71,6 +145,47 @@ export default class UserController extends Controller {
   }
 
 
+  /**
+   * @api {get} /is-logged-in Check login status
+   * @apiVersion 1.0.0
+   * @apiName checkLoginStatus
+   * @apiGroup Account
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiDescription Check user's login status by JWT Token in request header.
+   * One of username or email must be provided.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {User} data Info of the loggedIn user (decoded from JWT Token)
+   *
+   * @apiError (Error 400) InvalidJwtToken Invalid JWT Token
+   *
+   * @apiSuccessExample {json} Success response
+   * {
+   *   code: 200,
+   *   msg: "Logged in",
+   *   data: {
+   *     id: 1,
+   *     username: "abc",
+   *     email: null,
+   *     // ...
+   *   }
+   * }
+   *
+   * @apiErrorExample {json} Error response
+   * {
+   *   code: 400,
+   *   msg: "Not logged in",
+   *   data: {}
+   * }
+   *
+   * @apiSampleRequest /is-logged-in
+   */
   public async isLoggedIn(): Promise<void> {
     const { ctx } = this
 
@@ -85,6 +200,48 @@ export default class UserController extends Controller {
   }
 
 
+  /**
+   * @api {post} /oauth/bind Bind local account with OAuth
+   * @apiVersion 1.0.0
+   * @apiName bindAccount
+   * @apiGroup Account
+   *
+   * @apiBody {string{length: 6~20}} username Username
+   * @apiBody {string} email E-mail address
+   * @apiBody {string{length: 8~20}} password Password
+   * @apiBody {string{length: 4}} captcha The code in verification email
+   * @apiBody {string} oauthId The OAuth account's ID
+   * @apiBody {string} provider The OAuth provider
+   *
+   * @apiDescription Bind local account with an OAuth account and automatically log in.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {User} data Info of the bound user (without roles) with JWT Token
+   *
+   * @apiError (Error 400) UsernameExists Username already exists in the database
+   * @apiError (Error 400) EmailExists E-mail address already exists in the database
+   *
+   * @apiSuccessExample {json} Success response
+   * {
+   *   code: 200,
+   *   msg: "Bind account succeed",
+   *   data: {
+   *     id: 1,
+   *     username: "abc",
+   *     email: "1@2.com",
+   *     // ...
+   *     token: // JWT Token
+   *   }
+   * }
+   *
+   * @apiErrorExample {json} Error response
+   * {
+   *   code: 400,
+   *   msg: "Username already exists",
+   *   data: {}
+   * }
+   */
   public async bindAccount(): Promise<void> {
     const { ctx } = this
 
@@ -112,6 +269,38 @@ export default class UserController extends Controller {
   }
 
 
+  /**
+   * @api {post} /reset-password/verify-email Reset password - verify email
+   * @apiVersion 1.0.0
+   * @apiName verifyEmail
+   * @apiGroup Account
+   *
+   * @apiBody {string} email E-mail address
+   * @apiBody {string{length: 4}} captcha The code in verification email
+   *
+   * @apiDescription Verify the verification code when resetting password.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   *
+   * @apiError (Error 400) InvalidCode Invalid verification code
+   * @apiError (Error 400) CodeExpired Verification code expired
+   *
+   * @apiSuccessExample {json} Success response
+   * {
+   *   code: 200,
+   *   msg: "Code has been verified"
+   * }
+   *
+   * @apiErrorExample {json} Error response
+   * {
+   *   code: 400,
+   *   msg: "Invalid code",
+   *   data: {}
+   * }
+   *
+   * @apiSampleRequest /reset-password/verify-email
+   */
   public async verifyEmail(): Promise<void> {
     const { ctx } = this
     const { email, captcha }: VerifyEmailData = ctx.request.body
@@ -131,6 +320,35 @@ export default class UserController extends Controller {
   }
 
 
+  /**
+   * @api {put} /reset-password/reset Reset password
+   * @apiVersion 1.0.0
+   * @apiName resetPassword
+   * @apiGroup Account
+   *
+   * @apiBody {string} email E-mail address
+   * @apiBody {string{length: 8~20}} password Password
+   *
+   * @apiDescription Reset the user's password based on e-mail address.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   *
+   * @apiError (Error 400) Failed Failed to reset password
+   *
+   * @apiSuccessExample {json} Success response
+   * {
+   *   code: 200,
+   *   msg: "Password has been reset"
+   * }
+   *
+   * @apiErrorExample {json} Error response
+   * {
+   *   code: 400,
+   *   msg: "Failed to reset",
+   *   data: {}
+   * }
+   */
   public async resetPassword(): Promise<void> {
     const { ctx } = this
     const { email, password }: ResetPasswordData = ctx.request.body

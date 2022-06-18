@@ -15,6 +15,7 @@ Backend/test/**/*.map
 Backend/config/**/*.map
 
 Backend/app/public/assets/**/*
+Backend/app/public/apidoc/**/*
 
 antd-pro-test
 antd-test

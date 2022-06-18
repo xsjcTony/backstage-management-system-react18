@@ -12,8 +12,12 @@ import type { OAuthUserData } from '../types'
 export default class GithubController extends Controller {
 
   /**
-   * Get third-party login page
-   * @return {Promise<void>}
+   * @api {get} /github Login by GitHub
+   * @apiVersion 1.0.0
+   * @apiName githubLogin
+   * @apiGroup GitHub
+   *
+   * @apiDescription This page will redirect to the github authorization page.
    */
   public async getLoginView(): Promise<void> {
     const baseURL = 'https://github.com/login/oauth/authorize'
@@ -27,6 +31,15 @@ export default class GithubController extends Controller {
   }
 
 
+  /**
+   * @api {get} /github/callback Callback page of GitHub login
+   * @apiVersion 1.0.0
+   * @apiName githubCallback
+   * @apiGroup GitHub
+   *
+   * @apiDescription This is the callback page that is going to be redirected by GitHub.
+   * Fill the sample URL into GitHub's OAuth App's settings page.
+   */
   public async getAccessToken(): Promise<void> {
     const { ctx } = this
     const code = ctx.query.code
@@ -51,6 +64,10 @@ export default class GithubController extends Controller {
     await this._getGithubUserInfo(res.data['access_token'] as string)
   }
 
+
+  /**
+   * Helper functions
+   */
 
   private async _getGithubUserInfo(accessToken: string): Promise<void> {
     const baseURL = 'https://api.github.com/user'
