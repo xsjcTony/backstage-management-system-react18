@@ -18,8 +18,44 @@ import { UserRole } from '../model/UserRole'
 export default class UserRoleController extends Controller {
 
   /**
-   * Assign role to a user (REST API - POST)
-   * @return {Promise<void>}
+   * @api {post} /api/v1/user-role Assign roles
+   * @apiVersion 1.0.0
+   * @apiName assignRoles
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiBody {number} userId The user's ID to assign roles to
+   * @apiBody {number[]} roleIds Array of ID of roles to be assigned
+   *
+   * @apiDescription Assign specified roles to a user.
+   * <br>
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {number[]} data Array of IDs of assigned roles
+   *
+   * @apiSuccessExample {json} Success response (example)
+   * {
+   *   code: 200,
+   *   msg: "Roles have been assigned",
+   *   data: [1, 2, // ...]
+   * }
+   *
+   * @apiError (Error 400) RoleAssigned Role has been assigned, cannot reassign
+   * @apiError (Error 400) RoleNotAssigned Role has not been assigned, cannot cancel
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response (example)
+   * {
+   *   code: 500,
+   *   msg: "Internal server error",
+   *   data: {}
+   * }
    */
   public async assignUserRoles(): Promise<void> {
     const { ctx } = this

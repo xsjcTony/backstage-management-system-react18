@@ -24,8 +24,50 @@ import type { Sequelize } from 'sequelize'
 export default class UsersController extends Controller {
 
   /**
-   * Get users by query info (REST API - GET)
-   * @return {Promise<void>}
+   * @api {get} /api/v1/users Query users
+   * @apiVersion 1.0.0
+   * @apiName queryUsers
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiQuery {string} username Username
+   * @apiQuery {string} email E-mail address
+   * @apiQuery {string} current Current page number
+   * @apiQuery {string} pageSize The size of each page
+   *
+   * @apiDescription Query users by conditions provided.
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {object} data `{ rows: User[], count: number }` <br> Data and count for queried users (with roles)
+   *
+   * @apiSuccessExample {json} Success response
+   * {
+   *   code: 200,
+   *   msg: "success",
+   *   data: {
+   *     rows: // User[],
+   *     count: 3
+   *   }
+   * }
+   *
+   * @apiError (Error 401) InvalidJwtToken Invalid JWT Token
+   * @apiError (Error 401) NoPrivilege User is not allowed to perform the action
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response
+   * {
+   *   code: 401,
+   *   msg: "Permission denied",
+   *   data: {}
+   * }
+   *
+   * @apiSampleRequest /api/v1/users
    */
   public async getUsersByQuery(): Promise<void> {
     const { ctx } = this
@@ -44,8 +86,48 @@ export default class UsersController extends Controller {
 
 
   /**
-   * Add user to database (REST API - POST)
-   * @return {Promise<void>}
+   * @api {post} /api/v1/users Create user
+   * @apiVersion 1.0.0
+   * @apiName createUser
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiBody {string} [username] Username
+   * @apiBody {string} [email] E-mail address. Is optional when importing user
+   * @apiBody {string} password Password
+   * @apiBody {boolean} [userState] Whether the account is enabled <br> Can also be a `number`, `1` means `true`, `0` means `false`
+   * @apiBody {boolean} [github] Whether the account is associated to GitHub OAuth <br> Can also be a `number`, `1` means `true`, `0` means `false`
+   * @apiBody {string} [avatarUrl] User's avatar's path
+   *
+   * @apiDescription Create a user.
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   *
+   * @apiSuccessExample {json} Success response (example)
+   * {
+   *   code: 200,
+   *   msg: "User has been added"
+   * }
+   *
+   * @apiError (Error 400) UsernameExist Username already exists
+   * @apiError (Error 400) EmailExist E-mail address already exists
+   * @apiError (Error 400) InvalidUserData Invalid user data
+   * @apiError (Error 401) InvalidJwtToken Invalid JWT Token
+   * @apiError (Error 401) NoPrivilege User is not allowed to perform the action
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response (example)
+   * {
+   *   code: 400,
+   *   msg: "Username already exists",
+   *   data: {}
+   * }
    */
   public async createUser(): Promise<void> {
     const { ctx } = this
@@ -70,8 +152,46 @@ export default class UsersController extends Controller {
 
 
   /**
-   * Delete user in database (REST API - DELETE)
-   * @return {Promise<void>}
+   * @api {delete} /api/v1/users/:id Delete user
+   * @apiVersion 1.0.0
+   * @apiName deleteUser
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiParam {string} id User's ID
+   *
+   * @apiDescription Delete a user.
+   * Will also delete the user's avatar image.
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {User} data Data of the deleted user (with roles)
+   *
+   * @apiSuccessExample {json} Success response (example)
+   * {
+   *   code: 200,
+   *   msg: "User has been deleted",
+   *   data: {
+   *     // User
+   *   }
+   * }
+   *
+   * @apiError (Error 400) UserNotFound No user with the provided ID is found in the database
+   * @apiError (Error 401) InvalidJwtToken Invalid JWT Token
+   * @apiError (Error 401) NoPrivilege User is not allowed to perform the action
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response (example)
+   * {
+   *   code: 400,
+   *   msg: "User doesn't exist",
+   *   data: {}
+   * }
    */
   public async deleteUser(): Promise<void> {
     const { ctx } = this
@@ -90,8 +210,52 @@ export default class UsersController extends Controller {
 
 
   /**
-   * Update user in database (REST API - PUT)
-   * @return {Promise<void>}
+   * @api {put} /api/v1/users/:id Update user
+   * @apiVersion 1.0.0
+   * @apiName updateUser
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiParam {string} id User's ID
+   *
+   * @apiBody {string} [username] Username
+   * @apiBody {string} email E-mail address
+   * @apiBody {string} [password] Password
+   * @apiBody {boolean} [userState] Whether the account is enabled
+   *
+   * @apiDescription Update a user.
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {User} data Data of the updated user (with roles and privileges)
+   *
+   * @apiSuccessExample {json} Success response (example)
+   * {
+   *   code: 200,
+   *   msg: "User has been updated",
+   *   data: {
+   *     // Updated user
+   *   }
+   * }
+   *
+   * @apiError (Error 400) UsernameExist Username already exists
+   * @apiError (Error 400) EmailExist E-mail address already exists
+   * @apiError (Error 400) InvalidUserData Invalid user data
+   * @apiError (Error 401) InvalidJwtToken Invalid JWT Token
+   * @apiError (Error 401) NoPrivilege User is not allowed to perform the action
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response (example)
+   * {
+   *   code: 400,
+   *   msg: "Username already exists",
+   *   data: {}
+   * }
    */
   public async updateUser(): Promise<void> {
     const { ctx } = this
@@ -118,8 +282,47 @@ export default class UsersController extends Controller {
 
 
   /**
-   * Get user by ID (Primary key) (REST API - GET)
-   * @return {Promise<void>}
+   * @api {get} /api/v1/users/:id Query user by ID
+   * @apiVersion 1.0.0
+   * @apiName queryUserById
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiParam {string} id User's ID
+   *
+   * @apiDescription Query user by ID provided.
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {User} data The user found in the database (with roles and privileges)
+   *
+   * @apiSuccessExample {json} Success response
+   * {
+   *   code: 200,
+   *   msg: "success",
+   *   data: {
+   *     // User
+   *   }
+   * }
+   *
+   * @apiError (Error 401) InvalidJwtToken Invalid JWT Token
+   * @apiError (Error 401) NoPrivilege User is not allowed to perform the action
+   * @apiError (Error 500) UserNotFound No user with the provided ID is found in the database
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response
+   * {
+   *   code: 500,
+   *   msg: "User does not exist",
+   *   data: {}
+   * }
+   *
+   * @apiSampleRequest /api/v1/users/:id
    */
   public async getUserById(): Promise<void> {
     const { ctx } = this
@@ -138,8 +341,42 @@ export default class UsersController extends Controller {
 
 
   /**
-   * Upload user's avatar file
-   * @return {Promise<void>}
+   * @api {post} /api/v1/upload-user-avatar Upload avatar
+   * @apiVersion 1.0.0
+   * @apiName uploadAvatar
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiBody {File} file The avatar image file to be uploaded <br> Image format is limited to `.png` and `.jpg`
+   *
+   * @apiDescription Upload user's avatar image file.
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {string} data The file path of the uploaded avatar
+   *
+   * @apiSuccessExample {json} Success response (example)
+   * {
+   *   code: 200,
+   *   msg: "Avatar has been uploaded",
+   *   data: "/public/assets/..."
+   * }
+   *
+   * @apiError (Error 401) InvalidJwtToken Invalid JWT Token
+   * @apiError (Error 401) NoPrivilege User is not allowed to perform the action
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response (example)
+   * {
+   *   code: 500,
+   *   msg: "Failed to upload avatar",
+   *   data: {}
+   * }
    */
   public async uploadAvatar(): Promise<void> {
     const { ctx } = this
@@ -165,8 +402,43 @@ export default class UsersController extends Controller {
 
 
   /**
-   * Import users from EXCEL
-   * @return {Promise<void>}
+   * @api {post} /api/v1/import-users Import users
+   * @apiVersion 1.0.0
+   * @apiName importUsers
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiBody {File} file The Excel sheet (`.xlsx`) contain users' data
+   *
+   * @apiDescription Import users by Excel sheet.
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   *
+   * @apiSuccessExample {json} Success response (example)
+   * {
+   *   code: 200,
+   *   msg: "Users have been imported",
+   * }
+   *
+   * @apiError (Error 400) InvalidUserData Invalid user data
+   * @apiError (Error 401) InvalidJwtToken Invalid JWT Token
+   * @apiError (Error 401) NoPrivilege User is not allowed to perform the action
+   * @apiError (Error 500) UsernameExist Username already exists
+   * @apiError (Error 500) EmailExist E-mail address already exists
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response (example)
+   * {
+   *   code: 400,
+   *   msg: "Invalid user data",
+   *   data: {}
+   * }
    */
   public async importUsers(): Promise<void> {
     const { ctx } = this
@@ -181,6 +453,7 @@ export default class UsersController extends Controller {
       } else {
         ctx.error(400, 'error', err)
       }
+      void ctx.cleanupRequestFiles()
       return
     } finally {
       void ctx.cleanupRequestFiles()
@@ -210,6 +483,27 @@ export default class UsersController extends Controller {
   }
 
 
+  /**
+   * @api {get} /api/v1/export-all-users Export all users
+   * @apiVersion 1.0.0
+   * @apiName exportAllUsers
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiDescription Export all users to an Excel (`.xlsx`) file.
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {Blob} blob A blob to be downloaded
+   *
+   * @apiSuccessExample {Blob} Success response (example)
+   * Blob file: users.xlsx
+   *
+   * @apiSampleRequest /api/v1/export-all-users
+   */
   public async exportAllUsers(): Promise<void> {
     const { ctx } = this
     const users = (await ctx.service.users.getAllUsers()).map(user => user.toJSON() as User)
@@ -236,6 +530,43 @@ export default class UsersController extends Controller {
   }
 
 
+  /**
+   * @api {post} /api/v1/delete-temp-avatars Delete avatars
+   * @apiVersion 1.0.0
+   * @apiName deleteAvatars
+   * @apiGroup User manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiBody {string[]} avatarUrls Array of path of avatars to be deleted
+   *
+   * @apiDescription Delete specified avatar image files.
+   * <br>
+   * Should be used when uploading avatars to delete unnecessary files.
+   * <br>
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   *
+   * @apiSuccessExample {json} Success response (example)
+   * {
+   *   code: 200,
+   *   msg: "success"
+   * }
+   *
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response (example)
+   * {
+   *   code: 500,
+   *   msg: "Internal server error",
+   *   data: {}
+   * }
+   */
   public async deleteTempAvatars(): Promise<void> {
     const { ctx } = this
     const avatarUrls = (ctx.request.body as string[])
