@@ -18,8 +18,44 @@ import type { Sequelize } from 'sequelize'
 export default class RoleMenuController extends Controller {
 
   /**
-   * Assign menus to a role (REST API - POST)
-   * @return {Promise<void>}
+   * @api {post} /api/v1/role-menu Assign menus
+   * @apiVersion 1.0.0
+   * @apiName assignMenus
+   * @apiGroup Role manager
+   *
+   * @apiHeader {string} Authorization The JWT token
+   *
+   * @apiHeaderExample {json} Header example
+   * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
+   *
+   * @apiBody {number} roleId The role's ID to assign privileges to
+   * @apiBody {number[]} menuIds Array of ID of menus to be assigned
+   *
+   * @apiDescription Assign specified menus to a role.
+   * <br>
+   * User's JWT Token must be provided to pass the authentication.
+   *
+   * @apiSuccess {number} code 200 (Status code)
+   * @apiSuccess {string} msg Response message
+   * @apiSuccess {number[]} data Array of IDs of assigned menus
+   *
+   * @apiSuccessExample {json} Success response (example)
+   * {
+   *   code: 200,
+   *   msg: "Menus have been assigned",
+   *   data: [1, 2, // ...]
+   * }
+   *
+   * @apiError (Error 400) MenuAssigned Menu has been assigned, cannot reassign
+   * @apiError (Error 400) MenuNotAssigned Menu has not been assigned, cannot cancel
+   * @apiError (Error 500) InternalServerError Internal server error
+   *
+   * @apiErrorExample {json} Error response (example)
+   * {
+   *   code: 500,
+   *   msg: "Internal server error",
+   *   data: {}
+   * }
    */
   public async assignRoleMenus(): Promise<void> {
     const { ctx } = this

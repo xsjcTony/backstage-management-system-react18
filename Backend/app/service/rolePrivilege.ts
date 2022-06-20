@@ -20,7 +20,7 @@ export default class RolePrivilegeService extends Service {
 
     const rolePrivilege = await this._findUserRole({ roleId, privilegeId })
     if (rolePrivilege) {
-      throw new Error(`Privilege (ID: ${ privilegeId }) has already been assigned to role (ID: ${ roleId })`)
+      throw new Error(`Privilege (ID: ${privilegeId}) has already been assigned to role (ID: ${roleId})`)
     }
 
     return this.ctx.model.RolePrivilege.create(data, options)
@@ -38,7 +38,7 @@ export default class RolePrivilegeService extends Service {
 
     const rolePrivilege = await this._findUserRole({ roleId, privilegeId })
     if (!rolePrivilege) {
-      throw new Error(`Privilege (ID: ${ privilegeId }) isn't assigned to role (ID: ${ roleId })`)
+      throw new Error(`Privilege (ID: ${privilegeId}) isn't assigned to role (ID: ${roleId})`)
     }
 
     await rolePrivilege.destroy(options)

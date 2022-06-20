@@ -34,10 +34,10 @@ export default class UsersController extends Controller {
    * @apiHeaderExample {json} Header example
    * { "Authorization": "e3WKLJDJF3ojfsdkljfk..." }
    *
-   * @apiQuery {string} username Username
-   * @apiQuery {string} email E-mail address
-   * @apiQuery {string} current Current page number
-   * @apiQuery {string} pageSize The size of each page
+   * @apiQuery {string} [username] Username
+   * @apiQuery {string} [email] E-mail address
+   * @apiQuery {string} [current] Current page number
+   * @apiQuery {string} [pageSize] The size of each page
    *
    * @apiDescription Query users by conditions provided.
    * User's JWT Token must be provided to pass the authentication.
@@ -299,7 +299,7 @@ export default class UsersController extends Controller {
    *
    * @apiSuccess {number} code 200 (Status code)
    * @apiSuccess {string} msg Response message
-   * @apiSuccess {User} data The user found in the database (with roles and privileges)
+   * @apiSuccess {User} data The user found in the database (with roles, privileges and menus)
    *
    * @apiSuccessExample {json} Success response
    * {
