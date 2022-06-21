@@ -137,7 +137,7 @@ export default class PrivilegesController extends Controller {
       const privilege = await ctx.service.privileges.getPrivilegeById(ctx.params.id)
       ctx.success(200, 'success', privilege)
     } catch (err) {
-
+      ctx.error(500, err instanceof Error ? err.message : 'Error', err)
     }
   }
 
