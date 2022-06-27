@@ -1,4 +1,4 @@
-import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg'
+import type { EggAppConfig, EggAppInfo, PowerPartial } from 'egg'
 
 
 export default (appInfo: EggAppInfo): PowerPartial<EggAppConfig> => {
@@ -22,7 +22,7 @@ export default (appInfo: EggAppInfo): PowerPartial<EggAppConfig> => {
   // add your special config in here
   const bizConfig = {}
 
-  // the return config will combines to EggAppConfig
+  // the returned config will combine to EggAppConfig
   return {
     ...config,
     ...bizConfig

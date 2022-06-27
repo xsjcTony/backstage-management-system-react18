@@ -1,4 +1,5 @@
-import { Application } from 'egg'
+import type { Application } from 'egg'
+
 
 class AppBootHook {
   public app: Application
@@ -10,7 +11,6 @@ class AppBootHook {
   public async willReady(): Promise<void> {
     // willReady
   }
-
 }
 
 module.exports = AppBootHook
