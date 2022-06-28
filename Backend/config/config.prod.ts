@@ -40,8 +40,6 @@ export default (): PowerPartial<EggAppConfig> => {
     pass: 'WAYJJHTOHRIXSZXG'
   }
 
-  // CORS no longer needed because of Nginx
-
   // cluster
   config.cluster = {
     listen: {
@@ -50,7 +48,7 @@ export default (): PowerPartial<EggAppConfig> => {
     }
   }
 
-  config.serverUrl = 'http://34.116.91.48'
+  config.serverUrl = 'http://bms.aelita.me'
 
   return config
 }
