@@ -9,6 +9,16 @@ const canRequest = async (ctx: Context, id: number): Promise<boolean> => {
   const requestMethod = ctx.method.toLowerCase()
   const requestUrl = ctx.url
 
+  if (
+    requestMethod === 'get'
+    && (
+      requestUrl.startsWith('/api/v1/users')
+      || requestUrl.startsWith('/api/v1/menus')
+    )
+  ) {
+    return true
+  }
+
   const user = await ctx.service.users.getUserById(id.toString(10))
   let ownPrivileges: Privilege[] = []
   user.roles.forEach(role => void ownPrivileges.push(...role.privileges))

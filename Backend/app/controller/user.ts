@@ -19,7 +19,7 @@ import type { RegisterData, LoginData, OAuthBindData, VerifyEmailData, ResetPass
 export default class UserController extends Controller {
 
   /**
-   * @api {post} /register Register
+   * @api {post} /api/v1/register Register
    * @apiVersion 1.0.0
    * @apiName register
    * @apiGroup Account
@@ -81,7 +81,7 @@ export default class UserController extends Controller {
 
 
   /**
-   * @api {post} /login Login
+   * @api {post} /api/v1/login Login
    * @apiVersion 1.0.0
    * @apiName login
    * @apiGroup Account
@@ -146,7 +146,7 @@ export default class UserController extends Controller {
 
 
   /**
-   * @api {get} /is-logged-in Check login status
+   * @api {get} /api/v1/is-logged-in Check login status
    * @apiVersion 1.0.0
    * @apiName checkLoginStatus
    * @apiGroup Account
@@ -184,7 +184,7 @@ export default class UserController extends Controller {
    *   data: {}
    * }
    *
-   * @apiSampleRequest /is-logged-in
+   * @apiSampleRequest /api/v1/is-logged-in
    */
   public async isLoggedIn(): Promise<void> {
     const { ctx } = this
@@ -201,7 +201,7 @@ export default class UserController extends Controller {
 
 
   /**
-   * @api {post} /oauth/bind Bind local account with OAuth
+   * @api {post} /api/v1/oauth/bind Bind local account with OAuth
    * @apiVersion 1.0.0
    * @apiName bindAccount
    * @apiGroup Account
@@ -270,7 +270,7 @@ export default class UserController extends Controller {
 
 
   /**
-   * @api {post} /reset-password/verify-email Reset password - verify email
+   * @api {post} /api/v1/reset-password/verify-email Reset password - verify email
    * @apiVersion 1.0.0
    * @apiName verifyEmail
    * @apiGroup Account
@@ -299,7 +299,7 @@ export default class UserController extends Controller {
    *   data: {}
    * }
    *
-   * @apiSampleRequest /reset-password/verify-email
+   * @apiSampleRequest /api/v1/reset-password/verify-email
    */
   public async verifyEmail(): Promise<void> {
     const { ctx } = this
@@ -321,7 +321,7 @@ export default class UserController extends Controller {
 
 
   /**
-   * @api {put} /reset-password/reset Reset password
+   * @api {put} /api/v1/reset-password/reset Reset password
    * @apiVersion 1.0.0
    * @apiName resetPassword
    * @apiGroup Account

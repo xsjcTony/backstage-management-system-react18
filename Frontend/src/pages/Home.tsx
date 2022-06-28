@@ -26,12 +26,12 @@ const HomeContainer = styled.div`
         justify-content: flex-end;
         align-items: center;
         gap: 20px;
-        
+
         .logout {
             cursor: pointer;
             padding: 10px 10px;
             border-radius: 5px;
-            
+
             &:hover {
                 background: #ddd;
             }
@@ -39,7 +39,7 @@ const HomeContainer = styled.div`
 
         span {
             margin: 5px 25px 0 0;
-            
+
             &:hover {
                 background: #ddd;
                 border-radius: 5px;
@@ -48,6 +48,7 @@ const HomeContainer = styled.div`
     }
 
     .container {
+        padding: 0 50px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -69,6 +70,11 @@ const HomeContainer = styled.div`
             h1 {
                 font-size: 40px;
             }
+        }
+
+        .welcome {
+            color: #999;
+            text-align: center;
         }
 
         .actions {
@@ -128,12 +134,14 @@ const Home = (): JSX.Element => {
           <img alt="logo" src={logo} />
           <h1>{intl.formatMessage({ id: 'header.title' })}</h1>
         </div>
-        {loggedIn && (
-          <h2>
-            {intl.formatMessage({ id: 'pages.home.hi' })}
-            {currentUser?.username ?? currentUser?.email ?? 'Placeholder'}
-          </h2>
-        )}
+        {loggedIn
+          ? (
+            <h2>
+              {intl.formatMessage({ id: 'pages.home.hi' })}
+              {currentUser?.username ?? currentUser?.email ?? 'Placeholder'}
+            </h2>
+          )
+          : <h2 className="welcome">{intl.formatMessage({ id: 'pages.home.welcome' })}</h2>}
         {
           loggedIn
             ? (

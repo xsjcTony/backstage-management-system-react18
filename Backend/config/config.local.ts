@@ -47,5 +47,7 @@ export default (): PowerPartial<EggAppConfig> => {
     credentials: true
   }
 
+  config.serverUrl = 'http://127.0.0.1:7001'
+
   return config
 }

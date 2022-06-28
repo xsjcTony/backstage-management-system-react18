@@ -1,6 +1,6 @@
 {
   "name": "backstage-admin-system",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "private": true,
   "egg": {
@@ -74,7 +74,7 @@
     "name": "Aelita's backstage management system",
     "description": "API documentation for Aelita's BMS",
     "title": "API Doc - Aelita's BMS",
-    "url": "http://127.0.0.1:7001"
+    "url": "http://34.116.91.48"
   },
   "author": "Aelita",
   "license": "MIT"

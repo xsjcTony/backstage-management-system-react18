@@ -20,6 +20,7 @@ Backend/app/public/apidoc/**/*
 antd-pro-test
 antd-test
 antd-vite-test
+bms-demo-vm.ppk
 
 Frontend/logs
 Frontend/*.log

@@ -189,7 +189,7 @@ const Login = (): JSX.Element => {
     <>
       <div className="other-login">
         {intl.formatMessage({ id: 'pages.login.other' })}
-        <a href="http://127.0.0.1:7001/github">
+        <a href={`${apiBaseUrl}/api/v1/github`}>
           <GithubOutlined />
         </a>
       </div>
@@ -224,9 +224,9 @@ const Login = (): JSX.Element => {
   /**
    * Captcha
    */
-  const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
+  const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/api/v1/captcha?t=${Date.now()}`)
 
-  const refreshCaptcha = useCallback(() => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`), [apiBaseUrl])
+  const refreshCaptcha = useCallback(() => void setCaptchaSrc(`${apiBaseUrl}/api/v1/captcha?t=${Date.now()}`), [apiBaseUrl])
 
 
   /**

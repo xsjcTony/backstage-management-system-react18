@@ -9,6 +9,7 @@ const pages: Record<string, string> = {
   'pages.home.register': '注册',
   'pages.home.dashboard': '管理页',
   'pages.home.hi': '您好, ',
+  'pages.home.welcome': '欢迎, 如果这是您第一次体验本系统, 请注册账号并登录',
   'pages.home.logout': '退出登录',
 
   // Admin
@@ -16,6 +17,8 @@ const pages: Record<string, string> = {
 
   // Welcome
   'pages.admin.welcome.title': '欢迎',
+  'pages.admin.welcome.guide': '如果您是第一次注册完毕并登录, 您会发现除了欢迎页面之外什么都没有, 这是正常的. 请登出(在右上角, 鼠标悬浮于您的账号/邮箱)退出, 并登录管理员账号, 为您的账号赋予一些您想要的角色(通过用户管理)以体验本后台管理系统',
+  'pages.admin.welcome.admin-account': '用户名: admin, 密码: 123456a.',
 
   // User List
   'pages.admin.user-list.title': '用户列表',

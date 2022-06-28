@@ -2,6 +2,7 @@
 /* eslint '@typescript-eslint/no-unsafe-assignment': 'off' */
 /* eslint '@typescript-eslint/no-unsafe-argument': 'off' */
 /* eslint '@typescript-eslint/no-unsafe-member-access': 'off' */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 
 import { URLSearchParams } from 'node:url'
 import { Controller } from 'egg'
@@ -12,7 +13,7 @@ import type { OAuthUserData } from '../types'
 export default class GithubController extends Controller {
 
   /**
-   * @api {get} /github Login by GitHub
+   * @api {get} /api/v1/github Login by GitHub
    * @apiVersion 1.0.0
    * @apiName githubLogin
    * @apiGroup GitHub
@@ -32,7 +33,7 @@ export default class GithubController extends Controller {
 
 
   /**
-   * @api {get} /github/callback Callback page of GitHub login
+   * @api {get} /api/v1/github/callback Callback page of GitHub login
    * @apiVersion 1.0.0
    * @apiName githubCallback
    * @apiGroup GitHub
@@ -109,7 +110,7 @@ export default class GithubController extends Controller {
         signed: false
       })
 
-      ctx.redirect('http://127.0.0.1:3000/admin')
+      ctx.redirect(`${this.config.serverUrl}/admin`)
     } catch (err) {
       /**
        * User doesn't exist
@@ -121,7 +122,7 @@ export default class GithubController extends Controller {
        * 2. Bind username, e-mail and password (redirect to '/oauth/github')
        */
       const params = { oauthId: oauth.id.toString() }
-      ctx.redirect(`http://127.0.0.1:3000/oauth/github?${new URLSearchParams(params).toString()}`)
+      ctx.redirect(`${this.config.serverUrl}/oauth/github?${new URLSearchParams(params).toString()}`)
     }
   }
 }

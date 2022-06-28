@@ -186,9 +186,9 @@ const Register = (): JSX.Element => {
   /**
    * Captcha
    */
-  const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/captcha?t=${Date.now()}`)
+  const [captchaSrc, setCaptchaSrc] = useState<string>(`${apiBaseUrl}/api/v1/captcha?t=${Date.now()}`)
 
-  const refreshCaptcha = useCallback(() => void setCaptchaSrc(`${apiBaseUrl}/captcha?t=${Date.now()}`), [apiBaseUrl])
+  const refreshCaptcha = useCallback(() => void setCaptchaSrc(`${apiBaseUrl}/api/v1/captcha?t=${Date.now()}`), [apiBaseUrl])
 
 
   /**

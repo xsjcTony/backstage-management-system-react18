@@ -14,14 +14,14 @@ import { Controller } from 'egg'
 export default class UtilController extends Controller {
 
   /**
-   * @api {get} /captcha Get image captcha
+   * @api {get} /api/v1/captcha Get image captcha
    * @apiVersion 1.0.0
    * @apiName imageCaptcha
    * @apiGroup Utility
    *
    * @apiDescription Will return a SVG captcha image including 4 digits.
    *
-   * @apiSampleRequest http://127.0.0.1:7001/captcha
+   * @apiSampleRequest /api/v1/captcha
    */
   public async generateCaptcha(): Promise<void> {
     const { ctx } = this
@@ -31,7 +31,7 @@ export default class UtilController extends Controller {
 
 
   /**
-   * @api {get} /verify-email Send verification email
+   * @api {get} /api/v1/verify-email Send verification email
    * @apiVersion 1.0.0
    * @apiName sendVerificationEmail
    * @apiGroup Utility

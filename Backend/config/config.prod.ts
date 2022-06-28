@@ -46,9 +46,11 @@ export default (): PowerPartial<EggAppConfig> => {
   config.cluster = {
     listen: {
       port: 7001,
-      hostname: '34.116.91.48'
+      hostname: '10.152.0.3'
     }
   }
+
+  config.serverUrl = 'http://34.116.91.48'
 
   return config
 }

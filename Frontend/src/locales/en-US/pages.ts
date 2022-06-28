@@ -9,6 +9,7 @@ const pages: Record<string, string> = {
   'pages.home.register': 'Register',
   'pages.home.dashboard': 'Dashboard',
   'pages.home.hi': 'Hi, ',
+  'pages.home.welcome': `Welcome, if it's your first time experiencing the system, please create an account and login`,
   'pages.home.logout': 'Log out',
 
   // Admin
@@ -16,6 +17,8 @@ const pages: Record<string, string> = {
 
   // Welcome
   'pages.admin.welcome.title': 'Welcome',
+  'pages.admin.welcome.guide': `If it's your first time logging in to the system, you may find there is nothing except the Welcome page, that's expected. Please logout (at the top-right corner, hover on your username / e-mail) and then login to the administrator account to assign some roles (through user-management) to your account to experience the backstage management system`,
+  'pages.admin.welcome.admin-account': 'USERNAME: admin, PASSWORD: 123456a.',
 
   // User List
   'pages.admin.user-list.title': 'User List',
